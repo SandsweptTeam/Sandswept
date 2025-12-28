@@ -608,10 +608,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Base",
+                    localPos = new Vector3(0.02338F, 0.69208F, -1.40338F),
+                    localAngles = new Vector3(272.1408F, 46.89045F, 132.9592F),
+                    localScale = new Vector3(1.61367F, 1.5068F, 1.40471F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -625,7 +625,24 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "Base",
+                    localPos = new Vector3(0.02338F, 0.69208F, -1.40338F),
+                    localAngles = new Vector3(272.1408F, 46.89045F, 132.9592F),
+                    localScale = new Vector3(1.61367F, 1.5068F, 1.40471F),
+
+                    followerPrefab = itemDisplay,
+                    limbMask = LimbFlags.None,
+                    followerPrefabAddress = new AssetReferenceGameObject("")
+                }
+
+            );
+
+            i.Add("HaulerDroneBody",
+
+                new ItemDisplayRule()
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    childName = "Head",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -642,7 +659,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "HeadCenter",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -659,7 +676,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "HeadCenter",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -676,7 +693,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "GunAxis",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -693,7 +710,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "GunAxis",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -710,10 +727,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(0.85691F, 0.46991F, -0.11755F),
+                    localAngles = new Vector3(359.863F, 10.46248F, 90.58602F),
+                    localScale = new Vector3(0.48194F, 0.48194F, 0.48194F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -727,10 +744,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(0.85691F, 0.46991F, -0.11755F),
+                    localAngles = new Vector3(359.863F, 10.46248F, 90.58602F),
+                    localScale = new Vector3(0.48194F, 0.48194F, 0.48194F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -761,7 +778,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "Head",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
