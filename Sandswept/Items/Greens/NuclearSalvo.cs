@@ -439,8 +439,8 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Head",
-                    localPos = new Vector3(1.17835F, 0.47968F, 0.04101F),
-                    localAngles = new Vector3(356.6696F, 181.5065F, 260.2548F),
+                    localPos = new Vector3(1.17217F, 0.08098F, 0.07968F),
+                    localAngles = new Vector3(275.6116F, 170.878F, 279.0609F),
                     localScale = new Vector3(0.55781F, 0.55781F, 0.55781F),
 
                     followerPrefab = itemDisplay,
@@ -456,8 +456,8 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Head",
-                    localPos = new Vector3(1.17835F, 0.47968F, 0.04101F),
-                    localAngles = new Vector3(356.6696F, 181.5065F, 260.2548F),
+                    localPos = new Vector3(1.17217F, 0.08098F, 0.07968F),
+                    localAngles = new Vector3(275.6116F, 170.878F, 279.0609F),
                     localScale = new Vector3(0.55781F, 0.55781F, 0.55781F),
 
                     followerPrefab = itemDisplay,
@@ -576,7 +576,7 @@ namespace Sandswept.Items.Greens
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Muzzle",
                     localPos = new Vector3(0.01142F, 0.20915F, -0.29828F),
-                    localAngles = new Vector3(354.7212F, 11.57875F, 175.6258F),
+                    localAngles = new Vector3(353.7925F, 0.17329F, 179.1538F),
                     localScale = new Vector3(0.28196F, 0.28196F, 0.28196F),
 
                     followerPrefab = itemDisplay,
@@ -593,7 +593,7 @@ namespace Sandswept.Items.Greens
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Muzzle",
                     localPos = new Vector3(0.01142F, 0.20915F, -0.29828F),
-                    localAngles = new Vector3(354.7212F, 11.57875F, 175.6258F),
+                    localAngles = new Vector3(353.7925F, 0.17329F, 179.1538F),
                     localScale = new Vector3(0.28196F, 0.28196F, 0.28196F),
 
                     followerPrefab = itemDisplay,
