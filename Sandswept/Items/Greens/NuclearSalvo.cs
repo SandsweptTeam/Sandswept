@@ -176,7 +176,7 @@ namespace Sandswept.Items.Greens
             for (int i = 0; i < particles.childCount; i++)
             {
                 var child = particles.transform.GetChild(i);
-                child.localScale = Vector3.one * 0.13f * missileExplosionRadius;
+                child.localScale = Vector3.one * 0.25f * missileExplosionRadius;
             }
 
             var swipe = particles.transform.GetChild(0).GetComponent<ParticleSystemRenderer>();
@@ -304,8 +304,8 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Center",
-                    localPos = new Vector3(0F, -1.09963F, 1.44172F),
+                    childName = "LeftBody",
+                    localPos = new Vector3(0.53726F, -1.09963F, 0.03724F),
                     localAngles = new Vector3(0F, 180F, 0F),
                     localScale = new Vector3(0.65515F, 0.65515F, 0.65515F),
 
@@ -321,8 +321,8 @@ namespace Sandswept.Items.Greens
                new ItemDisplayRule()
                {
                    ruleType = ItemDisplayRuleType.ParentedPrefab,
-                   childName = "Center",
-                   localPos = new Vector3(0F, -1.09963F, 1.44172F),
+                   childName = "LeftBody",
+                   localPos = new Vector3(0.53726F, -1.09963F, 0.03724F),
                    localAngles = new Vector3(0F, 180F, 0F),
                    localScale = new Vector3(0.65515F, 0.65515F, 0.65515F),
 
@@ -373,9 +373,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "HeadCenter",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.03069F, -0.308F, 0.80453F),
+                    localAngles = new Vector3(5.27824F, 92.17718F, 270.405F),
+                    localScale = new Vector3(0.58508F, 0.58508F, 0.58508F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -390,9 +390,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "HeadCenter",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.03069F, -0.308F, 0.80453F),
+                    localAngles = new Vector3(5.27824F, 92.17718F, 270.405F),
+                    localScale = new Vector3(0.58508F, 0.58508F, 0.58508F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -473,9 +473,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Panel2",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.67526F, 0.04386F, 0.01105F),
+                    localAngles = new Vector3(271.9616F, 56.23776F, 31.5417F),
+                    localScale = new Vector3(0.50955F, 0.50955F, 0.50955F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -490,9 +490,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Panel2",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.67526F, 0.04386F, 0.01105F),
+                    localAngles = new Vector3(271.9616F, 56.23776F, 31.5417F),
+                    localScale = new Vector3(0.50955F, 0.50955F, 0.50955F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -643,9 +643,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Head",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.67046F, 0.01156F, -0.21742F),
+                    localAngles = new Vector3(353.379F, 185.0977F, 270.7481F),
+                    localScale = new Vector3(0.38187F, 0.38187F, 0.38187F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -660,9 +660,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "HeadCenter",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(-0.00787F, 0.21015F, -0.24116F),
+                    localAngles = new Vector3(328.134F, 0.65389F, 180.7218F),
+                    localScale = new Vector3(0.27953F, 0.26102F, 0.24334F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -677,9 +677,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "HeadCenter",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(-0.0063F, 0.21219F, -0.15307F),
+                    localAngles = new Vector3(332.4253F, 0.71483F, 180.6916F),
+                    localScale = new Vector3(0.22772F, 0.21264F, 0.19824F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -694,9 +694,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "GunAxis",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.92834F, 0.46067F, -0.01705F),
+                    localAngles = new Vector3(355.9996F, 181.4619F, 267.7461F),
+                    localScale = new Vector3(0.47762F, 0.47762F, 0.47762F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -711,9 +711,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "GunAxis",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.92834F, 0.46067F, -0.01705F),
+                    localAngles = new Vector3(355.9996F, 181.4619F, 267.7461F),
+                    localScale = new Vector3(0.47762F, 0.47762F, 0.47762F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -779,9 +779,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Head",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.43258F, 0.66661F, -0.05944F),
+                    localAngles = new Vector3(7.81523F, 182.5502F, 212.9516F),
+                    localScale = new Vector3(0.41503F, 0.41503F, 0.41503F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -806,6 +806,41 @@ namespace Sandswept.Items.Greens
                 }
 
             );
+
+            i.Add("VoltaicDroneBody",
+
+                new ItemDisplayRule()
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    childName = "MuzzleCannon",
+                    localPos = new Vector3(1.3154F, -0.00513F, -1.50571F),
+                    localAngles = new Vector3(0.1725F, 7.89851F, 87.31427F),
+                    localScale = new Vector3(0.52344F, 0.52344F, 0.52344F),
+
+                    followerPrefab = itemDisplay,
+                    limbMask = LimbFlags.None,
+                    followerPrefabAddress = new AssetReferenceGameObject("")
+                }
+
+            );
+
+            i.Add("VoltaicDroneRemoteOpBody",
+
+                new ItemDisplayRule()
+                {
+                    ruleType = ItemDisplayRuleType.ParentedPrefab,
+                    childName = "MuzzleCannon",
+                    localPos = new Vector3(1.3154F, -0.00513F, -1.50571F),
+                    localAngles = new Vector3(0.1725F, 7.89851F, 87.31427F),
+                    localScale = new Vector3(0.52344F, 0.52344F, 0.52344F),
+
+                    followerPrefab = itemDisplay,
+                    limbMask = LimbFlags.None,
+                    followerPrefabAddress = new AssetReferenceGameObject("")
+                }
+
+            );
+            // inferno drone doesnt have childlocator ! ! https://gta.fandom.com/wiki/Faggio_(3D_Universe)
 
             return i;
         }
@@ -933,10 +968,13 @@ namespace Sandswept.Items.Greens
                     salvo.pocketIcbmCount = body.inventory.GetItemCountEffective(DLC1Content.Items.MoreMissile);
                 }
 
-                var playerItemCount = body.inventory.GetItemCount(NuclearSalvo.instance.ItemDef);
-                var npcItemCount = npcInventory.GetItemCount(NuclearSalvo.instance.ItemDef);
+                var playerItemCount = body.inventory.GetItemCountEffective(NuclearSalvo.instance.ItemDef);
+                // var npcItemCount = npcInventory.GetItemCountEffective(NuclearSalvo.instance.ItemDef);
 
-                npcInventory.GiveItem(NuclearSalvo.instance.ItemDef, playerItemCount - npcItemCount);
+                npcInventory.ResetItemPermanent(NuclearSalvo.instance.ItemDef);
+                npcInventory.GiveItemPermanent(NuclearSalvo.instance.ItemDef, playerItemCount);
+
+                // H no brainpowr for thisrn
             }
         }
 
@@ -982,7 +1020,7 @@ namespace Sandswept.Items.Greens
             stopwatch -= Time.fixedDeltaTime;
             enemyCheckTimer += Time.fixedDeltaTime;
 
-            var stack = master.inventory.GetItemCount(NuclearSalvo.instance.ItemDef);
+            var stack = master.inventory.GetItemCountEffective(NuclearSalvo.instance.ItemDef);
 
             if (stack <= 0)
             {

@@ -5,7 +5,7 @@
 - Elites
   - Made flying enemies no longer able to spawn as Osmium
 - Items
-  - Added Nuclear Salvo item displays to all Vanilla & Sandswept drones
+  - Added Nuclear Salvo item displays to all Vanilla drones
   - Improved Flawless Design's custom indicator a lil bit
   - Fixed Nuclear Salvo activating while in the Bazaar and Computational Exchange (for eel this time)
   - Fixed Nuclear Salvo missiles airstalling indefinitely when fired from certain ranges
