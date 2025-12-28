@@ -1,13 +1,16 @@
 ## 1.4.1 Patch Notes
 - VOL-T
   - Fixed Galvanic Bolt always missing with AttackDirectionFix installed (not jankily this time, has aim assistance again)
+  - Fixed Mastery Skin having the wrong VFX
 - Elites
   - Made flying enemies no longer able to spawn as Osmium
 - Items
+  - Added Nuclear Salvo item displays to all Vanilla & Sandswept drones
+  - Improved Flawless Design's custom indicator a lil bit
   - Fixed Nuclear Salvo activating while in the Bazaar and Computational Exchange (for eel this time)
   - Fixed Nuclear Salvo missiles airstalling indefinitely when fired from certain ranges
 - Interactables
-  - Fixed Shrine of Ruin stage corruption not persisting when using mods such as ProperSave
+  - Fixed Shrine of Ruin stage corruption not persisting with ProperSave
 
 ## 1.4.0 Patch Notes
 - General
@@ -29,6 +32,7 @@
 - Items/Equipment
   - Added VFX and SFX to Makeshift Plate
   - Added a Telegraph to Their Prominence's Lunar Fissures
+  - Added a custom indicator to Flawless Design
   - Buffed Festering Hunger Chance from 7% to 8%
   - Buffed Nuclear Salvo Damage from 50% to 100%
   - Nerfed Nuclear Salvo Explosion Radius from 16m to 8m
@@ -45,9 +49,8 @@
   - Fixed Makeshift Plate interacting weirdly when having your inventory disabled
   - Fixed Nuclear Salvo activating while in Computational Exchange
   - Fixed Hallowed Ichor activating while in The Bazaar and Computational Exchange
-  - Flawless Design indicator is now centered on the target item
-  - Flawless Design indicator now correctly disappears when the equipment is removed or switched out
-  - Flawless Design now uses a custom indicator instead of the recycler indicator
+  - Fixed Flawless Design indicator not being centered on the pickup
+  - Fixed Flawless Design indicator not disappearing when the equipment was removed or switched out
 - Interactables
   - Added Remote Operation support for drones
   - Added Operator support for drones

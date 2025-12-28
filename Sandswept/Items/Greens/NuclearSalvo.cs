@@ -304,10 +304,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Center",
+                    localPos = new Vector3(0F, -1.09963F, 1.44172F),
+                    localAngles = new Vector3(0F, 180F, 0F),
+                    localScale = new Vector3(0.65515F, 0.65515F, 0.65515F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -321,10 +321,10 @@ namespace Sandswept.Items.Greens
                new ItemDisplayRule()
                {
                    ruleType = ItemDisplayRuleType.ParentedPrefab,
-                   childName = "Muzzle",
-                   localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                   localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                   localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                   childName = "Center",
+                   localPos = new Vector3(0F, -1.09963F, 1.44172F),
+                   localAngles = new Vector3(0F, 180F, 0F),
+                   localScale = new Vector3(0.65515F, 0.65515F, 0.65515F),
 
                    followerPrefab = itemDisplay,
                    limbMask = LimbFlags.None,
@@ -338,10 +338,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Head",
+                    localPos = new Vector3(-0.00186F, 2.00031F, 1.23092F),
+                    localAngles = new Vector3(351.4336F, 359.9842F, 179.2116F),
+                    localScale = new Vector3(0.64011F, 0.64011F, 0.64011F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -355,10 +355,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Head",
+                    localPos = new Vector3(-0.00186F, 2.00031F, 1.23092F),
+                    localAngles = new Vector3(351.4336F, 359.9842F, 179.2116F),
+                    localScale = new Vector3(0.64011F, 0.64011F, 0.64011F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -372,7 +372,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "HeadCenter",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -389,7 +389,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "HeadCenter",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -406,10 +406,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "MissilePack",
+                    localPos = new Vector3(0.02108F, 0.01524F, 0.65242F),
+                    localAngles = new Vector3(272.7452F, 281.5497F, 76.71065F),
+                    localScale = new Vector3(0.52257F, 0.52257F, 0.52257F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -422,10 +422,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "MissilePack",
+                    localPos = new Vector3(0.02108F, 0.01524F, 0.65242F),
+                    localAngles = new Vector3(272.7452F, 281.5497F, 76.71065F),
+                    localScale = new Vector3(0.52257F, 0.52257F, 0.52257F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -438,10 +438,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Head",
+                    localPos = new Vector3(1.17835F, 0.47968F, 0.04101F),
+                    localAngles = new Vector3(356.6696F, 181.5065F, 260.2548F),
+                    localScale = new Vector3(0.55781F, 0.55781F, 0.55781F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -455,10 +455,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "Head",
+                    localPos = new Vector3(1.17835F, 0.47968F, 0.04101F),
+                    localAngles = new Vector3(356.6696F, 181.5065F, 260.2548F),
+                    localScale = new Vector3(0.55781F, 0.55781F, 0.55781F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -472,7 +472,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "Panel2",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -489,7 +489,7 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
+                    childName = "Panel2",
                     localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
                     localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
                     localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
@@ -506,10 +506,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(-0.62755F, -0.16253F, -0.01053F),
+                    localAngles = new Vector3(357.383F, 187.2063F, 94.99041F),
+                    localScale = new Vector3(0.41049F, 0.41049F, 0.41049F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -523,10 +523,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(-0.62755F, -0.16253F, -0.01053F),
+                    localAngles = new Vector3(357.383F, 187.2063F, 94.99041F),
+                    localScale = new Vector3(0.41049F, 0.41049F, 0.41049F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -540,10 +540,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(0.89234F, -0.61197F, 0.30954F),
+                    localAngles = new Vector3(0.49758F, 357.9706F, 94.12059F),
+                    localScale = new Vector3(0.43765F, 0.43765F, 0.43765F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -557,10 +557,10 @@ namespace Sandswept.Items.Greens
                 new ItemDisplayRule()
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
-                    childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    childName = "HeadCenter",
+                    localPos = new Vector3(0.89234F, -0.61197F, 0.30954F),
+                    localAngles = new Vector3(0.49758F, 357.9706F, 94.12059F),
+                    localScale = new Vector3(0.43765F, 0.43765F, 0.43765F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -575,9 +575,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.01142F, 0.20915F, -0.29828F),
+                    localAngles = new Vector3(354.7212F, 11.57875F, 175.6258F),
+                    localScale = new Vector3(0.28196F, 0.28196F, 0.28196F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
@@ -592,9 +592,9 @@ namespace Sandswept.Items.Greens
                 {
                     ruleType = ItemDisplayRuleType.ParentedPrefab,
                     childName = "Muzzle",
-                    localPos = new Vector3(0.01214F, 0.1681F, -0.27857F),
-                    localAngles = new Vector3(16.31142F, 188.3025F, 3.37207F),
-                    localScale = new Vector3(0.38187F, 0.35658F, 0.33242F),
+                    localPos = new Vector3(0.01142F, 0.20915F, -0.29828F),
+                    localAngles = new Vector3(354.7212F, 11.57875F, 175.6258F),
+                    localScale = new Vector3(0.28196F, 0.28196F, 0.28196F),
 
                     followerPrefab = itemDisplay,
                     limbMask = LimbFlags.None,
