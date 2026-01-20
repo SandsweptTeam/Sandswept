@@ -55,8 +55,8 @@ namespace Sandswept.Drones
 
             if (droneDef.canRemoteOp) {
                 RemoteOperationBody = PrefabAPI.InstantiateClone(DroneBody, DroneBody.name.Replace("Body", "RemoteOpBody"));
-                DroneBody.GetComponent<CharacterBody>()._defaultCrosshairPrefab = Paths.GameObject.StandardCrosshair;
-                DroneBody.GetComponent<CameraTargetParams>().cameraParams = Paths.CharacterCameraParams.ccpDroneStandard;
+                RemoteOperationBody.GetComponent<CharacterBody>()._defaultCrosshairPrefab = Paths.GameObject.StandardCrosshair;
+                RemoteOperationBody.GetComponent<CameraTargetParams>().cameraParams = Paths.CharacterCameraParams.ccpDroneStandard;
                 ContentAddition.AddBody(RemoteOperationBody);
                 ContentAddition.AddNetworkedObject(RemoteOperationBody);
                 droneDef.remoteOpBody = RemoteOperationBody;

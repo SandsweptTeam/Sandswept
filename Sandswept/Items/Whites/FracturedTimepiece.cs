@@ -218,9 +218,9 @@ namespace Sandswept.Items.Whites
             var stack = inventory.GetItemCount(instance.ItemDef);
             var skillLocator = characterBody.GetComponent<SkillLocator>();
 
-            var passesCondition = stack > 0 && (!checkUtilityAndBlacklist || skillLocator && skill == skillLocator.utility && skill.cooldownRemaining > 0 && !blacklistedSkills.Contains(skill.skillDef.skillNameToken));
+            var passesCondition = stack > 0 && (!checkUtilityAndBlacklist || skillLocator && skill == skillLocator.utility && !blacklistedSkills.Contains(skill.skillDef.skillNameToken));
 
-            if (passesCondition)
+            if (passesCondition && NetworkServer.active)
             {
                 var special = skillLocator.special;
                 if (special && special.stock < special.maxStock)

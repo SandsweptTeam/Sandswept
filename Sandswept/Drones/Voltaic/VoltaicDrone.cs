@@ -56,6 +56,8 @@ namespace Sandswept.Drones.Voltaic
             SpikeProjectile.layer = LayerIndex.debris.intVal;
             SpikeProjectile.GetComponent<ProjectileStickOnImpact>().ignoreCharacters = true;
             ContentAddition.AddProjectile(SpikeProjectile);
+            ContentAddition.AddNetworkedObject(SpikeProjectile);
+            PrefabAPI.RegisterNetworkPrefab(SpikeProjectile);
 
             SkillLocator loc = DroneBody.GetComponent<SkillLocator>();
             AssignIfExists(loc.primary, new SkillInfo()

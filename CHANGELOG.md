@@ -4,8 +4,11 @@
 - Items
   - Nuclear Salvo now ACTUALLY no longer fires in Computational Exchange / Bazaar
   - Fixed Nuclear Salvo missiles airstalling indefinitely when fired from certain ranges.
+  - Fixed issue where Fractured Timepiece wouldn't activate for clients.
 - Interactables
   - Shrine of Ruin now properly persists when using mods such as ProperSave.
+  - Fixed drone cameras with remote operation.
+  - Fixed Voltaic Drone spike being invisible to clients.
 
 ## 1.4.0 Patch Notes
 - General

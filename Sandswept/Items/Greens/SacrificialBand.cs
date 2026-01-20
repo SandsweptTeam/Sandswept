@@ -51,6 +51,7 @@
         public static BuffDef cooldownBuff;
 
         public static GameObject vfx;
+        public static GameObject vfx2;
         public static Material bleedingMat;
 
         public override void Init()
@@ -118,6 +119,9 @@
             bleedingMat.SetFloat("_AlphaBias", 1f);
             bleedingMat.SetFloat("_FresnelPower", 0.4284072f);
             bleedingMat.name = "matBleeding";
+
+            vfx2 = PrefabAPI.InstantiateClone(Paths.GameObject.ImpVoidspikeExplosion, "SacBandExplosionEffect", false);
+            ContentAddition.AddEffect(vfx2);
         }
 
         public override void Hooks()
@@ -133,6 +137,7 @@
             {
                 return;
             }
+
             body.AddItemBehavior<SacrificialBandController>(inventory.GetItemCount(instance.ItemDef));
         }
 
@@ -180,6 +185,7 @@
                             Util.PlaySound("Play_vulture_death_land_thud", attacker);
 
                             EffectManager.SpawnEffect(vfx, new EffectData() { origin = victimBody.corePosition, rotation = Quaternion.identity }, true);
+                            EffectManager.SpawnEffect(vfx2, new EffectData() { origin = victimBody.corePosition, rotation = Quaternion.identity, scale = victimBody.radius * 1.5f }, true);
 
                             var modelLocator = victimBody.modelLocator;
                             if (modelLocator)
