@@ -1,7 +1,7 @@
 {
     "name": "Sandswept",
-    "version_number": "1.4.1",
-    "website_url": "https://github.com/0-Sandman/Sandswept/",
+    "version_number": "1.4.2",
+    "website_url": "https://github.com/SandsweptTeam/Sandswept",
     "description": "A content expansion that adds a variety of unique and high quality content including survivors, enemies, interactables, and more.",
     "dependencies": [
         "bbepis-BepInExPack-5.4.2121",

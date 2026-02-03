@@ -1,7 +1,9 @@
-## 1.5.0 Patch Notes
+## 1.4.2 Patch Notes
 - VOL-T
   - Fixed Galvanic Bolt always missing with AttackDirectionFix installed (not jankily this time, has aim assistance again)
   - Fixed Mastery Skin having the wrong VFX
+- Interactables
+  - Fixed Shrine of Ruin dooming you to endless purgatory
 
 ## 1.4.1 Patch Notes
 - Elites

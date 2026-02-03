@@ -72,9 +72,11 @@ namespace Sandswept.Interactables.Regular
             set {
                 if (Run.instance) {
                     if (value) {
+                        Debug.Log("added ruin");
                         Run.instance.SetEventFlag("ShrineRuinActive");
                     }
                     else {
+                        Debug.Log("consumed ruin");
                         Run.instance.ResetEventFlag("ShrineRuinActive");
                     }
                 }
@@ -390,7 +392,7 @@ namespace Sandswept.Interactables.Regular
 
         private void HandleSceneAndCache(On.RoR2.Run.orig_PickNextStageSceneFromCurrentSceneDestinations orig, Run self)
         {
-            if (shouldCorruptNextStage)
+            if (shouldCorruptNextStage && !SceneManager.GetActiveScene().name.StartsWith("it"))
             {
                 WeightedSelection<SceneDef> weightedSelection = new();
                 SceneCatalog.mostRecentSceneDef.AddDestinationsToWeightedSelection(weightedSelection, (x) =>
