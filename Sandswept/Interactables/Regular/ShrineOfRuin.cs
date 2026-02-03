@@ -325,7 +325,7 @@ namespace Sandswept.Interactables.Regular
 
         private UniquePickup OnGeneratePickup(On.RoR2.BasicPickupDropTable.orig_GeneratePickupPreReplacement orig, BasicPickupDropTable self, Xoroshiro128Plus rng)
         {
-            if (shouldReplaceDrops && self.bossWeight == 0f && self.equipmentWeight < 1f)
+            if (shouldReplaceDrops && self.bossWeight == 0f && self.equipmentWeight < 1f && SceneManager.GetActiveScene().name.StartsWith("it"))
             {
                 VoidedPickupTable table = new(self, rng);
                 return table.GenerateDrop();

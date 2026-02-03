@@ -1,6 +1,6 @@
 {
     "name": "Sandswept",
-    "version_number": "1.4.2",
+    "version_number": "1.4.3",
     "website_url": "https://github.com/SandsweptTeam/Sandswept",
     "description": "A content expansion that adds a variety of unique and high quality content including survivors, enemies, interactables, and more.",
     "dependencies": [

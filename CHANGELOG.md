@@ -1,3 +1,10 @@
+## 1.4.3 Patch Notes
+- Interactables
+  - Shrine of Ruin has been locked in a room with VOL-T for 12 weeks to atone for it's sins.
+- General
+  - Removed soft-dep reference dll that accidentally got bundled with 1.4.2 (oops)
+  - Changed repository link
+
 ## 1.4.2 Patch Notes
 - VOL-T
   - Fixed Galvanic Bolt always missing with AttackDirectionFix installed (not jankily this time, has aim assistance again)
