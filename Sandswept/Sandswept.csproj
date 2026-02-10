@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<LangVersion>latestMajor</LangVersion>
+		<BaseOutputPath></BaseOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+    	<NoWarn>CS0414;CS0649</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="sandsweptassets" />
+		<EmbeddedResource Include="sandsweptassets.manifest" />
+	</ItemGroup>
+
+	<ItemGroup>
+  		<Compile Remove="**\Megalomaniac\**;**\Renegade\**;" />
+	</ItemGroup>
+
+	<ItemGroup>
+  <PackageReference Include="BepInEx.Analyzers" Version="1.0.*">
+	<PrivateAssets>all</PrivateAssets>
+	<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+  </PackageReference>
+
+	<PackageReference Include="BepInEx.Core" Version="5.4.21" />
+
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile" />
+	<PackageReference Include="RiskOfRain2.GameLibs" Version="*-*" />
+	<PackageReference Include="MMHOOK.RoR2" Version="*" NoWarn="NU1701" />
+	<PackageReference Include="R2API.Skins" Version="*" />
+	<PackageReference Include="R2API.Dot" Version="*" />
+	<PackageReference Include="R2API.Items" Version="*" />
+	<PackageReference Include="R2API.Elites" Version="*" />
+	<PackageReference Include="R2API.DamageType" Version="*" />
+	<PackageReference Include="R2API.Prefab" Version="*" />
+	<PackageReference Include="R2API.Language" Version="*" />
+	<PackageReference Include="R2API.RecalculateStats" Version="*" />
+	<PackageReference Include="R2API.ContentManagement" Version="*" />
+	<PackageReference Include="R2API.Networking" Version="*" />
+	<PackageReference Include="R2API.Director" Version="*" />
+	<PackageReference Include="R2API.ProcType" Version="*" />
+	<PackageReference Include="R2API.Skills" Version="*" />
+	<PackageReference Include="R2API.CharacterBody" Version="*" />
+  </ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="CustomEmotesAPI">
+	    <HintPath>libs/CustomEmotesAPI.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Decalicious">
+	    <HintPath>libs/Decalicious.dll</HintPath>
+	  </Reference>
+	  <Reference Include="PassiveAgression">
+	    <HintPath>libs/PassiveAgression.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Unity.Postprocessing.Runtime">
+	    <HintPath>libs/Unity.Postprocessing.Runtime.dll</HintPath>
+	  </Reference>
+	  <Reference Include="MoreStats">
+	    <HintPath>libs/MoreStats.dll</HintPath>
+	  </Reference>
+	  <Reference Include="LookingGlass">
+	    <HintPath>libs/LookingGlass-nstrip.dll</HintPath>
+	  </Reference>
+	  <Reference Include="ProcSolver">
+	    <HintPath>libs/ProcSolver.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Rebindables">
+	  	<HintPath>libs/Rebindables.dll</HintPath>
+	  </Reference>
+	  <Reference Include="AttackDirectionFix">
+	  	<HintPath>libs/AttackDirectionFix.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+</Project>
