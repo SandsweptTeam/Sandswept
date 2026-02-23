@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GQKWnT/csY4=",
+  "dgSpecHash": "UFZ4H1O+cEM=",
   "success": true,
   "projectFilePath": "C:\\Users\\jakub\\Desktop\\Sandswept\\Sandswept\\Sandswept.csproj",
   "expectedPackageFiles": [
@@ -22,12 +22,12 @@
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.director\\2.3.8\\r2api.director.2.3.8.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.dot\\1.1.2\\r2api.dot.1.1.2.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.elites\\1.1.1\\r2api.elites.1.1.1.nupkg.sha512",
-    "C:\\Users\\jakub\\.nuget\\packages\\r2api.items\\1.0.7\\r2api.items.1.0.7.nupkg.sha512",
+    "C:\\Users\\jakub\\.nuget\\packages\\r2api.items\\1.0.8\\r2api.items.1.0.8.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.language\\1.1.0\\r2api.language.1.1.0.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.networking\\1.0.4\\r2api.networking.1.0.4.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.prefab\\1.1.1\\r2api.prefab.1.1.1.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.proctype\\1.0.2\\r2api.proctype.1.0.2.nupkg.sha512",
-    "C:\\Users\\jakub\\.nuget\\packages\\r2api.recalculatestats\\1.6.5\\r2api.recalculatestats.1.6.5.nupkg.sha512",
+    "C:\\Users\\jakub\\.nuget\\packages\\r2api.recalculatestats\\1.6.6\\r2api.recalculatestats.1.6.6.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.skills\\1.0.4\\r2api.skills.1.0.4.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\r2api.skins\\1.4.4\\r2api.skins.1.4.4.nupkg.sha512",
     "C:\\Users\\jakub\\.nuget\\packages\\riskofrain2.gamelibs\\1.4.1-r.0\\riskofrain2.gamelibs.1.4.1-r.0.nupkg.sha512",

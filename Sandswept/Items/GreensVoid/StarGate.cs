@@ -1,4 +1,3 @@
-
 /*using HarmonyLib;
 using LookingGlass.ItemStatsNameSpace;
 using MonoMod.Cil;
@@ -176,7 +175,6 @@ namespace Sandswept.Items.VoidGreens
                 }
                 return orig;
             });
-
         }
 
         private void OnRunEnd(Run run)

@@ -319,15 +319,15 @@
           }
         }
       },
-      "R2API.Items/1.0.7": {
+      "R2API.Items/1.0.8": {
         "type": "package",
         "dependencies": {
-          "BepInEx.Core": "5.4.19",
-          "MMHOOK.RoR2": "2025.6.3",
-          "R2API.ContentManagement": "1.0.9",
-          "R2API.Core": "5.1.5",
-          "RiskOfRain2.GameLibs": "1.3.9-r.0",
-          "RoR2BepInExPack": "1.30.0",
+          "BepInEx.Core": "5.4.21",
+          "MMHOOK.RoR2": "2025.11.19",
+          "R2API.ContentManagement": "1.0.10",
+          "R2API.Core": "5.3.0",
+          "RiskOfRain2.GameLibs": "1.4.1-r.0",
+          "RoR2BepInExPack": "1.41.0",
           "UnityEngine.Modules": "2021.3.33"
         },
         "compile": {
@@ -426,14 +426,14 @@
           }
         }
       },
-      "R2API.RecalculateStats/1.6.5": {
+      "R2API.RecalculateStats/1.6.6": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
           "MMHOOK.RoR2": "2025.11.19",
-          "R2API.Core": "5.2.0",
-          "RiskOfRain2.GameLibs": "1.4.0-r.0",
-          "RoR2BepInExPack": "1.36.0",
+          "R2API.Core": "5.3.0",
+          "RiskOfRain2.GameLibs": "1.4.1-r.0",
+          "RoR2BepInExPack": "1.41.0",
           "UnityEngine.Modules": "2021.3.33"
         },
         "compile": {
@@ -1308,16 +1308,16 @@
         "r2api.elites.nuspec"
       ]
     },
-    "R2API.Items/1.0.7": {
-      "sha512": "hg21Gk87+JbDQ84+Mmmt0ZlK6gJsPzTwl9iYuyDHSxkl6TED1YhDbU5x0FIS4WkM+HjRRUqliN6JRDIH3XJdXg==",
+    "R2API.Items/1.0.8": {
+      "sha512": "PrX7V2A1wPvZLSvCYoQiPPMji/U/R18pskOlIZSAOKLVNAL1K/Th4N7rdttk3PKyGfWE7IPLLFDfgF494XUpGA==",
       "type": "package",
-      "path": "r2api.items/1.0.7",
+      "path": "r2api.items/1.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.Items.dll",
         "lib/netstandard2.1/R2API.Items.xml",
-        "r2api.items.1.0.7.nupkg.sha512",
+        "r2api.items.1.0.8.nupkg.sha512",
         "r2api.items.nuspec"
       ]
     },
@@ -1373,16 +1373,16 @@
         "r2api.proctype.nuspec"
       ]
     },
-    "R2API.RecalculateStats/1.6.5": {
-      "sha512": "7ROuIvPRPoHJaln3rsdoSaceHOdfmveWGWgnVgiecALFeqTwQXRhYL8caJFioPxReMEr5hQuAYzl5Sh6SeOBkQ==",
+    "R2API.RecalculateStats/1.6.6": {
+      "sha512": "NRcqp2Uw07VysV3VAEMTU8CDWZB4impUGmvYNykAfpAF+4qEW+yEXRcn+EHUTAKsn56tRNGxZjqdiE9MAF2SdA==",
       "type": "package",
-      "path": "r2api.recalculatestats/1.6.5",
+      "path": "r2api.recalculatestats/1.6.6",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.RecalculateStats.dll",
         "lib/netstandard2.1/R2API.RecalculateStats.xml",
-        "r2api.recalculatestats.1.6.5.nupkg.sha512",
+        "r2api.recalculatestats.1.6.6.nupkg.sha512",
         "r2api.recalculatestats.nuspec"
       ]
     },
@@ -3507,7 +3507,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103\\RuntimeIdentifierGraph.json"
       }
     }
   }
