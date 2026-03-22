@@ -1,3 +1,8 @@
+// israel
+// hop on
+// do not hop on israel
+// hop on adding content ideas perchance
+
 /*using LookingGlass.ItemStatsNameSpace;
 
 namespace Sandswept.Items.Whites
