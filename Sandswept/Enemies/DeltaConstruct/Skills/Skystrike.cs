@@ -1,13 +1,15 @@
 using System;
 using Rewired.Demos;
+using RoR2.ConVar;
 using Sandswept.Survivors;
 using Sandswept.Utils.Components;
+using DamageTrail = Sandswept.Utils.DamageTrail;
 
 namespace Sandswept.Enemies.DeltaConstruct
 {
     public class SkystrikeIntro : BaseSkillState
     {
-        public float duration = 0.3f;
+        public float duration = 0.7f;
 
         public override void OnEnter()
         {
@@ -18,9 +20,8 @@ namespace Sandswept.Enemies.DeltaConstruct
             base.gameObject.layer = LayerIndex.noCollision.intVal;
             base.characterMotor.Motor.RebuildCollidableLayers();
 
-            GetModelAnimator().SetBool("isAerial", true);
-
             PlayAnimation("Body", "Leap", "Generic.playbackRate", duration);
+            
 
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimYaw"), 0f);
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimPitch"), 0f);
@@ -59,11 +60,11 @@ namespace Sandswept.Enemies.DeltaConstruct
     [ConfigSection("Enemies :: Delta Construct")]
     public class SkystrikeFire : BaseSkillState
     {
-        public float duration = 1.5f;
+        public float duration = 3.45f;
         public float delay = 1f / 20f;
         public float damageCoeff = 12f / 10f;
         public float stopwatch = 0f;
-        public SkystrikeLaserInfo[] beams;
+        public BasicLaserBeam[] skystrikeBeams;
         public float speed = 40f;
         public Vector3 guh;
 
@@ -75,6 +76,9 @@ namespace Sandswept.Enemies.DeltaConstruct
 
         [ConfigField("Fire Trail Damage Per Second", "Decimal.", 4f)]
         public static float fireTrailDPS;
+        public static float fireLifetime = 8f;
+        public static float fireRadius = 2f;
+        public DamageTrail trail;
 
         public override void OnEnter()
         {
@@ -83,18 +87,32 @@ namespace Sandswept.Enemies.DeltaConstruct
             speed = laserSpeed;
             damageCoeff = laserDamage;
 
-            for (int i = 0; i < beams.Length; i++)
-            {
-                if (!beams[i].effect) continue;
+            trail = DamageTrailManager.DeployDamageTrail(base.characterBody, fireTrailDPS, DeltaConstruct.DeltaBurnyTrail, fireRadius);
+            trail.mergeRadius = 15;
+            trail.minimumMergeTime = 1;
 
-                beams[i].effect.GetComponent<ChildLocator>().FindChild("Sparks").gameObject.SetActive(true);
-                beams[i].rend.widthMultiplier = 2f;
-                beams[i].rend.material = DeltaConstruct.matDeltaBeamStrong;
-                //Util.PlaySound("Play_majorConstruct_m1_laser_loop", beams[i].lineHandle.gameObject);
-            }
             Util.PlaySound("Play_majorConstruct_m1_laser_loop", gameObject);
-            // bro is so loud
-            // maybe play sound at endpoints + gameobject instead?
+
+            PlayAnimation("Body", "Skystrike Fire", "Generic.playbackRate", duration);
+
+            for (int i = 0; i < skystrikeBeams.Length; i++)
+            {
+                skystrikeBeams[i].Fire();
+                skystrikeBeams[i].info.ImpactCallback = (pos) => {
+                    DamageTrailManager.AddSegment(trail, pos, fireLifetime, resetAllLifetime: true);
+                };
+            }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+
+            for (int i = 0; i < skystrikeBeams.Length; i++)
+            {
+                BasicLaserBeam beam = skystrikeBeams[i];
+                beam.UpdateVisual(Time.deltaTime);
+            }
         }
 
         public override void FixedUpdate()
@@ -104,46 +122,11 @@ namespace Sandswept.Enemies.DeltaConstruct
             stopwatch += Time.fixedDeltaTime;
 
             base.characterMotor.velocity = Vector3.zero;
-            // base.characterDirection.forward = guh;
 
-            bool recalc = false;
-
-            if (stopwatch >= delay)
+            for (int i = 0; i < skystrikeBeams.Length; i++)
             {
-                stopwatch = 0f;
-                recalc = true;
-            }
-
-            for (int i = 0; i < beams.Length; i++)
-            {
-                SkystrikeLaserInfo beam = beams[i];
-                if (beam.direction == Vector3.zero)
-                {
-                    continue;
-                }
-
-                beam.endpoint = beam.endpoint + (beam.direction * (speed * Time.fixedDeltaTime));
-
-                if (recalc)
-                {
-                    var grounded = beam.endpoint.GroundPointWithNormal();
-                    beam.endpoint = grounded.Item1.HasValue ? grounded.Item1.Value : beam.endpoint;
-
-                    if (NetworkServer.active)
-                    {
-                        GetBulletAttack(beam).Fire();
-                    }
-
-                    if (NetworkServer.active)
-                    {
-                        GameObject trail = GameObject.Instantiate(DeltaConstruct.DeltaBurnyTrail, beam.endpoint, Quaternion.identity);
-                        // trail.transform.up = grounded.Item2.Value;
-                        trail.GetComponent<DeltaBurnyTrail>().damagePerSecond = base.damageStat * fireTrailDPS;
-                        trail.GetComponent<DeltaBurnyTrail>().owner = base.characterBody;
-                    }
-                }
-
-                beam.lineHandle.position = Vector3.MoveTowards(beam.lineHandle.position, beam.endpoint, 90f * Time.fixedDeltaTime);
+                BasicLaserBeam beam = skystrikeBeams[i];
+                beam.Update(Time.fixedDeltaTime);
             }
 
             if (base.fixedAge >= duration)
@@ -156,22 +139,22 @@ namespace Sandswept.Enemies.DeltaConstruct
         {
             base.OnExit();
 
+            DamageTrailManager.DestroyTrail(trail);
+
             base.characterMotor.walkSpeedPenaltyCoefficient = 1f;
 
             base.characterDirection.enabled = true;
 
-            for (int i = 0; i < beams.Length; i++)
+            for (int i = 0; i < skystrikeBeams.Length; i++)
             {
-                // Util.PlaySound("Stop_majorConstruct_m1_laser_loop", beams[i].lineHandle.gameObject);
-                // Util.PlaySound("Play_majorConstruct_m1_laser_end", beams[i].lineHandle.gameObject);
-                GameObject.Destroy(beams[i].effect);
+                skystrikeBeams[i].Stop();
             }
 
             Util.PlaySound("Stop_majorConstruct_m1_laser_loop", gameObject);
             Util.PlaySound("Play_majorConstruct_m1_laser_end", gameObject);
 
             GetModelAnimator().SetBool("isAerial", false);
-            PlayAnimation("Body", "Aerial To Ground", "Generic.playbackRate", duration);
+            // PlayAnimation("Body", "Aerial To Ground", "Generic.playbackRate", duration);
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimYaw"), 1f);
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimPitch"), 1f);
         }
@@ -183,7 +166,7 @@ namespace Sandswept.Enemies.DeltaConstruct
                 radius = 1.2f,
                 damage = base.damageStat * damageCoeff,
                 origin = info.muzzle.position,
-                aimVector = (info.endpoint - info.muzzle.position).normalized,
+                aimVector = info.muzzle.forward.normalized,
                 procCoefficient = 0.1f,
                 owner = base.gameObject,
                 falloffModel = BulletAttack.FalloffModel.None,
@@ -202,8 +185,8 @@ namespace Sandswept.Enemies.DeltaConstruct
 
     public class SkystrikeWindup : BaseSkillState
     {
-        public float duration = 3f;
-        public SkystrikeLaserInfo[] skystrikeBeams;
+        public float duration = 0.7f;
+        public BasicLaserBeam[] skystrikeBeams;
         public Vector3 guh;
         public bool wasKnockedOutOfState = true;
 
@@ -211,31 +194,27 @@ namespace Sandswept.Enemies.DeltaConstruct
         {
             base.OnEnter();
 
-            skystrikeBeams = new SkystrikeLaserInfo[8];
-
-            Vector3[] points = GetSpiralPointSet(base.transform.position, 50f, 10f);
-            int guh = points.Length / 9;
+            skystrikeBeams = new BasicLaserBeam[8];
 
             for (int i = 0; i < skystrikeBeams.Length; i++)
             {
-                SkystrikeLaserInfo info = new();
-                info.muzzle = FindModelChild("Muzzle" + (i + 1));
-                info.endpoint = GetEndpoint(points[guh * (i + 1)]);
-                info.direction = Random.onUnitSphere.normalized;
-                info.direction = new(info.direction.x, 0f, info.direction.z);
-                info.effect = GameObject.Instantiate(DeltaConstruct.beam, info.muzzle);
-                info.lineHandle = info.effect.GetComponent<ChildLocator>().FindChild("End");
-                info.rend = info.effect.GetComponent<DetachLineRendererAndFade>().line;
+                BasicLaserBeam beam = new(base.characterBody, FindModelChild("Muzzle" + (i + 1)), new BasicLaserInfo() {
+                    OriginIsBase = true,
+                    EndpointName = "End",
+                    DamageCoefficient = SkystrikeFire.laserDamage,
+                    FiringWidthMultiplier = 2.2f,
+                    MaxRange = 190f,
+                    FiringMaterial = DeltaConstruct.matDeltaBeamStrong,
+                    ChargeDelay = duration,
+                    EffectPrefab = DeltaConstruct.beam,
+                    FiringMode = LaserFiringMode.Straight,
+                    ImpactEffect = DeltaConstruct.muzzleFlash,
+                    TickRate = 20f,
+                    SingleHit = false,
+                    UseUP = true,
+                });
 
-                if (info.endpoint == Vector3.zero)
-                {
-                    info.effect.gameObject.SetActive(false);
-                    info.direction = Vector3.zero;
-                }
-
-                info.lineHandle.position = info.endpoint;
-
-                skystrikeBeams[i] = info;
+                skystrikeBeams[i] = beam;
             }
 
             Util.PlaySound("Play_majorConstruct_m1_laser_chargeShoot", base.gameObject);
@@ -243,25 +222,9 @@ namespace Sandswept.Enemies.DeltaConstruct
             // Util.PlaySound("Play_majorConstruct_m1_laser_chargeShoot", base.gameObject);
         }
 
-        public Vector3 GetEndpoint(Vector3 inp)
-        {
-            Vector3? val = MiscUtils.GroundPoint(inp);
-
-            return (val.HasValue ? val.Value : Vector3.zero);
-        }
-
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            float mult = Mathf.Clamp01(1f - (base.fixedAge / duration));
-
-            for (int i = 0; i < skystrikeBeams.Length; i++)
-            {
-                skystrikeBeams[i].rend.widthMultiplier = mult;
-            }
-
-            // characterDirection.forward = guh;
 
             if (base.fixedAge >= duration)
             {
@@ -277,32 +240,6 @@ namespace Sandswept.Enemies.DeltaConstruct
             base.characterMotor.velocity = new(0, base.characterMotor.velocity.y, 0);
         }
 
-        public static Vector3[] GetSpiralPointSet(Vector3 origin, float scalar, float initialRadius, int loops = 5)
-        {
-            Vector3[] points = new Vector3[360 * loops];
-
-            float radius = initialRadius;
-            float radialStep = (scalar - initialRadius) / (loops * 360f);
-
-            for (int i = 0; i < 360 * loops; i++)
-            {
-                int j = i > 360 ? i - 360 : i;
-
-                float rad = j * 2 * Mathf.PI / 360f;
-                float vert = Mathf.Sin(rad);
-                float horiz = Mathf.Cos(rad);
-
-                Vector3 dir = new(horiz, 0, vert);
-
-                Vector3 point = origin + dir * radius;
-                radius += radialStep;
-
-                points[i] = point;
-            }
-
-            return points;
-        }
-
         public override void OnExit()
         {
             base.OnExit();
@@ -311,9 +248,7 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             for (int i = 0; i < skystrikeBeams.Length; i++)
             {
-                // Util.PlaySound("Stop_majorConstruct_m1_laser_loop", skystrikeBeams[i].lineHandle.gameObject);
-                // Util.PlaySound("Play_majorConstruct_m1_laser_end", skystrikeBeams[i].lineHandle.gameObject);
-                GameObject.Destroy(skystrikeBeams[i].effect);
+                skystrikeBeams[i].Stop();
             }
 
             Util.PlaySound("Stop_majorConstruct_m1_laser_loop", gameObject);
@@ -326,7 +261,7 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             if (nextState is SkystrikeFire skystrikeFire)
             {
-                skystrikeFire.beams = skystrikeBeams;
+                skystrikeFire.skystrikeBeams = skystrikeBeams;
                 skystrikeFire.guh = guh;
                 // why would you name a variable that...
             }
@@ -340,7 +275,7 @@ namespace Sandswept.Enemies.DeltaConstruct
 
     public class SkystrikeTransform : BaseSkillState
     {
-        public float duration = 1f;
+        public float duration = 0.7f;
         public Vector3 dir;
 
         public override void OnEnter()
@@ -378,8 +313,6 @@ namespace Sandswept.Enemies.DeltaConstruct
     public class SkystrikeLaserInfo
     {
         public Transform muzzle;
-        public Vector3 direction;
-        public Vector3 endpoint;
         public GameObject effect;
         public Transform lineHandle;
         public LineRenderer rend;

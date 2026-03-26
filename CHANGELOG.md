@@ -1,3 +1,24 @@
+## 1.4.4 Patch Notes
+- Enemies
+  - Delta Construct credit cost lowered to 115 (was 130)
+  - Delta Construct base health lowered to 500 (was 590)
+  - Delta Construct moves more erratically when strafing
+  - Delta Construct strafe range increased
+  - Delta Construct base movement speed increased to 12 (was 6)
+  - Delta Construct idle animation updated
+  - Delta Construct now fires an array of 4 arcing bolts that explode on impact. Can fire over LoS obstructions and predicts target movement.
+  - Delta Construct laser light show pattern is now custom and no longer random
+  - Delta Construct laser light show animation adjusted and now has an actual firing animation for it
+  - Delta Construct fire trails now last 8 seconds starting from the end of the attack (so all of them fade away at once)
+  - Delta Construct fire trails now have significantly less lag
+  - Delta Construct fire trails now deal the base dps if you are intersecting any point of the trail instead of dealing the base dps for every trail segment you intersect
+  - Theta Construct credit cost lowered to 75 (was 130)
+  - Theta Construct base health increased to 460 (was 300)
+  - Gamma Construct base health increased to 600 (was 540)
+  - Gamma Construct twin beams reduced from 2000% damage per second to 800% damage once (dealt in full the first time a beam touches you during the attack)
+  - Gamma Construct twin beam width increased from 3.5m to 5.5m
+  - Gamma Construct has slower tracking
+
 ## 1.4.3 Patch Notes
 - Interactables
   - Shrine of Ruin has been locked in a room with VOL-T for 12 weeks to atone for it's sins.

@@ -149,6 +149,14 @@ namespace Sandswept
             };
 
             // NewtReflection.Initialize();
+
+            On.RoR2.Run.Start += OnRunStart;
+        }
+
+        private void OnRunStart(On.RoR2.Run.orig_Start orig, Run self)
+        {
+            orig(self);
+            self.AddComponent<DamageTrailManager>();
         }
 
         private void OnSetDroneDefs(On.RoR2.DroneCatalog.orig_SetDroneDefs orig, DroneDef[] newDroneDefs)

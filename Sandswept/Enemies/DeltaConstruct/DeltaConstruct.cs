@@ -13,13 +13,27 @@ namespace Sandswept.Enemies.DeltaConstruct
         public static Material matDeltaBeamStrong;
         public static GameObject DeltaBurnyTrail;
 
-        [ConfigField("Director Credit Cost", "", 130)]
+        [ConfigField("Director Credit Cost", "", 115)]
         public static int directorCreditCost;
 
         public override DirectorCardCategorySelection family => Paths.FamilyDirectorCardCategorySelection.dccsConstructFamily;
         public override MonsterCategory cat => MonsterCategory.Minibosses;
 
         public static Material matTell;
+
+        /*[ConCommand(commandName = "cv_delta_grav", helpText = "Forcefully triggers Shrine of Ruin effect.", flags = ConVarFlags.SenderMustBeServer)]
+        public static void CV_DeltaGrav(ConCommandArgs args)
+        {
+            bolt.GetComponent<AntiGravityForce>().antiGravityCoefficient = args.GetArgFloat(0);
+            FireBolts.projectileAntiGravity = args.GetArgFloat(0);
+        }
+
+        [ConCommand(commandName = "cv_delta_speed", helpText = "Forcefully triggers Shrine of Ruin effect.", flags = ConVarFlags.SenderMustBeServer)]
+        public static void CV_DeltaSpeed(ConCommandArgs args)
+        {
+            bolt.GetComponent<ProjectileSimple>().desiredForwardSpeed = args.GetArgFloat(0);
+            FireBolts.projectileHorizontalSpeed = args.GetArgFloat(0);
+        }*/
 
         public override void LoadPrefabs()
         {
@@ -51,6 +65,22 @@ namespace Sandswept.Enemies.DeltaConstruct
             matDeltaBeamStrong.SetInt("_SrcBlend", 1);
 
             bolt = PrefabAPI.InstantiateClone(Paths.GameObject.MinorConstructProjectile, "Delta Construct Bolt Projectile");
+            bolt.GetComponent<Rigidbody>().useGravity = true;
+            bolt.GetComponent<ProjectileSimple>().desiredForwardSpeed = FireBolts.projectileHorizontalSpeed;
+            bolt.GetComponent<ProjectileSimple>().lifetime = 15f;
+            bolt.RemoveComponent<ProjectileSingleTargetImpact>();
+            bolt.AddComponent<ProjectileImpactExplosion>((x) => {
+                x.blastRadius = 5.5f;
+                x.blastDamageCoefficient = 1f;
+                x.lifetime = 15f;
+                x.explosionEffect = Paths.GameObject.ExplosionMinorConstruct;
+                x.impactOnWorld = true;
+                x.destroyOnWorld = true;
+            });
+            bolt.AddComponent<AntiGravityForce>((x) => {
+                x.antiGravityCoefficient = FireBolts.projectileAntiGravity;
+                x.rb = x.GetComponent<Rigidbody>();
+            });
             GameObject boltGhost = PrefabAPI.InstantiateClone(Paths.GameObject.MinorConstructProjectileGhost, "Delta Construct Bolt Ghost", false);
 
             VFXUtils.RecolorMaterialsAndLights(boltGhost.transform.Find("Trail").gameObject, new Color32(255, 40, 40, 255), new Color32(255, 40, 40, 255), true);
@@ -83,22 +113,15 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             DeltaBurnyTrail = Main.assets.LoadAsset<GameObject>("DeltaBurnyTrail.prefab");
 
-            var destroyOnTimer = DeltaBurnyTrail.GetComponent<DestroyOnTimer>();
-            destroyOnTimer.duration = 16f;
-
-            var particleSystemMain = DeltaBurnyTrail.GetComponent<ParticleSystem>().main;
-            particleSystemMain.duration = 16f;
-            particleSystemMain.startLifetime = 16f;
-
             // visuals fade bumped up to ~8s due to invfade
 
-            var particleSystemRenderer = DeltaBurnyTrail.GetComponent<ParticleSystemRenderer>();
+            var particleSystemRenderer = DeltaBurnyTrail.GetComponentInChildren<ParticleSystemRenderer>();
             var newTrailMat = new Material(particleSystemRenderer.material);
 
-            newTrailMat.SetColor("_TintColor", new Color32(255, 0, 0, 27));
+            // newTrailMat.SetColor("_TintColor", new Color32(255, 0, 0, 27));
             // newTrailMat.SetFloat("_InvFade", 0f);
-            newTrailMat.SetFloat("_Boost", 1f);
-            newTrailMat.SetFloat("_AlphaBoost", 11.21f);
+            // newTrailMat.SetFloat("_Boost", 1f);
+            newTrailMat.SetFloat("_AlphaBoost", 2.2f);
 
             particleSystemRenderer.material = newTrailMat;
 

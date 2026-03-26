@@ -12,7 +12,7 @@ namespace Sandswept.Enemies.GammaConstruct
         public BasicLaserBeam laser;
         public BasicLaserBeam laser2;
 
-        [ConfigField("Twin Laser Damage", "Decimal.", 20f)]
+        [ConfigField("Twin Laser Damage", "Decimal.", 8f)]
         public static float twinLaserDamage;
 
         public override void OnEnter()
@@ -27,14 +27,15 @@ namespace Sandswept.Enemies.GammaConstruct
                     OriginIsBase = true,
                     EndpointName = "End",
                     DamageCoefficient = twinLaserDamage,
-                    FiringWidthMultiplier = 3.5f,
+                    FiringWidthMultiplier = 5.5f,
                     MaxRange = 190f,
                     FiringMaterial = GammaConstruct.matDeltaBeamStrong,
                     ChargeDelay = duration * 0.3f,
                     EffectPrefab = GammaConstruct.beam,
                     FiringMode = LaserFiringMode.Straight,
                     ImpactEffect = GammaConstruct.sigmaBlast,
-                    TickRate = 20f
+                    TickRate = 20f,
+                    SingleHit = true
                 }
             );
 
@@ -44,20 +45,21 @@ namespace Sandswept.Enemies.GammaConstruct
                     OriginIsBase = true,
                     EndpointName = "End",
                     DamageCoefficient = twinLaserDamage,
-                    FiringWidthMultiplier = 3.5f,
+                    FiringWidthMultiplier = 5.5f,
                     MaxRange = 190f,
                     FiringMaterial = GammaConstruct.matDeltaBeamStrong,
                     ChargeDelay = duration * 0.3f,
                     EffectPrefab = GammaConstruct.beam,
                     FiringMode = LaserFiringMode.Straight,
                     ImpactEffect = GammaConstruct.sigmaBlast,
-                    TickRate = 20f
+                    TickRate = 20f,
+                    SingleHit = true
                 }
             );
 
             anim = GetModelAnimator();
 
-            base.StartAimMode(0.05f);
+            base.StartAimMode(0.25f);
             // base.rigidbodyDirection.enabled = false;
 
             Util.PlaySound("Play_majorConstruct_m1_laser_chargeShoot", base.gameObject);

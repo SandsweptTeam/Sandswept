@@ -376,6 +376,26 @@ namespace Sandswept.Utils
         }
     }
 
+    public class AnimEventTracker {
+        public Animator animator;
+        public List<string> alreadyFired = new();
+
+        public AnimEventTracker(Animator anim) {
+            animator = anim;
+        }
+
+        public bool CheckEvent(string param) {
+            bool val = animator.GetFloat(param) > 0.5f;
+
+            if (val && !alreadyFired.Contains(param)) {
+                alreadyFired.Add(param);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public class LazyIndex
     {
         private string target;

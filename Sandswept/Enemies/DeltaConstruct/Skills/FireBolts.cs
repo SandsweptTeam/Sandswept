@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using RoR2.CharacterAI;
 using Sandswept.Survivors;
 
 namespace Sandswept.Enemies.DeltaConstruct
@@ -8,15 +9,17 @@ namespace Sandswept.Enemies.DeltaConstruct
     public class FireBolts : BaseSkillState
     {
         public float damageCoeff = 2f;
-        public float duration = 1.6f;
-        public float initDelay;
-        public float secondDelay;
-        public Transform[] front;
-        public Transform[] back;
+        public float duration = 2.4f;
         private Transform modelTransform;
+        private Transform[] muzzles;
 
         [ConfigField("Bolt Projectile Damage", "Decimal.", 2f)]
         public static float projectileDamage;
+        public AnimEventTracker anim;
+        public Predictor[] predictors;
+        public GameObject target;
+        public static float projectileHorizontalSpeed = 40f;
+        public static float projectileAntiGravity = -0.95f;
 
         public override void OnEnter()
         {
@@ -30,61 +33,53 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             modelTransform = GetModelTransform();
 
-            initDelay = duration * 0.3f;
-            secondDelay = (duration - initDelay) * 0.3f;
+            target = base.characterBody.master.GetComponent<BaseAI>().currentEnemy.gameObject;
 
-            back = [FindModelChild("Muzzle1"), FindModelChild("Muzzle2")];
-            front = [FindModelChild("Muzzle3"), FindModelChild("Muzzle4")];
+            muzzles = [FindModelChild("Muzzle1"), FindModelChild("Muzzle2"), FindModelChild("Muzzle3"), FindModelChild("Muzzle4")];
+            predictors = new Predictor[4];
+            for (int i = 0; i < muzzles.Length; i++) {
+                predictors[i] = new(muzzles[i]);
+                predictors[i].SetTargetTransform(target.transform);
+            }
 
-            base.characterBody.StartCoroutine(HandleBolts());
+            base.StartAimMode(0.2f);
 
-            base.StartAimMode(initDelay);
+            Util.PlaySound("Play_minorConstruct_attack_chargeUp", base.gameObject);
+            Util.PlaySound("Play_minorConstruct_attack_chargeUp", base.gameObject);
+
+            PlayAnimation("Gesture, Override", "Fire Cannons", "Generic.playbackRate", duration * 1.4f);
+
+            anim = new(GetModelAnimator());
         }
 
         public override void OnExit()
         {
             base.OnExit();
+        }
 
-            // base.characterMotor.walkSpeedPenaltyCoefficient = 1f;
+        public override void Update()
+        {
+            base.Update();
+
+            for (int i = 0; i < predictors.Length; i++) {
+                predictors[i].Update();
+            }
+
+            if (anim.CheckEvent("Event.fire1")) FireBolt(3);
+            if (anim.CheckEvent("Event.fire2")) FireBolt(1);
+            if (anim.CheckEvent("Event.fire3")) FireBolt(2);
+            if (anim.CheckEvent("Event.fire4")) FireBolt(0);
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            base.StartAimMode(initDelay);
+            base.StartAimMode(0.2f);
 
             if (base.fixedAge >= duration)
             {
                 outer.SetNextStateToMain();
-            }
-        }
-
-        public IEnumerator HandleBolts()
-        {
-            Util.PlaySound("Play_minorConstruct_attack_chargeUp", base.gameObject);
-            Util.PlaySound("Play_minorConstruct_attack_chargeUp", base.gameObject);
-
-            yield return new WaitForSeconds(0.15f);
-
-            ShowTelegraph(initDelay);
-
-            yield return new WaitForSeconds(initDelay - 0.15f);
-
-            PlayAnimation("Gesture, Override", "Fire Cannons", "Generic.playbackRate", secondDelay);
-
-            for (int i = 0; i < front.Length; i++)
-            {
-                FireBolt(front[i]);
-            }
-
-            yield return new WaitForSeconds(secondDelay);
-
-            PlayAnimation("Gesture, Override", "Fire Cannons", "Generic.playbackRate", secondDelay);
-
-            for (int i = 0; i < back.Length; i++)
-            {
-                FireBolt(back[i]);
             }
         }
 
@@ -103,22 +98,34 @@ namespace Sandswept.Enemies.DeltaConstruct
             }
         }
 
-        public void FireBolt(Transform t)
+        public void FireBolt(int i)
         {
-            Quaternion rot = Quaternion.LookRotation(t.up);
+            Transform muzzle = muzzles[i];
+            Predictor predictor = predictors[i];
+            Transform target = predictor.GetTargetTransform();
 
-            if (Util.CharacterRaycast(base.gameObject, base.GetAimRay(), out RaycastHit hinfo, 400f, LayerIndex.CommonMasks.bullet, QueryTriggerInteraction.Ignore))
-            {
-                rot = Util.QuaternionSafeLookRotation((hinfo.point - t.position).normalized);
+            if (!target) {
+                return;
             }
+
+            Vector3 fireDirection = Vector3.zero;
+            float speedOverride = projectileHorizontalSpeed;
+            Vector3 vector = target.position - muzzle.position;
+            vector.y = 0f;
+            float magnitude = vector.magnitude;
+            float num = Mathf.Max(0f, magnitude / projectileHorizontalSpeed);
+            predictor.GetPredictedTargetPosition(num, out Vector3 predicted);
+            fireDirection = Trajectory.CalculateInitialVelocityFromTime(muzzle.position, predicted, num, Physics.gravity.y * (1f - projectileAntiGravity), 0f, float.PositiveInfinity);
+            speedOverride = fireDirection.magnitude;
 
             FireProjectileInfo info = new();
             info.crit = base.RollCrit();
             info.damage = base.damageStat * damageCoeff;
-            info.rotation = rot;
-            info.position = t.position;
+            info.rotation = Util.QuaternionSafeLookRotation(fireDirection.normalized);
+            info.position = muzzle.position;
             info.owner = base.gameObject;
             info.projectilePrefab = DeltaConstruct.bolt;
+            info.speedOverride = speedOverride;
 
             if (NetworkServer.active)
             {
@@ -127,8 +134,8 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             EffectManager.SpawnEffect(DeltaConstruct.muzzleFlash, new EffectData
             {
-                rotation = Util.QuaternionSafeLookRotation(t.up),
-                origin = t.position
+                rotation = Util.QuaternionSafeLookRotation(muzzle.up),
+                origin = muzzle.position
             }, false);
 
             Util.PlaySound("Play_minorConstruct_attack_shoot", base.gameObject);
@@ -150,7 +157,7 @@ namespace Sandswept.Enemies.DeltaConstruct
 
         public override string ActivationMachineName => "Weapon";
 
-        public override float Cooldown => 1.5f;
+        public override float Cooldown => 4f;
 
         public override Sprite Icon => null;
         public override bool BeginCooldownOnSkillEnd => true;

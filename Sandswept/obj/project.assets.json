@@ -150,14 +150,14 @@
           }
         }
       },
-      "R2API.Addressables/1.1.2": {
+      "R2API.Addressables/1.1.3": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
-          "MMHOOK.RoR2": "2025.6.3",
-          "R2API.Core": "5.1.7",
-          "RiskOfRain2.GameLibs": "1.3.9-r.0",
-          "RoR2BepInExPack": "1.33.0",
+          "MMHOOK.RoR2": "2025.11.19",
+          "R2API.Core": "5.3.0",
+          "RiskOfRain2.GameLibs": "1.4.1-r.0",
+          "RoR2BepInExPack": "1.41.0",
           "UnityEngine.Modules": "2021.3.33"
         },
         "compile": {
@@ -254,12 +254,12 @@
           }
         }
       },
-      "R2API.Director/2.3.8": {
+      "R2API.Director/2.3.9": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
           "MMHOOK.RoR2": "2025.11.19",
-          "R2API.Addressables": "1.1.2",
+          "R2API.Addressables": "1.1.3",
           "R2API.Core": "5.3.0",
           "RiskOfRain2.GameLibs": "1.4.1-r.0",
           "RoR2BepInExPack": "1.41.0",
@@ -1204,16 +1204,16 @@
         "monomod.utils.nuspec"
       ]
     },
-    "R2API.Addressables/1.1.2": {
-      "sha512": "wHgaZcyNQj4Fgave2unFjRbctdScD8E0HVJc7PtsuCD32GdyHpQVBGJ3nHy6JccSsF1K693xrfbqaeURf91OSQ==",
+    "R2API.Addressables/1.1.3": {
+      "sha512": "AaVDNJKd0urHCNVyhA3Zluq4Ls8QURsQ0929772a4msIgM5uSXZ5dgPrRSphpAe3RDTkhcF8WgNOPrhzBbW4HA==",
       "type": "package",
-      "path": "r2api.addressables/1.1.2",
+      "path": "r2api.addressables/1.1.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.Addressables.dll",
         "lib/netstandard2.1/R2API.Addressables.xml",
-        "r2api.addressables.1.1.2.nupkg.sha512",
+        "r2api.addressables.1.1.3.nupkg.sha512",
         "r2api.addressables.nuspec"
       ]
     },
@@ -1269,16 +1269,16 @@
         "r2api.damagetype.nuspec"
       ]
     },
-    "R2API.Director/2.3.8": {
-      "sha512": "iAO+z10BUQvWyg0/FpWF0ISiziIvGEwUcQUxZ0UMFqM2uZLdkDq1+OGAujmz6wcHhJo46GFdtxMYSe+j52v0ag==",
+    "R2API.Director/2.3.9": {
+      "sha512": "1swx7pO9qQtJeJoHbdOqvrWqoDku+W8wXVjWFfhaLkZqMyj9MZtYvE2K4kUXoODKkCRlldhOm8N1WQ/d4EmJ+A==",
       "type": "package",
-      "path": "r2api.director/2.3.8",
+      "path": "r2api.director/2.3.9",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.Director.dll",
         "lib/netstandard2.1/R2API.Director.xml",
-        "r2api.director.2.3.8.nupkg.sha512",
+        "r2api.director.2.3.9.nupkg.sha512",
         "r2api.director.nuspec"
       ]
     },
@@ -3362,27 +3362,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\jakub\\.nuget\\packages\\": {}
+    "/home/pseudopulse/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jakub\\Desktop\\Sandswept\\Sandswept\\Sandswept.csproj",
+      "projectUniqueName": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
       "projectName": "Sandswept",
-      "projectPath": "C:\\Users\\jakub\\Desktop\\Sandswept\\Sandswept\\Sandswept.csproj",
-      "packagesPath": "C:\\Users\\jakub\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jakub\\Desktop\\Sandswept\\Sandswept\\obj\\",
+      "projectPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
+      "packagesPath": "/home/pseudopulse/.nuget/packages/",
+      "outputPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\jakub\\Desktop\\Sandswept\\NuGet.Config",
-        "C:\\Users\\jakub\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/pseudopulse/Repos/Sandswept/nuget.config",
+        "/home/pseudopulse/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {},
         "https://nuget.bepinex.dev/v3/index.json": {}
       },
@@ -3507,7 +3505,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.104/RuntimeIdentifierGraph.json"
       }
     }
   }
