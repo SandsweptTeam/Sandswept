@@ -38,6 +38,7 @@ namespace Sandswept.Survivors
         public virtual string[] Keywords { get; } = null;
         public virtual bool IsCombat => true;
         public virtual InterruptPriority InterruptPriority => InterruptPriority.Skill;
+        public virtual bool ManualTrackedCooldown => false;
 
         public virtual bool FullRestockOnAssign { get; } = true;
         public abstract Sprite Icon { get; }
@@ -97,6 +98,11 @@ namespace Sandswept.Survivors
             skillDef.beginSkillCooldownOnSkillEnd = BeginCooldownOnSkillEnd;
             skillDef.mustKeyPress = MustKeyPress;
             skillDef.fullRestockOnAssign = FullRestockOnAssign;
+
+            if (ManualTrackedCooldown) {
+                skillDef.stockToConsume = 0;
+                skillDef.isCooldownBlockedUntilManuallyReset = true;
+            }
 
             ContentAddition.AddSkillDef(skillDef);
         }

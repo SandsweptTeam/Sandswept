@@ -59,6 +59,9 @@
 	  <Reference Include="Unity.Postprocessing.Runtime">
 	    <HintPath>libs/Unity.Postprocessing.Runtime.dll</HintPath>
 	  </Reference>
+	  <Reference Include="GenericIK">
+	    <HintPath>libs/GenericIK.dll</HintPath>
+	  </Reference>
 	  <Reference Include="MoreStats">
 	    <HintPath>libs/MoreStats.dll</HintPath>
 	  </Reference>

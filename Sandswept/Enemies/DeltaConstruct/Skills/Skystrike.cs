@@ -95,12 +95,31 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             PlayAnimation("Body", "Skystrike Fire", "Generic.playbackRate", duration);
 
+            skystrikeBeams = new BasicLaserBeam[8];
+
             for (int i = 0; i < skystrikeBeams.Length; i++)
             {
-                skystrikeBeams[i].Fire();
-                skystrikeBeams[i].info.ImpactCallback = (pos) => {
-                    DamageTrailManager.AddSegment(trail, pos, fireLifetime, resetAllLifetime: true);
-                };
+                BasicLaserBeam beam = new(base.characterBody, FindModelChild("Muzzle" + (i + 1)), new BasicLaserInfo() {
+                    OriginIsBase = true,
+                    EndpointName = "End",
+                    DamageCoefficient = SkystrikeFire.laserDamage,
+                    FiringWidthMultiplier = 2.2f,
+                    MaxRange = 190f,
+                    FiringMaterial = DeltaConstruct.matDeltaBeamStrong,
+                    ChargeDelay = 0.4f,
+                    EffectPrefab = DeltaConstruct.beam,
+                    FiringMode = LaserFiringMode.Straight,
+                    ImpactEffect = DeltaConstruct.muzzleFlash,
+                    TickRate = 20f,
+                    SingleHit = false,
+                    UseUP = true,
+                    ImpactCallback = (pos) => {
+                        DamageTrailManager.AddSegment(trail, pos, fireLifetime, resetAllLifetime: true);
+                    }
+                });
+
+                skystrikeBeams[i] = beam;
+                beam.Fire();
             }
         }
 
@@ -186,36 +205,12 @@ namespace Sandswept.Enemies.DeltaConstruct
     public class SkystrikeWindup : BaseSkillState
     {
         public float duration = 0.7f;
-        public BasicLaserBeam[] skystrikeBeams;
         public Vector3 guh;
         public bool wasKnockedOutOfState = true;
 
         public override void OnEnter()
         {
             base.OnEnter();
-
-            skystrikeBeams = new BasicLaserBeam[8];
-
-            for (int i = 0; i < skystrikeBeams.Length; i++)
-            {
-                BasicLaserBeam beam = new(base.characterBody, FindModelChild("Muzzle" + (i + 1)), new BasicLaserInfo() {
-                    OriginIsBase = true,
-                    EndpointName = "End",
-                    DamageCoefficient = SkystrikeFire.laserDamage,
-                    FiringWidthMultiplier = 2.2f,
-                    MaxRange = 190f,
-                    FiringMaterial = DeltaConstruct.matDeltaBeamStrong,
-                    ChargeDelay = duration,
-                    EffectPrefab = DeltaConstruct.beam,
-                    FiringMode = LaserFiringMode.Straight,
-                    ImpactEffect = DeltaConstruct.muzzleFlash,
-                    TickRate = 20f,
-                    SingleHit = false,
-                    UseUP = true,
-                });
-
-                skystrikeBeams[i] = beam;
-            }
 
             Util.PlaySound("Play_majorConstruct_m1_laser_chargeShoot", base.gameObject);
             Util.PlaySound("Play_majorConstruct_m1_laser_chargeShoot", base.gameObject);
@@ -246,11 +241,6 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             if (!wasKnockedOutOfState) return;
 
-            for (int i = 0; i < skystrikeBeams.Length; i++)
-            {
-                skystrikeBeams[i].Stop();
-            }
-
             Util.PlaySound("Stop_majorConstruct_m1_laser_loop", gameObject);
             Util.PlaySound("Play_majorConstruct_m1_laser_end", gameObject);
         }
@@ -258,13 +248,6 @@ namespace Sandswept.Enemies.DeltaConstruct
         public override void ModifyNextState(EntityState nextState)
         {
             base.ModifyNextState(nextState);
-
-            if (nextState is SkystrikeFire skystrikeFire)
-            {
-                skystrikeFire.skystrikeBeams = skystrikeBeams;
-                skystrikeFire.guh = guh;
-                // why would you name a variable that...
-            }
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
@@ -290,8 +273,6 @@ namespace Sandswept.Enemies.DeltaConstruct
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-
-            // characterDirection.forward = dir;
 
             if (base.fixedAge >= duration)
             {

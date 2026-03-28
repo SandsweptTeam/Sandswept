@@ -345,6 +345,10 @@ namespace Sandswept.Utils
         {
             throw new NotImplementedException();
         }
+
+        public static Vector3 MidpointAtHeight(Vector3 a, Vector3 b, float height) {
+            return (a.Nullify(y: true) + ((b.Nullify(y: true) - a.Nullify(y: true)).normalized * (Vector3.Distance(a.Nullify(y: true), b.Nullify(y: true)) / 2f))) + new Vector3(0, ((a.y + b.y) / 2f) + height, 0f);
+        }
     }
 
     public class LazyAddressable<T> where T : UnityEngine.Object

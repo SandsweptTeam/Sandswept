@@ -1,5 +1,6 @@
 ## 1.4.4 Patch Notes
 - Enemies
+  - Added new enemy: Ivy
   - Delta Construct credit cost lowered to 115 (was 130)
   - Delta Construct base health lowered to 500 (was 590)
   - Delta Construct moves more erratically when strafing

@@ -23,11 +23,6 @@ namespace Sandswept.Enemies.ArdentWisp
         public static GameObject ArdentBombProjectile;
         public static Material IndicatorArdentWisp;
 
-        public override void Create()
-        {
-            return;
-        }
-
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("ArdentWispBody.prefab");
@@ -63,12 +58,7 @@ namespace Sandswept.Enemies.ArdentWisp
             ContentAddition.AddEffect(ArdentFireball);
 
             ArdentBombProjectile = Main.assets.LoadAsset<GameObject>("ArdentBombProjectile.prefab");
-            ArdentBombProjectile.EditComponent<ArdentBombProjectile>((x) =>
-            {
-                x.outerRadius.GetComponent<MeshRenderer>().sharedMaterial = IndicatorArdentWisp;
-                x.innerRadius.GetComponent<MeshRenderer>().sharedMaterial = Paths.Material.matNullBombAreaIndicator;
-            });
-            ArdentBombProjectile.GetComponent<ProjectileExplosion>().explosionEffect = Paths.GameObject.ExplosionGolem;
+            // ArdentBombProjectile.GetComponent<ProjectileExplosion>().explosionEffect = Paths.GameObject.ExplosionGolem;
 
             ContentAddition.AddProjectile(ArdentBombProjectile);
         }
@@ -93,6 +83,18 @@ namespace Sandswept.Enemies.ArdentWisp
             ReplaceSkill(locator.secondary, States.CarpetFireSkill.instance.skillDef);
 
             body.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(ArdentWispDeath));
+
+            LanguageAPI.Add(body.baseNameToken.Replace("_NAME", "_LORE"),
+            """
+            A LAST RESORT, FOR OUR GARDEN MOST PRECIOUS 
+
+            START WITH A MASK, RIDDLED WITH HOLES. IT'S BASE OF YOUNGTREE, FOR SPEED, EFFICENCY
+            A SCOOP OF CHARRED GLASS, THIS IS FOR SHARPNESS, ANGER
+            A COATING OF "GAZOLLON" FROM THE DEMON'S BUCKET, FOR HEAT, POWER
+            A MINISCULE PINCH OF [powder], FOR A WILL TO FOLLOW WITHOUT COMPASSION
+
+            FOR A TIME SO DIRE, SACRIFICES MUST BE MADE
+            """);
         }
 
         public override void AddDirectorCard()
