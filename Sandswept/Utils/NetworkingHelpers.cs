@@ -37,6 +37,10 @@ namespace Sandswept.Utils
             return default(T);
         }
 
+        public static void RequestTakeDamage(this HealthComponent hc, DamageInfo info) {
+            new TakeDamageMessage(hc, info).Send(R2API.Networking.NetworkDestination.Server);
+        }
+
         public static void SetBuffCountSynced(this CharacterBody body, BuffIndex index, int count) {
             if (NetworkServer.active) {
                 body.SetBuffCount(index, count);
@@ -78,6 +82,35 @@ namespace Sandswept.Utils
             NetworkingAPI.RegisterMessageType<AddTimedBuffMessage>();
             NetworkingAPI.RegisterMessageType<AddBuffMessage>();
             NetworkingAPI.RegisterMessageType<RemoveBuffMessage>();
+            NetworkingAPI.RegisterMessageType<TakeDamageMessage>();
+        }
+
+        private class TakeDamageMessage : INetMessage
+        {
+            public HealthComponent hc;
+            public DamageInfo info;
+            void INetMessage.OnReceived()
+            {
+                hc.TakeDamage(info);
+                GlobalEventManager.instance.OnHitAll(info, hc.gameObject);
+                GlobalEventManager.instance.OnHitEnemy(info, hc.gameObject);
+            }
+            void ISerializableObject.Deserialize(NetworkReader reader)
+            {
+                hc = reader.ReadGameObject()?.GetComponent<HealthComponent>() ?? null;
+                info = reader.ReadDamageInfo();
+            }
+            void ISerializableObject.Serialize(NetworkWriter writer)
+            {
+                writer.Write(hc.gameObject);
+                writer.Write(info);
+            }
+            
+            public TakeDamageMessage(HealthComponent hc, DamageInfo info) {
+                this.hc = hc;
+                this.info = info;
+            }
+            public TakeDamageMessage() {}
         }
 
         private class AddTimedBuffMessage : INetMessage

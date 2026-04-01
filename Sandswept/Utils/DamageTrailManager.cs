@@ -75,19 +75,26 @@ namespace Sandswept.Utils {
             foreach (DamageTrail trail in activeDamageTrails) {
                 trail.stopwatch += Time.fixedDeltaTime;
 
-                if (trail.stopwatch >= trail.delay && NetworkServer.active) {
+                if (trail.stopwatch >= trail.delay) {
                     trail.stopwatch = 0f;
 
                     foreach (CharacterBody body in bodies) {
+                        if (!body.hasAuthority) continue;
                         if (body.teamComponent.teamIndex == trail.team) continue; 
                         if (!trail.bounds.Contains(body.footPosition)) continue; // skip calc if we know for certain we are well beyond range of any node
 
                         foreach (DamageTrailPoint point in trail.activePoints) {
                             if (Vector3.Distance(body.footPosition, point.location) <= trail.radius) {
                                 DamageInfo info = trail.GetDamageInfo(body);
-                                body.healthComponent.TakeDamage(info);
-                                GlobalEventManager.instance.OnHitAll(info, body.gameObject);
-                                GlobalEventManager.instance.OnHitEnemy(info, body.gameObject);
+                                if (NetworkServer.active) {
+                                    body.healthComponent.TakeDamage(info);
+                                    GlobalEventManager.instance.OnHitAll(info, body.gameObject);
+                                    GlobalEventManager.instance.OnHitEnemy(info, body.gameObject);
+                                }
+                                else {
+                                    body.healthComponent.RequestTakeDamage(info);
+                                }
+                                
                                 break;
                             }
                         }

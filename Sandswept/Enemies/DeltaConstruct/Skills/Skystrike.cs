@@ -21,15 +21,15 @@ namespace Sandswept.Enemies.DeltaConstruct
             base.characterMotor.Motor.RebuildCollidableLayers();
 
             PlayAnimation("Body", "Leap", "Generic.playbackRate", duration);
-            
 
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimYaw"), 0f);
             GetModelAnimator().SetLayerWeight(GetModelAnimator().GetLayerIndex("AimPitch"), 0f);
 
-            base.characterMotor.ApplyForce(Vector3.up * base.characterMotor.mass * 40f, true, true);
+            if (base.isAuthority) {
+                base.characterMotor.ApplyForce(Vector3.up * base.characterMotor.mass * 40f, true, true);
+            }
 
             Util.PlaySound("Play_moonBrother_phaseJump_kneel", base.gameObject);
-            // Util.PlaySound("Play_moonBrother_phaseJump_jumpAway", base.gameObject);
             Util.PlaySound("Play_majorConstruct_shift_raise", gameObject);
         }
 
@@ -243,11 +243,6 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             Util.PlaySound("Stop_majorConstruct_m1_laser_loop", gameObject);
             Util.PlaySound("Play_majorConstruct_m1_laser_end", gameObject);
-        }
-
-        public override void ModifyNextState(EntityState nextState)
-        {
-            base.ModifyNextState(nextState);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

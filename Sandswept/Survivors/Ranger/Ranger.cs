@@ -16,6 +16,12 @@ using UnityEngine.UI;
 
 namespace Sandswept.Survivors.Ranger
 {
+    public class RangerHeadDisabler : MonoBehaviour {
+        public void LateUpdate() {
+            base.transform.localScale = Vector3.zero;
+        }
+    }
+
     [ConfigSection("Survivors :: Ranger")]
     public class Ranger : SurvivorBase<Ranger>
     {

@@ -23,6 +23,11 @@ namespace Sandswept.Enemies.ArdentWisp
         public static GameObject ArdentBombProjectile;
         public static Material IndicatorArdentWisp;
 
+        public override void Create()
+        {
+            base.Create();
+        }
+        
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("ArdentWispBody.prefab");

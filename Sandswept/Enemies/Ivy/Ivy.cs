@@ -26,14 +26,44 @@ namespace Sandswept.Enemies.Ivy
         // tune StriderLegController params
         // give it hitboxes lmfao
 
+        public override void Create()
+        {
+            return;
+        }
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("IvyBody.prefab");
             prefabMaster = Main.assets.LoadAsset<GameObject>("IvyMaster.prefab");
             LanguageAPI.Add(prefab.GetComponent<CharacterBody>().baseNameToken.Replace("_NAME", "_LORE"),
             """
-            tbd
+            <style=cMono>
+            Welcome to DataScraper (v3.1.53 – beta branch)
+            $ Scraping memory... done.
+            $ Resolving... done.
+            $ Combing for relevant data... done.
+            Complete!
+            Outputting local audio transcriptions…
             </style>
+
+            Dear [REDACTED] 
+
+
+            I did a little bit of study on those lemurians and their culture like you asked me to [...] [...] [...] Lemurians, also… quite similarly to us, domesticate other animals. The most fascinating of which is the Ivy and the Bramble! Both plant-like creatures that can grow their stems to impressive lengths  [...] It seems like they aren’t fully domesticated however, I’ll just… Describe the incident below
+
+            16:52 Lemurians 1, 2, 3, and 4 were all riding in a carriage being held by the Subject Ivy in question in the biome known as “Sky Meadows”,
+
+            [...]
+
+            17:05 Lemurians 1, 3 and 4 dismount from the carriage. Lemurian 1 urges Lemurian 2 to leave the carriage. 
+
+            17:06 Lemurian 2 refuses to leave, sitting down in the carriage, causing the Subject Ivy to become agitated. 
+
+            17:07 Lemurian 2 looks out at the ground, then quickly retreats back into the carriage.
+
+            17:11 Subject Ivy grew stressed, shaking its head in frustration, causing the carriage to sway.
+
+            17:12 Subject Ivy is struck by a surprise rock, causing it to arch its back and scream in pain, letting the carriage go, “ejecting” the carriage from its mouth.
+
             """);
 
             IvyHeadBody = PrefabAPI.InstantiateClone(Paths.GameObject.WispBody, "IvyHeadBody");
@@ -55,6 +85,7 @@ namespace Sandswept.Enemies.Ivy
 
             ReplaceSkill(loc.secondary, BeginSearchSkill.instance);
             ReplaceSkill(loc.utility, DeployHeadSkill.instance);
+            ReplaceSkill(loc.special, ThrowEnemySkill.instance);
             ReplaceSkill(loc2.primary, GrabTargetSkill.instance);
             
             SetUpVFX();

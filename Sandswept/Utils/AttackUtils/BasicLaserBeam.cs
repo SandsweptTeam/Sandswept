@@ -84,9 +84,11 @@ namespace Sandswept.Utils
                 targetEndpoint = GetEndpoint(out Vector3 impact);
                 stopwatch = 0f;
 
-                if (firing && Owner.hasAuthority)
+                if (firing)
                 {
-                    GetBulletAttack().Fire();
+                    if (Owner.hasAuthority) {
+                        GetBulletAttack().Fire();
+                    }
 
                     if (info.ImpactEffect)
                     {

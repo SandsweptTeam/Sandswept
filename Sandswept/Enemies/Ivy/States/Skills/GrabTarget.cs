@@ -9,10 +9,16 @@ namespace Sandswept.Enemies.Ivy {
         {
             base.OnEnter();
 
+            IvyMainState main = EntityStateMachine.FindByCustomName(base.gameObject, "Body").state as IvyMainState;
+            if (main.controller.headActive) {
+                outer.SetNextStateToMain();
+                return;
+            }
+
             if (NetworkServer.active) {
-                IvyMainState main = EntityStateMachine.FindByCustomName(base.gameObject, "Body").state as IvyMainState;
                 TeleportHelper.TeleportBody(main.IvyHeadBody, GetComponent<VehicleSeat>().seatPosition.position);
             }
+
         }
 
         public override void FixedUpdate()
@@ -25,10 +31,16 @@ namespace Sandswept.Enemies.Ivy {
                     main.IvyHeadBody.master.aiComponents[0].customTarget.gameObject = base.characterBody.master.aiComponents[0].customTarget.gameObject;
                     main.controller.headActive = true;
                     base.characterMotor.walkSpeedPenaltyCoefficient = 0f;
+                    // PlayAnimation("Override, Head", "Open", "Generic.playbackRate", 0.5f);
                 }
             
                 outer.SetNextStateToMain();
             }
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Death;
         }
     }
 
@@ -37,14 +49,27 @@ namespace Sandswept.Enemies.Ivy {
         {
             base.OnEnter();
 
+            if (!base.characterBody.master.aiComponents[0].customTarget.gameObject) {
+                outer.SetNextStateToMain();
+                return;
+            }
+
             if (NetworkServer.active) {
                 base.characterBody.master.minionOwnership.ownerMaster.GetBody().GetComponent<VehicleSeat>().SetPassenger(base.characterBody.master.aiComponents[0].customTarget.gameObject);
                 base.characterBody.master.aiComponents[0].customTarget.gameObject = null;
                 base.characterBody.master.minionOwnership.ownerMaster.GetBody().characterMotor.walkSpeedPenaltyCoefficient = 1f;
                 TeleportHelper.TeleportBody(base.characterBody, base.characterBody.footPosition + (Vector3.up * 10f));
             }
+
+            IvyMainState main = EntityStateMachine.FindByCustomName(base.characterBody.master.minionOwnership.ownerMaster.GetBody().gameObject, "Body").state as IvyMainState;
+            // main.PlayAnimation("Override, Head", "Close", "Generic.playbackRate", 0.5f);
             
             outer.SetNextStateToMain();
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.Death;
         }
     }
 

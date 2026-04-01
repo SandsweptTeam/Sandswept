@@ -8,6 +8,7 @@ namespace Sandswept.Enemies.Ivy {
         public IvyModelController controller;
         public VehicleSeat seat;
         public BaseAI ai;
+        public float dropTimer = 0f;
         public override void OnEnter()
         {
             base.OnEnter();
@@ -49,6 +50,16 @@ namespace Sandswept.Enemies.Ivy {
 
             if (controller.headActive && ai && !ai.customTarget.gameObject) {
                 controller.headActive = false;
+                // PlayAnimation("Override, Head", "Idle");
+            }
+
+            if (controller.headActive && dropTimer > 0f && NetworkServer.active) {
+                dropTimer -= Time.fixedDeltaTime;
+
+                if (dropTimer <= 0f) {
+                    skillLocator.special.AddOneStock();
+                    skillLocator.special.ExecuteIfReady();
+                }
             }
         }
 
@@ -59,6 +70,8 @@ namespace Sandswept.Enemies.Ivy {
             if (body) {
                 body.AddBuff(IvyBuff.instance.BuffDef);
             }
+
+            dropTimer = 10f;
         }        
 
         private void OnPassengerExit(GameObject passenger)
@@ -71,6 +84,8 @@ namespace Sandswept.Enemies.Ivy {
             if (body) {
                 body.RemoveBuff(IvyBuff.instance.BuffDef);
             }
+
+            // PlayAnimation("Override, Head", "Idle");
         }
 
         public override void OnExit()

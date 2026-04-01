@@ -21,20 +21,6 @@ namespace Sandswept.Enemies.DeltaConstruct
 
         public static Material matTell;
 
-        /*[ConCommand(commandName = "cv_delta_grav", helpText = "Forcefully triggers Shrine of Ruin effect.", flags = ConVarFlags.SenderMustBeServer)]
-        public static void CV_DeltaGrav(ConCommandArgs args)
-        {
-            bolt.GetComponent<AntiGravityForce>().antiGravityCoefficient = args.GetArgFloat(0);
-            FireBolts.projectileAntiGravity = args.GetArgFloat(0);
-        }
-
-        [ConCommand(commandName = "cv_delta_speed", helpText = "Forcefully triggers Shrine of Ruin effect.", flags = ConVarFlags.SenderMustBeServer)]
-        public static void CV_DeltaSpeed(ConCommandArgs args)
-        {
-            bolt.GetComponent<ProjectileSimple>().desiredForwardSpeed = args.GetArgFloat(0);
-            FireBolts.projectileHorizontalSpeed = args.GetArgFloat(0);
-        }*/
-
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("DeltaConstructBody.prefab");

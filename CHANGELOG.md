@@ -1,6 +1,9 @@
-## 1.4.4 Patch Notes
+## 6.7.0 Patch Notes
+- Items
+  - Added Equine Electrolyte Blend
+- Ranger
+  - Is now a horse.
 - Enemies
-  - Added new enemy: Ivy
   - Delta Construct credit cost lowered to 115 (was 130)
   - Delta Construct base health lowered to 500 (was 590)
   - Delta Construct moves more erratically when strafing

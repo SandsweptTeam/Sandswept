@@ -13,12 +13,16 @@ namespace Sandswept.Enemies.Ivy {
         public bool headActive = false;
         public bool refreshStats = false;
         public float headLerp = 0.3f;
-        private float interpolationTime = 1.1f;
-        private float interpolationStopwatch = 0f;
+        internal float interpolationTime = 1.1f;
+        internal float interpolationStopwatch = 0f;
         private bool headWasActive = false;
         private bool switching = false;
         private float weight = 0f;
         private Transform[] transforms;
+        //
+        private Animator anim;
+        public string BodyState;
+        public string HeadState;
         public void Start() {
             Transform lastTransform = VineRoot;
             List<Transform> all = new();
@@ -34,9 +38,20 @@ namespace Sandswept.Enemies.Ivy {
             }
 
             transforms = all.ToArray();
+
+            //
+            anim = GetComponent<Animator>();
         }
 
         public void Update() {
+            try {
+                BodyState = anim.GetCurrentAnimatorClipInfo(anim.GetLayerIndex("Body"))[0].clip.name;
+            }
+            catch {
+                BodyState = "null";
+            }
+            // HeadState = anim.GetCurrentAnimatorClipInfo(anim.GetLayerIndex("Override, Head"))[0].clip.name;
+
             if (headActive != headWasActive) {
                 headWasActive = headActive;
                 interpolationStopwatch = 0f;
@@ -50,6 +65,7 @@ namespace Sandswept.Enemies.Ivy {
 
                 if (interpolationStopwatch >= interpolationTime) {
                     switching = false;
+                    interpolationStopwatch = 0f;
                 }
             }
 
@@ -58,6 +74,7 @@ namespace Sandswept.Enemies.Ivy {
                 weight = Mathf.Clamp01(1f - (interpolationStopwatch / interpolationTime));
 
                 if (interpolationStopwatch >= interpolationTime) {
+                    interpolationStopwatch = 0f;
                     switching = false;
                 }
             }
@@ -76,8 +93,8 @@ namespace Sandswept.Enemies.Ivy {
                     transforms[i].up = Vector3.Lerp(transforms[i].up, forward, Mathf.Lerp(0f, weight, Mathf.Clamp01(i / 8f)));
                 }
 
-                head.transform.up = Vector3.Lerp(head.transform.up, -transforms[transforms.Length - 1].up, headLerp * weight);
-                head.transform.position = transforms[transforms.Length - 1].position;
+                head.transform.up = Vector3.Lerp(head.transform.up, -transforms[transforms.Length - 1].up, weight);
+                head.transform.position = transforms[transforms.Length - 2].position;
             }
         }
     }

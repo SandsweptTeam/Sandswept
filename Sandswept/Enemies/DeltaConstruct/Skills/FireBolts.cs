@@ -33,13 +33,15 @@ namespace Sandswept.Enemies.DeltaConstruct
 
             modelTransform = GetModelTransform();
 
-            target = base.characterBody.master.GetComponent<BaseAI>().currentEnemy.gameObject;
+            if (base.isAuthority) {
+                target = base.characterBody.master.GetComponent<BaseAI>().currentEnemy.gameObject;
 
-            muzzles = [FindModelChild("Muzzle1"), FindModelChild("Muzzle2"), FindModelChild("Muzzle3"), FindModelChild("Muzzle4")];
-            predictors = new Predictor[4];
-            for (int i = 0; i < muzzles.Length; i++) {
-                predictors[i] = new(muzzles[i]);
-                predictors[i].SetTargetTransform(target.transform);
+                muzzles = [FindModelChild("Muzzle1"), FindModelChild("Muzzle2"), FindModelChild("Muzzle3"), FindModelChild("Muzzle4")];
+                predictors = new Predictor[4];
+                for (int i = 0; i < muzzles.Length; i++) {
+                    predictors[i] = new(muzzles[i]);
+                    predictors[i].SetTargetTransform(target.transform);
+                }
             }
 
             base.StartAimMode(0.2f);
@@ -61,14 +63,16 @@ namespace Sandswept.Enemies.DeltaConstruct
         {
             base.Update();
 
-            for (int i = 0; i < predictors.Length; i++) {
-                predictors[i].Update();
-            }
+            if (base.isAuthority) {
+                for (int i = 0; i < predictors.Length; i++) {
+                    predictors[i].Update();
+                }
 
-            if (anim.CheckEvent("Event.fire1")) FireBolt(3);
-            if (anim.CheckEvent("Event.fire2")) FireBolt(1);
-            if (anim.CheckEvent("Event.fire3")) FireBolt(2);
-            if (anim.CheckEvent("Event.fire4")) FireBolt(0);
+                if (anim.CheckEvent("Event.fire1")) FireBolt(3);
+                if (anim.CheckEvent("Event.fire2")) FireBolt(1);
+                if (anim.CheckEvent("Event.fire3")) FireBolt(2);
+                if (anim.CheckEvent("Event.fire4")) FireBolt(0);
+            }
         }
 
         public override void FixedUpdate()
@@ -85,7 +89,6 @@ namespace Sandswept.Enemies.DeltaConstruct
 
         public void ShowTelegraph(float duration)
         {
-
             if (modelTransform)
             {
                 var temporaryOverlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
