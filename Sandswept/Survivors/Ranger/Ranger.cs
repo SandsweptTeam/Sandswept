@@ -17,8 +17,21 @@ using UnityEngine.UI;
 namespace Sandswept.Survivors.Ranger
 {
     public class RangerHeadDisabler : MonoBehaviour {
+        public bool shouldPerform = false;
+        public void Start() {
+            if (Main.cursedConfig.Value) {
+                shouldPerform = true;
+
+                base.transform.parent.Find("horse").gameObject.SetActive(true);
+            }
+            else {
+                GameObject.Destroy(this);
+            }
+        }
         public void LateUpdate() {
-            base.transform.localScale = Vector3.zero;
+            if (shouldPerform) {
+                base.transform.localScale = Vector3.zero;
+            }
         }
     }
 

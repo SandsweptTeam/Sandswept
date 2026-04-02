@@ -25,7 +25,7 @@ namespace Sandswept.Enemies.ArdentWisp
 
         public override void Create()
         {
-            base.Create();
+            return;
         }
         
         public override void LoadPrefabs()

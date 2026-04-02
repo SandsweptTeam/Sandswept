@@ -1,3 +1,11 @@
+## 1.4.4 Patch Notes
+- Items
+  - Removed Equine Electrolyte Blend (relegated to cursed config)
+- Ranger
+  - Is no longer a horse. (relegated to cursed config)
+- Enemies
+  - Banished Ardent Wisp back to indev
+
 ## 6.7.0 Patch Notes
 - Items
   - Added Equine Electrolyte Blend

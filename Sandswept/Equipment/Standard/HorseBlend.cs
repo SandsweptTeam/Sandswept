@@ -36,7 +36,9 @@ namespace Sandswept.Equipment.Standard
 
         public override void Init()
         {
-            base.Init();
+            if (cursedConfig.Value) {
+                base.Init();
+            }
         }
 
         protected override bool ActivateEquipment(EquipmentSlot slot)
