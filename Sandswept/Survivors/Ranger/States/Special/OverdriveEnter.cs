@@ -50,7 +50,9 @@ namespace Sandswept.Survivors.Ranger.States.Special
             if (characterBody)
             {
                 var crosshairOverrideBehavior = characterBody.GetComponent<RoR2.UI.CrosshairUtils.CrosshairOverrideBehavior>();
-                crosshairRequest = crosshairOverrideBehavior.AddRequest(Crosshairs.Ranger.hitscanCrosshairPrefab, RoR2.UI.CrosshairUtils.OverridePriority.Skill);
+                crosshairRequest = crosshairOverrideBehavior.AddRequest(Crosshairs.Ranger.hitscanCrosshairPrefab, RoR2.UI.CrosshairUtils.OverridePriority.Skill, new RoR2.UI.CrosshairUtils.SpreadBloomChanges() {
+                    spreadBloomCurve = new(new Keyframe(0f, 0f), new Keyframe(1f, 0f)),
+                });
 
                 var modelTransform = GetModelTransform();
 

@@ -81,6 +81,7 @@ namespace Sandswept.Enemies.DeltaConstruct
             pyramidPSR.material.SetFloat("_AlphaBias", 0f);
 
             bolt.GetComponent<ProjectileController>().ghostPrefab = boltGhost;
+            bolt.GetComponent<ProjectileController>().ghostPrefabAddress = null;
             ContentAddition.AddProjectile(bolt);
 
             muzzleFlash = PrefabAPI.InstantiateClone(Paths.GameObject.MuzzleflashMinorConstruct, "Delta Construct Muzzle Flash", false);

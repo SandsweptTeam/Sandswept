@@ -173,6 +173,7 @@ namespace Sandswept.Items.Whites
             projectileController = amberKnifeProjectile.GetComponent<ProjectileController>();
             projectileController.procCoefficient = procCoefficient;
             projectileController.ghostPrefab = amberKnifeGhost;
+            projectileController.ghostPrefabAddress = null;
 
             var projectileSimple = amberKnifeProjectile.GetComponent<ProjectileSimple>();
             projectileSimple.enableVelocityOverLifetime = true;

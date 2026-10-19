@@ -24,12 +24,12 @@ namespace Sandswept.Enemies.Ivy
         // add caustic spit attack
         // make held enemy get thrown after 10s or so
         // tune StriderLegController params
-        // give it hitboxes lmfao
 
-        public override void Create()
+        public override void Create() // disabled
         {
             return;
         }
+
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("IvyBody.prefab");
@@ -76,6 +76,7 @@ namespace Sandswept.Enemies.Ivy
             IvyHeadBody.GetComponent<ModelLocator>().modelBaseTransform.gameObject.SetActive(false);
             IvyHeadBody.layer = LayerIndex.noCollision.intVal;
             IvyHeadMaster.GetComponent<CharacterMaster>().bodyPrefab = IvyHeadBody;
+            IvyHeadBody.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(GenericCharacterDeath));
 
             ContentAddition.AddBody(IvyHeadBody);
             ContentAddition.AddMaster(IvyHeadMaster);

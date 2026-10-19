@@ -9,7 +9,6 @@ namespace Sandswept.Enemies.Ivy
         {
             base.OnEnter();
             GetModelTransform().GetComponent<IvyModelController>().enabled = false;
-            // PlayAnimation("Override, Head", "Idle");
             PlayAnimation("Body", "Spawn", "Generic.playbackRate", duration);
         }
 
@@ -27,6 +26,7 @@ namespace Sandswept.Enemies.Ivy
         {
             base.OnExit();
             GetModelTransform().GetComponent<IvyModelController>().enabled = true;
+            GetModelTransform().GetComponent<IvyModelController>().EnableHead(this);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

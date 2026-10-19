@@ -29,6 +29,7 @@ namespace Sandswept.Enemies.Ivy {
                 
 
                 if (results.Length > 0) {
+                    Debug.Log("found a target");
                     base.characterBody.master.aiComponents[0].customTarget.gameObject = results[0].healthComponent.gameObject;
                     skillLocator.secondary.DeductStock(1);
                 }
@@ -46,6 +47,10 @@ namespace Sandswept.Enemies.Ivy {
         public bool FilterRangedEnemy(CharacterBody body) {
             CharacterMaster master = body.master;
             if (!master) {
+                return false;
+            }
+
+            if (body.isPlayerControlled) {
                 return false;
             }
 
@@ -88,7 +93,7 @@ namespace Sandswept.Enemies.Ivy {
 
         public override string ActivationMachineName => "Weapon";
 
-        public override float Cooldown => 1f;
+        public override float Cooldown => 10f;
 
         public override Sprite Icon => null;
         public override bool BeginCooldownOnSkillEnd => true;

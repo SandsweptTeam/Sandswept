@@ -101,10 +101,12 @@ namespace Sandswept.Survivors.Megalomaniac
         {
             GameObject stickyGhost = PrefabAPI.InstantiateClone(Paths.GameObject.LunarExploderShardGhost, "MegaloStickyGhost");
             MegaloStickyOrb.GetComponent<ProjectileController>().ghostPrefab = stickyGhost;
+            MegaloStickyOrb.GetComponent<ProjectileController>().ghostPrefabAddress = null;
 
             GameObject coreGhost = PrefabAPI.InstantiateClone(Paths.GameObject.LunarMissileGhost, "LunarCoreGhost");
             coreGhost.FindComponent<ParticleSystemRenderer>("Flare").transform.localScale = new(0.5f, 0.5f, 0.5f);
             LunarCoreProjectile.GetComponent<ProjectileController>().ghostPrefab = coreGhost;
+            LunarCoreProjectile.GetComponent<ProjectileController>().ghostPrefabAddress = null;
         }
 
         public class StupidQSWComponent : MonoBehaviour

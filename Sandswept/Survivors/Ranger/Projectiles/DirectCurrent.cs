@@ -76,6 +76,7 @@ namespace Sandswept.Survivors.Ranger.Projectiles
             // Main.ModLogger.LogError("direct current vfx ghost prefab is " + DirectCurrentVFX.ghostPrefab); exists
 
             projectileController.ghostPrefab = newGhost;
+            projectileController.ghostPrefabAddress = null;
 
             prefab.AddComponent<InverseFalloffProjectile>().DollarStoreConstructor(50f, 0.6f, 1.56f, 0.6f, 2f);
             prefab.AddComponent<DirectImpactBoost>();

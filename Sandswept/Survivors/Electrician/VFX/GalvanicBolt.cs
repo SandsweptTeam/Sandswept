@@ -87,6 +87,7 @@ namespace Sandswept.Survivors.Electrician.VFX
             var projectile = Main.assets.LoadAsset<GameObject>("GalvanicBallProjectile.prefab").GetComponent<ProjectileController>().ghostPrefab.InstantiateClone("Galvanic Bolt Projectile Ghost " + name, false);
             var actualProjectile = Main.assets.LoadAsset<GameObject>("GalvanicBallProjectile.prefab").InstantiateClone("Galvanic Bolt Projectile " + name, true);
             actualProjectile.GetComponent<ProjectileController>().ghostPrefab = projectile;
+            actualProjectile.GetComponent<ProjectileController>().ghostPrefabAddress = null;
             projectile.FindComponent<MeshRenderer>("Radius").sharedMaterial = Paths.Material.matTeamAreaIndicatorIntersectionPlayer;
 
             var transform = projectile.transform;

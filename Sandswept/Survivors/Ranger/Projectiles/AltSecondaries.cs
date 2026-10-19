@@ -56,6 +56,7 @@ namespace Sandswept.Survivors.Ranger.Projectiles
 
             charPoolSpawnerProjectile = PrefabAPI.InstantiateClone(Paths.GameObject.MolotovSingleProjectile, "Char Pool Spawner Projectile");
             charPoolSpawnerProjectile.GetComponent<ProjectileController>().ghostPrefab = Paths.GameObject.FireballGhost;
+            charPoolSpawnerProjectile.GetComponent<ProjectileController>().ghostPrefabAddress = null;
             charPoolSpawnerProjectile.GetComponent<ProjectileSimple>().desiredForwardSpeed = 0;
 
             charBallProjectile.GetComponent<ProjectileImpactExplosion>((x) =>
@@ -71,6 +72,7 @@ namespace Sandswept.Survivors.Ranger.Projectiles
             charBallProjectile.GetComponent<ProjectileSimple>().desiredForwardSpeed = 240f;
             charBallProjectile.GetComponent<Rigidbody>().useGravity = false;
             charBallProjectile.GetComponent<ProjectileController>().ghostPrefab = Paths.GameObject.FireballGhost;
+            charBallProjectile.GetComponent<ProjectileController>().ghostPrefabAddress = null;
             charBallProjectile.transform.localScale *= 3f;
             charBallProjectile.GetComponent<BoxCollider>().size *= 0.3f;
 

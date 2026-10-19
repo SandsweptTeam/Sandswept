@@ -41,6 +41,10 @@ namespace Sandswept.Enemies.Ivy {
 
             if (IvyHeadBody != null) {
                 controller.IKTarget.position = Vector3.MoveTowards(controller.IKTarget.position, IvyHeadBody.corePosition, 20f * Time.fixedDeltaTime);
+
+                if (!controller.headActive) {
+                    IvyHeadBody.transform.position = controller.head.transform.position;
+                }
             }
         }
 
@@ -49,8 +53,7 @@ namespace Sandswept.Enemies.Ivy {
             base.FixedUpdate();
 
             if (controller.headActive && ai && !ai.customTarget.gameObject) {
-                controller.headActive = false;
-                // PlayAnimation("Override, Head", "Idle");
+                // controller.headActive = false;
             }
 
             if (controller.headActive && dropTimer > 0f && NetworkServer.active) {
@@ -84,8 +87,6 @@ namespace Sandswept.Enemies.Ivy {
             if (body) {
                 body.RemoveBuff(IvyBuff.instance.BuffDef);
             }
-
-            // PlayAnimation("Override, Head", "Idle");
         }
 
         public override void OnExit()

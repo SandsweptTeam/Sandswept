@@ -42,7 +42,7 @@ namespace Sandswept.Utils
 
             foreach (ItemDef item in items)
             {
-                body.inventory.RemoveItem(item, body.inventory.GetItemCount(item));
+                body.inventory.RemoveItem(item.itemIndex, body.inventory.GetItemCount(item));
             }
         }
 
@@ -75,7 +75,7 @@ namespace Sandswept.Utils
 
             foreach (ItemDef item in items)
             {
-                body.inventory.RemoveItem(item, body.inventory.GetItemCount(item));
+                body.inventory.RemoveItem(item.itemIndex, body.inventory.GetItemCount(item));
             }
         }
 

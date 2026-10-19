@@ -347,7 +347,7 @@ namespace Sandswept.Interactables.Regular
 
             teleporterLanguageOverlays.Clear();
 
-            Language.SetCurrentLanguage(Language.currentLanguageName);
+            Language.SetCurrentLanguage(Language.currentLanguageName, false);
         }
 
         [ConCommand(commandName = "sandswept_add_ruin_stack", helpText = "Forcefully triggers Shrine of Ruin effect.", flags = ConVarFlags.SenderMustBeServer)]
@@ -384,7 +384,7 @@ namespace Sandswept.Interactables.Regular
 
                 teleporterLanguageOverlays.Clear();
 
-                Language.SetCurrentLanguage(Language.currentLanguageName);
+                Language.SetCurrentLanguage(Language.currentLanguageName, false);
             }
 
             orig(self);
@@ -772,7 +772,7 @@ namespace Sandswept.Interactables.Regular
 
                 PurchaseInteraction.CreateItemTakenOrb(interactorBody.corePosition, gameObject, choice.value);
 
-                inventory.RemoveItem(ItemCatalog.GetItemDef(choice.value));
+                inventory.RemoveItem(ItemCatalog.GetItemDef(choice.value).itemIndex);
 
                 Util.PlaySound("Play_voidJailer_m1_impact", gameObject);
 
@@ -917,7 +917,7 @@ namespace Sandswept.Interactables.Regular
             ShrineOfRuin.teleporterLanguageOverlays.Add(overlay11);
             ShrineOfRuin.teleporterLanguageOverlays.Add(overlay12);
 
-            Language.SetCurrentLanguage(Language.currentLanguageName);
+            Language.SetCurrentLanguage(Language.currentLanguageName, false);
 
             foreach (HUD hud in HUD.instancesList)
             {

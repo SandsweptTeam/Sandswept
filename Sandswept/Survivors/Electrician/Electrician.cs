@@ -171,6 +171,21 @@ namespace Sandswept.Survivors.Electrician
 
             LanguageAPI.Add("SANDSWEPT_VOLATILECONTEXT", "Forcefully Insert Battery");
             LanguageAPI.Add("SANDSWEPT_VOLATILEINSERT", "<style=cDeath>[Voltage regulation offline. Rejecting unknown power source.]</style>");
+
+            Body.GetComponent<ModelLocator>()._modelTransform.AddComponent<StupidDebugComponent>();
+        }
+
+        public class StupidDebugComponent : MonoBehaviour {
+            public Transform chest;
+            public float offset = -180f;
+            public void Start() {
+                chest = GetComponent<ChildLocator>().FindChild("Chest");
+            }
+
+            public void LateUpdate() {
+                Vector3 euler = chest.transform.localEulerAngles;
+                chest.transform.localEulerAngles = new Vector3(euler.x, euler.y + offset, euler.z);
+            }
         }
 
         private void OnLSArrival(ILContext il)

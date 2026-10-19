@@ -54,8 +54,8 @@ namespace Sandswept.Drones.Inferno
             SigmaProjectile = PrefabAPI.InstantiateClone(Paths.GameObject.MolotovClusterProjectile, "InfernoShell");
             SigmaProjectile2 = PrefabAPI.InstantiateClone(Paths.GameObject.MolotovSingleProjectile, "InfernoShellSingle");
             SigmaProjectile2.GetComponent<ProjectileController>().ghostPrefab = Paths.GameObject.FireballGhost;
+            SigmaProjectile2.GetComponent<ProjectileController>().ghostPrefabAddress = null;
             SigmaProjectile.GetComponent<ProjectileSimple>().desiredForwardSpeed = 0f;
-            SigmaProjectile.GetComponent<ProjectileImpactExplosion>().explodeOnLifeTimeExpiration = true;
             SigmaProjectile.GetComponent<ProjectileImpactExplosion>().lifetime = 0.5f;
             SigmaProjectile.GetComponent<ProjectileImpactExplosion>().childrenProjectilePrefab = SigmaProjectile2;
             SigmaProjectile.GetComponent<ProjectileImpactExplosion>().childrenCount = 3;

@@ -16,8 +16,6 @@ namespace Sandswept.Enemies.Ivy {
             anim = new(GetModelAnimator());
             seat = GetComponent<VehicleSeat>();
 
-            PlayAnimation("Override, Head", "Idle");
-
             controller = GetModelTransform().GetComponent<IvyModelController>();
             controller.headActive = false;
         }
@@ -28,7 +26,7 @@ namespace Sandswept.Enemies.Ivy {
 
             if (controller.interpolationStopwatch >= 1.2f * controller.interpolationTime && !startedAnim) {
                 startedAnim = true;
-                // PlayAnimation("Body", "Throw", "Generic.playbackRate", duration);
+                PlayAnimation("Body", "Throw", "Generic.playbackRate", duration);
                 base.fixedAge = 0f;
             }
 
@@ -40,6 +38,13 @@ namespace Sandswept.Enemies.Ivy {
             if (base.fixedAge >= duration && startedAnim) {
                 outer.SetNextStateToMain();
             }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+
+            controller.EnableHead(this);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

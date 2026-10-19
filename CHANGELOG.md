@@ -1,3 +1,6 @@
+## 1.4.5 Patch Notes
+- Updated for Hallowed Concepts
+
 ## 1.4.4 Patch Notes
 - Items
   - Removed Equine Electrolyte Blend (relegated to cursed config)

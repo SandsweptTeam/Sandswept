@@ -31,7 +31,7 @@ namespace Sandswept.Enemies.Ivy {
                     main.IvyHeadBody.master.aiComponents[0].customTarget.gameObject = base.characterBody.master.aiComponents[0].customTarget.gameObject;
                     main.controller.headActive = true;
                     base.characterMotor.walkSpeedPenaltyCoefficient = 0f;
-                    // PlayAnimation("Override, Head", "Open", "Generic.playbackRate", 0.5f);
+                    // PlayAnimation("Body", "Open", "Generic.playbackRate", 0.5f);
                 }
             
                 outer.SetNextStateToMain();
@@ -62,7 +62,7 @@ namespace Sandswept.Enemies.Ivy {
             }
 
             IvyMainState main = EntityStateMachine.FindByCustomName(base.characterBody.master.minionOwnership.ownerMaster.GetBody().gameObject, "Body").state as IvyMainState;
-            // main.PlayAnimation("Override, Head", "Close", "Generic.playbackRate", 0.5f);
+            main.PlayAnimation("Body", "Close", "Generic.playbackRate", 0.5f);
             
             outer.SetNextStateToMain();
         }

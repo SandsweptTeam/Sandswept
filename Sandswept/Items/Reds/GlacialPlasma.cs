@@ -164,6 +164,7 @@ namespace Sandswept.Items.Reds
             hitbox.localScale = new Vector3(6f, 6f, 20f);
             hitbox.localPosition = new Vector3(0f, 0f, -4f);
             javelinProjectile.GetComponent<ProjectileController>().ghostPrefab = ghost;
+            javelinProjectile.GetComponent<ProjectileController>().ghostPrefabAddress = null;
 
             var newImpact = PrefabAPI.InstantiateClone(Paths.GameObject.MageIceExplosion, "Glacial Plasma Explosion VFX", false);
 

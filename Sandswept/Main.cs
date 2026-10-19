@@ -325,6 +325,8 @@ namespace Sandswept
             On.RoR2.RoR2Content.Init += OnWwiseInit;
             IL.EntityStates.Drone.DeathState.OnImpactServer += DroneDropFix;
             On.RoR2.SurvivorCatalog.Init += OnSurvivorCatalogFinished;
+
+            AISkillDriverSelectionOverride.Initialize();
         }
 
         private void OnSurvivorCatalogFinished(On.RoR2.SurvivorCatalog.orig_Init orig)
