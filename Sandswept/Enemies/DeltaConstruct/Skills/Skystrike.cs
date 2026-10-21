@@ -87,9 +87,11 @@ namespace Sandswept.Enemies.DeltaConstruct
             speed = laserSpeed;
             damageCoeff = laserDamage;
 
-            trail = DamageTrailManager.DeployDamageTrail(base.characterBody, fireTrailDPS, DeltaConstruct.DeltaBurnyTrail, fireRadius);
-            trail.mergeRadius = 15;
-            trail.minimumMergeTime = 1;
+            // the trail is built from the server's beam impacts and copied to clients, every peer used to build its own slightly different one
+            if (NetworkServer.active)
+            {
+                trail = DamageTrailManager.DeployNetworkedDamageTrail(base.characterBody, fireTrailDPS, DeltaConstruct.DeltaBurnyTrail, fireRadius, mergeRadius: 15, minimumMergeTime: 1);
+            }
 
             Util.PlaySound("Play_majorConstruct_m1_laser_loop", gameObject);
 
@@ -114,7 +116,10 @@ namespace Sandswept.Enemies.DeltaConstruct
                     SingleHit = false,
                     UseUP = true,
                     ImpactCallback = (pos) => {
-                        DamageTrailManager.AddSegment(trail, pos, fireLifetime, resetAllLifetime: true);
+                        if (trail != null)
+                        {
+                            DamageTrailManager.AddSegmentNetworked(trail, pos, fireLifetime, resetAllLifetime: true);
+                        }
                     }
                 });
 
@@ -158,7 +163,10 @@ namespace Sandswept.Enemies.DeltaConstruct
         {
             base.OnExit();
 
-            DamageTrailManager.DestroyTrail(trail);
+            if (trail != null)
+            {
+                DamageTrailManager.DestroyTrailNetworked(trail);
+            }
 
             base.characterMotor.walkSpeedPenaltyCoefficient = 1f;
 

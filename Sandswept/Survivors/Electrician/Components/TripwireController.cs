@@ -215,6 +215,12 @@ namespace Sandswept.Survivors.Electrician
                 return false;
             }
 
+            // the authority keeps sending this while the button is released, don't restart the zip from the current position each time
+            if (isInVehicleMode)
+            {
+                return true;
+            }
+
             seat.AssignPassenger(body.gameObject);
             startPosition = body.transform.position;
             isInVehicleMode = true;
@@ -230,6 +236,12 @@ namespace Sandswept.Survivors.Electrician
 
         public void StartZipClient()
         {
+            // startPosition was only ever set on the server, so clients moved the seat (and themselves) from (0, 0, 0) for the first frames
+            if (!isInVehicleMode && body)
+            {
+                startPosition = body.transform.position;
+            }
+
             head.gameObject.SetActive(false);
 
             lightningEffect.SetActive(true);

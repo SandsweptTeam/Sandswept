@@ -365,7 +365,7 @@ namespace Sandswept.Interactables.Regular
 
         private void Gyatttttt(On.RoR2.SceneDirector.orig_Start orig, SceneDirector self)
         {
-            if (shouldCorruptNextStage && SceneManager.GetActiveScene().name.StartsWith("it"))
+            if (shouldReplaceDrops && SceneManager.GetActiveScene().name.StartsWith("it"))
             {
                 self.teleporterSpawnCard = Paths.InteractableSpawnCard.iscTeleporter;
                 if (Run.instance && (Run.instance.stageClearCount + 1) % 5 == 0)
@@ -425,6 +425,12 @@ namespace Sandswept.Interactables.Regular
                     sceneName = "dampcavesimple";
                 }
                 SceneDef scene = SceneCatalog.FindSceneDef(sceneName);
+                if (!scene)
+                {
+                    orig(self);
+                    return;
+                }
+
                 WeightedSelection<SceneDef> weightedSelection = new();
                 scene.AddDestinationsToWeightedSelection(weightedSelection, (x) =>
                 {
@@ -458,25 +464,30 @@ namespace Sandswept.Interactables.Regular
                     Run.instance.nextStageScene = simulacrumScene;
                 }
             }
+            else if (shouldReplaceDrops && self.useRunNextStageScene)
+            {
+                // leaving the corrupted stage, make sure the next stage comes from the original stage's destinations rather than another simulacrum stage
+                Run.instance.PickNextStageSceneFromCurrentSceneDestinations();
+            }
 
             orig(self);
         }
 
         private void SpawnAndModifySimulacrumDirectors(Scene oldScene, Scene newScene)
         {
-            if (shouldCorruptNextStage)
-            {
-                if (oldScene != null && oldScene.name != null && oldScene.name.StartsWith("it")) {
-                    shouldCorruptNextStage = false;
-                    return;
-                }
+            // oldScene is already unloaded here and usually has no name, so the ruin flag is consumed upon entering the corrupted stage instead
+            // shouldReplaceDrops marks the current stage as the corrupted one and is cleared on any other scene
+            bool enteringCorruptedStage = shouldCorruptNextStage && newScene.IsValid() && newScene.name != null && newScene.name.StartsWith("it");
 
-                if (newScene != null && newScene.name != null && !newScene.name.StartsWith("it"))
+            if (enteringCorruptedStage)
+            {
+                shouldCorruptNextStage = false;
+                shouldReplaceDrops = true;
+
+                if (!NetworkServer.active)
                 {
                     return;
                 }
-
-                shouldReplaceDrops = true;
 
                 var sceneInfo = GameObject.Find("SceneInfo");
                 var obj = GameObject.Instantiate(Paths.GameObject.Director);

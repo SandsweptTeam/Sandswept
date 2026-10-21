@@ -52,7 +52,11 @@ namespace Sandswept.Enemies.ThetaConstruct
                 shieldController.targetHolder.ownerObject = buddy;
                 shieldController.ownerHolder.ownerObject = base.gameObject;
 
-                buddy.gameObject.GetComponent<CharacterBody>().AddTimedBuff(RoR2Content.Buffs.Immune, 15f);
+                // RemoveBuff on exit used to leave the timed entry behind, and re-adding a non-stacking timed buff only refreshes that
+                // entry without adding a stack, so a buddy shielded again within 15s had the shield visuals but no immunity
+                CharacterBody buddyBody = buddy.GetComponent<CharacterBody>();
+                buddyBody.ClearTimedBuffs(RoR2Content.Buffs.Immune);
+                buddyBody.AddTimedBuff(RoR2Content.Buffs.Immune, duration);
 
                 base.characterBody.master.GetComponent<BaseAI>().leader.gameObject = buddy;
 
@@ -130,11 +134,29 @@ namespace Sandswept.Enemies.ThetaConstruct
 
             if (base.isAuthority && buddy)
             {
-                buddy.gameObject.GetComponent<CharacterBody>().RemoveBuff(RoR2Content.Buffs.Immune);
+                // another theta may still be shielding the same buddy, don't take its immunity away
+                if (!IsShieldedByOther(buddy, shieldInstance))
+                {
+                    buddy.gameObject.GetComponent<CharacterBody>().ClearTimedBuffs(RoR2Content.Buffs.Immune);
+                }
+
                 Util.PlaySound("Play_loader_R_expire", buddy);
             }
 
             Util.PlaySound("Play_loader_R_expire", gameObject);
+        }
+
+        public static bool IsShieldedByOther(GameObject target, GameObject ignoredShield)
+        {
+            foreach (ThetaShieldController shield in GameObject.FindObjectsOfType<ThetaShieldController>())
+            {
+                if (shield.gameObject != ignoredShield && shield.targetHolder && shield.targetHolder.ownerObject == target)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 

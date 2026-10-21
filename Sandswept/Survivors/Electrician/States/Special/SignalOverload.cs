@@ -83,7 +83,10 @@ namespace Sandswept.Survivors.Electrician.States
                     }
                 }
 
-                var percent = healthComponent.fullHealth * baseMax;
+                // scale off the innate (level-scaled base) shield rather than max health, otherwise health items lowered the damage
+                // 40% of base health == 90% of base shield for vol-t at every level, so an itemless vol-t gets the same numbers as before
+                var innateShield = characterBody.baseMaxShield + characterBody.levelMaxShield * (characterBody.level - 1f);
+                var percent = innateShield > 0f ? innateShield * 0.9f : healthComponent.fullHealth * baseMax;
 
                 radiusMultiplierParam = Util.Remap(shieldDrained, 0f, percent, 1f, 1.4f);
                 damageMultiplierParam = Util.Remap(shieldDrained, 0f, percent, 1f, 1.611f);
@@ -267,7 +270,11 @@ namespace Sandswept.Survivors.Electrician.States
                 Util.PlaySound("Play_item_proc_armorReduction_hit", gameObject);
                 Util.PlaySound("Play_jellyfish_detonate", end.gameObject);
 
-                HandleBlastAuthority(pos);
+                // states run on every peer, so this used to fire the blast once per player in the lobby (clients report blast hits to the server)
+                if (NetworkServer.active)
+                {
+                    HandleBlastServer(pos);
+                }
             }
 
             if (fixedAge >= duration)
@@ -309,7 +316,7 @@ namespace Sandswept.Survivors.Electrician.States
             return InterruptPriority.Frozen;
         }
 
-        public void HandleBlastAuthority(Vector3 position)
+        public void HandleBlastServer(Vector3 position)
         {
             SphereSearch search = new()
             {
@@ -442,14 +449,11 @@ namespace Sandswept.Survivors.Electrician.States
                 temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
             }
 
+            // orbs only deal damage on the server, so the blast runs there no matter who has authority over vol-t
             if (NetworkServer.active)
             {
                 characterBody.AddTimedBuff(Buffs.ShieldSpeed.instance.BuffDef, 7f);
-            }
-
-            if (isAuthority)
-            {
-                HandleBlastAuthority();
+                HandleBlastServer();
             }
         }
 
@@ -470,7 +474,7 @@ namespace Sandswept.Survivors.Electrician.States
             characterMotor.walkSpeedPenaltyCoefficient = 1f;
         }
 
-        public void HandleBlastAuthority()
+        public void HandleBlastServer()
         {
             SphereSearch search = new()
             {

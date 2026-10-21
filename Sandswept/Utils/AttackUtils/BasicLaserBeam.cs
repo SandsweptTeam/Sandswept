@@ -124,27 +124,32 @@ namespace Sandswept.Utils
         public BulletAttack GetBulletAttack()
         {
             BulletAttack attack = new();
-            attack.radius = lr.startWidth * 0.75f;
+            // startWidth doesn't include widthMultiplier, so the hitbox used to be a thin core of the (much wider) firing beam
+            attack.radius = lr.startWidth * lr.widthMultiplier * 0.5f;
             attack.damage = Owner.damage * DamageCoefficient;
             attack.origin = (info.FiringMode == LaserFiringMode.TrackAim) ? Owner.inputBank.aimOrigin : TargetMuzzle.position;
-            attack.aimVector = (end.transform.position - TargetMuzzle.position).normalized;
+            // aim at the endpoint that was just calculated from this origin. this used to aim from the muzzle at the visual endpoint,
+            // which lags a tick behind and sits 5m past the impact, so the bullet ran beside / behind the target instead of at it
+            attack.aimVector = (targetEndpoint - attack.origin).normalized;
+            attack.maxDistance = info.MaxRange + 5f;
             attack.procCoefficient = 1f;
             attack.owner = Owner.gameObject;
             attack.falloffModel = BulletAttack.FalloffModel.None;
             attack.isCrit = Util.CheckRoll(Owner.crit, Owner.master);
             attack.stopperMask = LayerIndex.world.mask;
             attack.hitCallback = (BulletAttack attack, ref BulletAttack.BulletHit hit) => {
-                bool res = BulletAttack.defaultHitCallback(attack, ref hit);
-
-                if (info.SingleHit && hit.hurtBox && hit.hurtBox.healthComponent) {
-                    if (alreadyDamaged.Contains(hit.hurtBox.healthComponent.body)) {
+                // this has to be checked before the default callback, which is what deals the damage.
+                // it used to run after, so single hit beams hit every tick and could melt anyone they tracked
+                if (info.SingleHit && hit.hitHurtBox && hit.hitHurtBox.healthComponent) {
+                    CharacterBody hitBody = hit.hitHurtBox.healthComponent.body;
+                    if (alreadyDamaged.Contains(hitBody)) {
                         return false;
                     }
 
-                    alreadyDamaged.Add(hit.hitHurtBox.healthComponent.body);
+                    alreadyDamaged.Add(hitBody);
                 }
 
-                return res;
+                return BulletAttack.defaultHitCallback(attack, ref hit);
             };
 
             return attack;

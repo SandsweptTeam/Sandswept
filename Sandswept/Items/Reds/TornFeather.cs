@@ -1,4 +1,6 @@
 using LookingGlass.ItemStatsNameSpace;
+using R2API.Networking;
+using R2API.Networking.Interfaces;
 using Rebindables;
 using Rewired;
 using RoR2.CharacterAI;
@@ -80,6 +82,7 @@ namespace Sandswept.Items.Reds
         public static ModKeybind FeatherDash = RebindAPI.RegisterModKeybind(new ModKeybind("SANDSWEPT_INPUT_FEATHER".Add("Torn Feather Dash"), KeyCode.F, 10, "Jump"));
 
         public static GameObject particles;
+        public static NetworkSoundEventDef dashSound;
         public override Dictionary<string, Func<string>> LangReplacements => new Dictionary<string, Func<string>>()
         {
             {"%FEATHERKEY%", () => {
@@ -91,6 +94,12 @@ namespace Sandswept.Items.Reds
         {
             base.Init();
             SetUpVFX();
+
+            NetworkingAPI.RegisterMessageType<FeatherDashSync>();
+
+            dashSound = ScriptableObject.CreateInstance<NetworkSoundEventDef>();
+            dashSound.eventName = "Play_huntress_shift_mini_blink";
+            ContentAddition.AddNetworkSoundEventDef(dashSound);
 
             Main.onInputAvailable += Refresh;
             On.RoR2.InputMapperHelper.InputMapperOnInputMappedEvent += OnInputMapped;
@@ -191,6 +200,29 @@ namespace Sandswept.Items.Reds
         {
             RecalculateStatsAPI.GetStatCoefficients += HandleStats;
             CharacterBody.onBodyInventoryChangedGlobal += CharacterBody_onBodyInventoryChangedGlobal;
+            On.RoR2.GlobalEventManager.IsImmuneToFallDamage += IsImmuneToFallDamage;
+            On.RoR2.GlobalEventManager.OnCharacterHitGroundServer += OnCharacterHitGroundServer;
+        }
+
+        // fall damage is decided by the server, so the dashing player's server-side behaviour tracks immunity until they land
+        private bool IsImmuneToFallDamage(On.RoR2.GlobalEventManager.orig_IsImmuneToFallDamage orig, GlobalEventManager self, CharacterBody body)
+        {
+            if (body && body.TryGetComponent(out FeatherBehaviour featherBehaviour) && featherBehaviour.fallDamageImmunityTimer > 0f)
+            {
+                return true;
+            }
+
+            return orig(self, body);
+        }
+
+        private void OnCharacterHitGroundServer(On.RoR2.GlobalEventManager.orig_OnCharacterHitGroundServer orig, GlobalEventManager self, CharacterBody characterBody, CharacterMotor.HitGroundInfo hitGroundInfo)
+        {
+            orig(self, characterBody, hitGroundInfo);
+
+            if (characterBody && characterBody.TryGetComponent(out FeatherBehaviour featherBehaviour))
+            {
+                featherBehaviour.fallDamageImmunityTimer = 0f;
+            }
         }
 
         private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
@@ -243,6 +275,8 @@ namespace Sandswept.Items.Reds
         public const float minAirborneTimer = 0.5f;
         public const float dashTravelDistance = 15f;
         public const float dashDuration = 0.2f;
+        public const float fallDamageImmunityDuration = 5f;
+        public float fallDamageImmunityTimer = 0f;
         public float airborneTimer = 0f;
         public float dashCooldownTimer = 0f;
         public float dashTimer = 0f;
@@ -283,11 +317,6 @@ namespace Sandswept.Items.Reds
 
         public void Update()
         {
-            if (body.inputBank.GetButtonState(TornFeather.FeatherDash).justPressed && body.inputBank.moveVector != Vector3.zero)
-            {
-                PerformDash();
-            }
-
             if (dashTrail)
             {
                 dashTrail.gameObject.transform.position = body.corePosition;
@@ -301,6 +330,17 @@ namespace Sandswept.Items.Reds
 
         public void FixedUpdate()
         {
+            if (fallDamageImmunityTimer > 0f)
+            {
+                fallDamageImmunityTimer -= Time.fixedDeltaTime;
+            }
+
+            // modded button states are pushed in FixedUpdate, checking them in Update dashed multiple times per press at high fps and missed presses at low fps
+            if (body.hasEffectiveAuthority && body.inputBank && body.inputBank.GetButtonState(TornFeather.FeatherDash).justPressed && body.inputBank.moveVector != Vector3.zero)
+            {
+                PerformDash();
+            }
+
             if (DashesRemaining < 2 && !body.characterMotor.isGrounded)
             {
                 airborneTimer += Time.fixedDeltaTime;
@@ -404,29 +444,7 @@ namespace Sandswept.Items.Reds
             localHurtboxIntangibleCount++;
             body.hurtBoxGroup.hurtBoxesDeactivatorCounter++;
 
-            Transform modelTransform = null;
-            if (body.modelLocator)
-            {
-                modelTransform = body.modelLocator.modelTransform;
-            }
-
-            if (modelTransform)
-            {
-                var overlayMat = vfxCycle switch
-                {
-                    3 => TornFeather.blueOverlay,
-                    2 => TornFeather.pinkOverlay,
-                    _ => TornFeather.whiteOverlay
-                };
-
-                var temporaryOverlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
-                temporaryOverlay.duration = 0.5f;
-                temporaryOverlay.animateShaderAlpha = true;
-                temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
-                temporaryOverlay.destroyComponentOnEnd = true;
-                temporaryOverlay.originalMaterial = overlayMat;
-                temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
-            }
+            PlayDashOverlay(vfxCycle);
 
             DashesRemaining -= 1;
             vfxCycle--;
@@ -437,7 +455,17 @@ namespace Sandswept.Items.Reds
 
             body.gameObject.layer = LayerIndex.fakeActor.intVal;
             body.characterMotor.Motor.RebuildCollidableLayers();
-            body.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, dashDuration + 0.2f);
+
+            var dashSync = new FeatherDashSync(body.gameObject, vfxCycle);
+            if (NetworkServer.active)
+            {
+                dashSync.OnReceived();
+            }
+            else
+            {
+                // clients can't add buffs or touch fall damage, and r2api's relay of client messages to other clients is broken, so the server handles and rebroadcasts it
+                dashSync.Send(NetworkDestination.Server);
+            }
 
             dashVector = body.inputBank.moveVector;
 
@@ -473,6 +501,96 @@ namespace Sandswept.Items.Reds
             }
 
             EffectManager.SpawnEffect(TornFeather.particles, new EffectData() { scale = 16f, origin = body.corePosition }, true);
+        }
+
+        public void PlayDashOverlay(int cycle)
+        {
+            Transform modelTransform = null;
+            if (body.modelLocator)
+            {
+                modelTransform = body.modelLocator.modelTransform;
+            }
+
+            if (!modelTransform)
+            {
+                return;
+            }
+
+            var overlayMat = cycle switch
+            {
+                3 => TornFeather.blueOverlay,
+                2 => TornFeather.pinkOverlay,
+                _ => TornFeather.whiteOverlay
+            };
+
+            var temporaryOverlay = TemporaryOverlayManager.AddOverlay(modelTransform.gameObject);
+            temporaryOverlay.duration = 0.5f;
+            temporaryOverlay.animateShaderAlpha = true;
+            temporaryOverlay.alphaCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
+            temporaryOverlay.destroyComponentOnEnd = true;
+            temporaryOverlay.originalMaterial = overlayMat;
+            temporaryOverlay.inspectorCharacterModel = modelTransform.GetComponent<CharacterModel>();
+        }
+    }
+
+    public class FeatherDashSync : INetMessage
+    {
+        public GameObject target;
+        public int vfxCycle;
+
+        public FeatherDashSync()
+        {
+        }
+
+        public FeatherDashSync(GameObject target, int vfxCycle)
+        {
+            this.target = target;
+            this.vfxCycle = vfxCycle;
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(target);
+            writer.Write(vfxCycle);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            target = reader.ReadGameObject();
+            vfxCycle = reader.ReadInt32();
+        }
+
+        public void OnReceived()
+        {
+            if (!target || !target.TryGetComponent(out CharacterBody body))
+            {
+                return;
+            }
+
+            target.TryGetComponent(out FeatherBehaviour featherBehaviour);
+
+            if (NetworkServer.active)
+            {
+                body.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, FeatherBehaviour.dashDuration + 0.2f);
+
+                if (featherBehaviour)
+                {
+                    featherBehaviour.fallDamageImmunityTimer = FeatherBehaviour.fallDamageImmunityDuration;
+                }
+
+                new FeatherDashSync(target, vfxCycle).Send(NetworkDestination.Clients);
+            }
+
+            // the dashing player already played these locally
+            if (!body.hasEffectiveAuthority)
+            {
+                Util.PlaySound(TornFeather.dashSound.eventName, target);
+
+                if (featherBehaviour)
+                {
+                    featherBehaviour.PlayDashOverlay(vfxCycle);
+                }
+            }
         }
     }
 }

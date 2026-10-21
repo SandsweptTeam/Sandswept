@@ -29,6 +29,21 @@ namespace Sandswept.Enemies
             }, false);
 
             Util.PlaySound("Play_minorConstruct_attack_explode", base.gameObject);
+            ExpireRagdoll(cachedModelTransform);
+        }
+
+        public static float ragdollLifetime = 8f;
+
+        // dying releases the model as a corpse that only gets cleaned up by the corpse limit, and construct ragdolls
+        // start jittering and stretching after a while, so they get removed after a few seconds instead
+        public static void ExpireRagdoll(Transform model)
+        {
+            if (!model)
+            {
+                return;
+            }
+
+            model.gameObject.AddComponent<DestroyOnTimer>().duration = ragdollLifetime;
         }
     }
 }

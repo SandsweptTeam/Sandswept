@@ -43,6 +43,7 @@ namespace Sandswept.Elites
         public static BuffDef insideAuraBuff;
         public static BuffDef jumpDisabledBuff;
         public static GameObject groundVFX;
+        public static NetworkSoundEventDef pullDownSound;
         public static GameObject distortionVFX;
 
         [ConfigField("Damage Multiplier", "Decimal.", 6f)]
@@ -885,7 +886,11 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
 
             ContentAddition.AddEffect(groundVFX);
 
-            jumpDisabledBuff = ScriptableObject.CreateInstance<BuffDef>();
+            pullDownSound = ScriptableObject.CreateInstance<NetworkSoundEventDef>();
+            pullDownSound.eventName = "Play_artifactBoss_attack1_explode";
+            ContentAddition.AddNetworkSoundEventDef(pullDownSound);
+
+            jumpDisabledBuff =ScriptableObject.CreateInstance<BuffDef>();
             jumpDisabledBuff.isDebuff = false;
             jumpDisabledBuff.isCooldown = false;
             jumpDisabledBuff.canStack = false;
@@ -925,7 +930,8 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
             var areaIndicator = aura.transform.Find("AreaIndicator");
             var softGlow = areaIndicator.Find("SoftGlow");
             var sphere = areaIndicator.Find("Sphere");
-            sphere.transform.localScale = Vector3.one;
+            // set on the prefab rather than per instance, otherwise clients get the networked copy at the wrong size
+            sphere.transform.localScale = Vector3.one * 2f;
             var light = areaIndicator.Find("Point Light").GetComponent<Light>();
             var core = areaIndicator.Find("Core");
 
@@ -1160,10 +1166,17 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
             healthComponent = GetComponent<HealthComponent>();
             body = healthComponent.body;
             radius = Util.Remap(body.baseMaxHealth, 0f, 1125f, Osmium.minimumAuraRadius, Osmium.maximumAuraRadius);
+
+            // this component gets added on clients too when the buff syncs, the ward is networked so only the server should create it
+            // (clients used to spawn a second local one, hence the double radius indicator)
+            if (!NetworkServer.active)
+            {
+                return;
+            }
+
             wardInstance = Instantiate(Osmium.aura, body.transform);
             wardInstance.GetComponent<BuffWard>().Networkradius = radius;
             wardInstance.GetComponent<TeamFilter>().teamIndex = TeamIndex.None;
-            wardInstance.transform.Find("AreaIndicator/Sphere").localScale = Vector3.one * 2f;
 
             /*
             var sphere = wardInstance.transform.Find("AreaIndicator/Sphere");
@@ -1182,8 +1195,13 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
 
         public void FixedUpdate()
         {
+            if (!NetworkServer.active)
+            {
+                return;
+            }
+
             timer += Time.fixedDeltaTime;
-            if (!healthComponent.alive && NetworkServer.active)
+            if (!healthComponent.alive)
             {
                 Destroy(this);
             }
@@ -1247,7 +1265,8 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
 
             if (anyEnemies)
             {
-                Util.PlaySound("Play_artifactBoss_attack1_explode", gameObject);
+                // pull logic is server-only now, so the sound has to be networked
+                EffectManager.SimpleSoundEffect(Osmium.pullDownSound.index, body.corePosition, true);
             }
 
             yield return null;
@@ -1284,7 +1303,10 @@ localScale = new Vector3(0.5F, 0.5F, 0.5F)
 
         public void OnDestroy()
         {
-            NetworkServer.Destroy(wardInstance);
+            if (NetworkServer.active && wardInstance)
+            {
+                NetworkServer.Destroy(wardInstance);
+            }
         }
     }
 }

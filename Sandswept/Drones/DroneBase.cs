@@ -64,9 +64,7 @@ namespace Sandswept.Drones
             
             DroneBody.GetComponent<CharacterBody>().bodyFlags = CharacterBody.BodyFlags.Mechanical | CharacterBody.BodyFlags.Drone;
 
-            _display = PrefabAPI.InstantiateClone(DroneBody.GetComponent<ModelLocator>()._modelTransform.gameObject, DroneBody.name.Replace("Body", "Display"));
-            _display.RemoveComponent<CharacterModel>();
-            _display.RemoveComponent<AimAnimator>();
+            _display = CreatePickupDisplay(DroneBody.GetComponent<ModelLocator>()._modelTransform.gameObject, DroneBody.name.Replace("Body", "Display"));
             droneDef.displayPrefab = _display;
 
             if (!droneDef.iconSprite) {
@@ -131,6 +129,86 @@ namespace Sandswept.Drones
         }
 
         public abstract DroneDef GetDroneDef();
+
+        // PickupDisplay scales the model so the bounds of its *first* renderer fit an ideal size and ignores the prefab's scale,
+        // so when the first renderer is only a small part of the drone the whole thing becomes huge (e.g. in drone shops).
+        // an invisible skinned renderer covering the whole model is placed first so the entire drone gets measured instead (same fix as gradius)
+        public static GameObject CreatePickupDisplay(GameObject model, string name)
+        {
+            GameObject modelClone = PrefabAPI.InstantiateClone(model, name + "Model", false);
+            modelClone.RemoveComponent<CharacterModel>();
+            modelClone.RemoveComponent<AimAnimator>();
+            foreach (Collider collider in modelClone.GetComponentsInChildren<Collider>(true))
+            {
+                GameObject.DestroyImmediate(collider);
+            }
+
+            GameObject display = new(name);
+            display.transform.SetParent(modelClone.transform.parent, false);
+            modelClone.transform.SetParent(display.transform, false);
+
+            Bounds modelBounds = GetLocalModelBounds(display.transform);
+            SkinnedMeshRenderer boundsRenderer = display.AddComponent<SkinnedMeshRenderer>();
+            boundsRenderer.sharedMesh = new Mesh { name = name + "Bounds", bounds = modelBounds };
+            boundsRenderer.sharedMaterials = new Material[0];
+            boundsRenderer.rootBone = null;
+            boundsRenderer.updateWhenOffscreen = false;
+            boundsRenderer.localBounds = modelBounds;
+            boundsRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+            return display;
+        }
+
+        // Renderer.bounds is empty for inactive prefabs, so the bounds are built from the meshes instead
+        private static Bounds GetLocalModelBounds(Transform root)
+        {
+            Matrix4x4 worldToRoot = root.worldToLocalMatrix;
+            bool hasBounds = false;
+            Bounds result = new();
+
+            void Encapsulate(Transform space, Bounds localBounds)
+            {
+                Matrix4x4 toRoot = worldToRoot * space.localToWorldMatrix;
+                Vector3 min = localBounds.min, max = localBounds.max;
+                for (int i = 0; i < 8; i++)
+                {
+                    Vector3 corner = toRoot.MultiplyPoint3x4(new Vector3((i & 1) == 0 ? min.x : max.x, (i & 2) == 0 ? min.y : max.y, (i & 4) == 0 ? min.z : max.z));
+                    if (hasBounds)
+                    {
+                        result.Encapsulate(corner);
+                    }
+                    else
+                    {
+                        result = new Bounds(corner, Vector3.zero);
+                        hasBounds = true;
+                    }
+                }
+            }
+
+            foreach (MeshRenderer meshRenderer in root.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                MeshFilter meshFilter = meshRenderer.GetComponent<MeshFilter>();
+                if (meshFilter && meshFilter.sharedMesh)
+                {
+                    Encapsulate(meshRenderer.transform, meshFilter.sharedMesh.bounds);
+                }
+            }
+
+            foreach (SkinnedMeshRenderer skinnedRenderer in root.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                if (skinnedRenderer.sharedMesh)
+                {
+                    Encapsulate(skinnedRenderer.rootBone ? skinnedRenderer.rootBone : skinnedRenderer.transform, skinnedRenderer.localBounds);
+                }
+            }
+
+            if (!hasBounds)
+            {
+                result = new Bounds(Vector3.zero, Vector3.one);
+            }
+
+            return result;
+        }
         public GameObject CopyDrone1MasterIfDoesntExist() {
             if (!_clonedMaster) {
                 _clonedMaster = PrefabAPI.InstantiateClone(Paths.GameObject.Drone1Master, DroneBody.name.Replace("Body", "Master"));

@@ -11,6 +11,7 @@ using Sandswept.Utils.Components;
 using UnityEngine.SceneManagement;
 using RoR2.Stats;
 using R2API.Networking;
+using R2API.Networking.Interfaces;
 
 namespace Sandswept.Survivors.Electrician
 {
@@ -117,6 +118,7 @@ namespace Sandswept.Survivors.Electrician
             cb.baseNameToken.Replace("_NAME", "_SUBTITLE").Add("Power in Excess");
 
             On.RoR2.HealthComponent.TakeDamageProcess += HandleGroundingShockAndPassive;
+            NetworkingAPI.RegisterMessageType<VoltShieldBreakSync>();
 
             UnlockableDefs.Init();
 
@@ -248,7 +250,9 @@ namespace Sandswept.Survivors.Electrician
         {
             yield return orig(self);
 
-            if (SceneManager.GetActiveScene().name == Scenes.SunderedGrove)
+            // Stage.Start runs on clients too, which used to spawn a local un-networked broken vol-t on top of the server's one.
+            // clients would then interact with / hit their local copy, which the server doesn't know about, so they could never unlock vol-t
+            if (SceneManager.GetActiveScene().name == Scenes.SunderedGrove && NetworkServer.active)
             {
                 bool isAnyonePlayingVolt = true;
                 int currentVoltUnlockCount = 0;
@@ -308,10 +312,7 @@ namespace Sandswept.Survivors.Electrician
                 }
 
                 GameObject obj = GameObject.Instantiate(BrokenElectricianBody, pos, rot);
-                if (NetworkServer.active)
-                {
-                    NetworkServer.Spawn(obj);
-                }
+                NetworkServer.Spawn(obj);
             }
         }
 
@@ -375,8 +376,57 @@ namespace Sandswept.Survivors.Electrician
 
             if (hadShield && self.body.bodyIndex == ElectricianIndex && self.shield <= 0)
             {
-                EntityStateMachine machine = EntityStateMachine.FindByCustomName(self.gameObject, "Shield");
+                // the shield state machine belongs to whoever has authority over the body. setting it from the server for a client's vol-t
+                // only ran it on the server, so clients never saw the overlay (and the authority-gated blast never fired)
+                if (self.body.hasEffectiveAuthority)
+                {
+                    EnterShieldBreakState(self.gameObject);
+                }
+                else if (self.body.TryGetComponent(out NetworkIdentity identity) && identity.clientAuthorityOwner != null)
+                {
+                    new VoltShieldBreakSync(self.gameObject).Send(identity.clientAuthorityOwner);
+                }
+            }
+        }
+
+        public static void EnterShieldBreakState(GameObject bodyObject)
+        {
+            EntityStateMachine machine = EntityStateMachine.FindByCustomName(bodyObject, "Shield");
+            if (machine)
+            {
                 machine.SetNextState(new SignalOverloadFire());
+            }
+        }
+
+        public class VoltShieldBreakSync : INetMessage
+        {
+            public GameObject target;
+
+            public VoltShieldBreakSync()
+            {
+            }
+
+            public VoltShieldBreakSync(GameObject target)
+            {
+                this.target = target;
+            }
+
+            public void Serialize(NetworkWriter writer)
+            {
+                writer.Write(target);
+            }
+
+            public void Deserialize(NetworkReader reader)
+            {
+                target = reader.ReadGameObject();
+            }
+
+            public void OnReceived()
+            {
+                if (target && Util.HasEffectiveAuthority(target))
+                {
+                    EnterShieldBreakState(target);
+                }
             }
         }
 
