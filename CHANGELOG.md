@@ -1,3 +1,41 @@
+## 1.4.6 Patch Notes
+## 1.4.6 Patch Notes
+### Thank you Phreel for this patch
+- **VOL-T**
+  - Signal Overload: damage now scales off VOL-T's innate shield, so health items no longer lower it.
+  - Volatile Shields: the overlay now shows for clients when their shield breaks. The blast also used to fire once per player in the lobby; it now runs once, on the host.
+  - Static Snare: clients no longer flash to the (0,0,0) map coordinate when zipping.
+  - Galvanic Bolt: clients now see the radius indicator.
+- **Items**
+  - Makeshift Plate:
+  - Fixed the multiplayer desync ("malformed packet"). The sync message was being sent from clients too, and it didn't handle the body not existing yet on a client. Now only the host sends it.
+  - Max plating now keeps up with max health on level-ups and health items, so the bar's fill amount is correct.
+  - Universal VIP Pass + Sale Star: VIP Pass now adds to Sale Star's drop count instead of overwriting it, so both work on the same chest.
+  - Temporal Transistor:
+  - Extra jumps now go through the game's normal jump-count stat, which should fix the Artificer jetpack delays.
+  - Fixed clients refreshing the buff mid-air.
+  - Other players now hear the custom jump sound instead of Hopoo Feather's.
+  - Torn Feather:
+  - Input moved to the fixed physics tick. That should fix double dashes at high FPS and the dash being unusable at 30 FPS.
+  - Fixed the default key showing as "@".
+  - Fall damage is disabled during the dash and briefly after it.
+  - Other players now hear the dash sound and see the overlay.
+  - Hallowed Ichor:
+  - The blue chest outline now shows for clients.
+  - Chests keep reopening when the host (or whoever holds the item) dies.
+  - Fractured Timepiece: Drifter's Repossess only counts the swing that actually happens, so spamming sprint-cancel no longer refunds the special cooldown endlessly.
+  - Void corruption: a list-index bug in Main.cs stopped the last few void items from corrupting whenever any item was disabled. That covers Sun Fragment → Millenium and Atoll → Sacrificial Band.
+  - Amber Knife: the pickup model is centered now, and so is the logbook camera.
+- **Enemies**
+  - Enemy logs: Sandswept enemies' logbook unlocks were never registered, so logs kept dropping forever. They are registered now.
+  - Delta Construct trails:
+  - Trails no longer hurt allies of the construct's team, the player when the construct is an ally, or the Monster team.
+  - The trail's damage value was also being overwritten with the raw coefficient, and that's fixed too.
+  - Osmium elite: clients were spawning a second, local aura, which caused the double radius indicator. Now only the host creates it, and the pull sound is networked.
+- **Interactables**
+  - Shrine of Ruin: the corruption now ends after the corrupted stage, instead of becoming permanent or looping simulacrum stages.
+  - Drones too large in drone shops: fixed with the same approach used in Gradius.
+
 ## 1.4.5 Patch Notes
 - Updated for Hallowed Concepts
 
