@@ -31,7 +31,7 @@
 <details>
 <summary>Click to expand/collapse</summary>
 
-## New Survivors!
+### New Survivors!
 <details>
 <summary>Click to expand/collapse</summary>
 <table>
@@ -173,7 +173,7 @@
 </table>
 </details>
 
-## New Enemies!
+### New Enemies!
 <details>
 <summary>Click to expand/collapse</summary>
 <table>
@@ -220,7 +220,7 @@
 </table>
 </details>
 
-## New Elites!
+### New Elites!
 <details>
 <summary>Click to expand/collapse</summary>
 <table>
@@ -255,7 +255,7 @@
 </table>
 </details>
 
-## New Interactables!
+### New Interactables!
 <details>
 <summary>Click to expand/collapse</summary>
 <table>
@@ -310,7 +310,7 @@
 </table>
 </details>
 
-## New Items!
+### New Items!
 <details>
 <summary>Click to expand/collapse</summary>
 <table>
