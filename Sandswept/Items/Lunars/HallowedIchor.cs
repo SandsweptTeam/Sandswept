@@ -97,6 +97,7 @@ namespace Sandswept.Items.Lunars
             permanentHallowedIchorTracker = new GameObject("Hallowed Ichor Tracker", typeof(SetDontDestroyOnLoad), typeof(HallowedIchorController));
             NetworkingAPI.RegisterMessageType<CallRecalculate>();
             NetworkingAPI.RegisterMessageType<CallUpdateValue>();
+            NetworkingAPI.RegisterMessageType<HallowedIchorHighlightSync>();
             SetUpVFX();
         }
 
@@ -280,7 +281,8 @@ namespace Sandswept.Items.Lunars
                 anyoneHadHallowedIchorThisRun = true;
             }
 
-            itemCount = GetPlayerItemCountGlobal(instance.ItemDef.itemIndex, true);
+            // dead players still count, otherwise chests stop reopening whenever the holder dies even though the difficulty increase stays
+            itemCount = GetPlayerItemCountGlobal(instance.ItemDef.itemIndex, false);
             // Main.ModLogger.LogError("TrackStatCount: itemCount set to " + itemCount);
             if (itemCount > 0)
             {
@@ -346,11 +348,7 @@ namespace Sandswept.Items.Lunars
                 {
                     // Main.ModLogger.LogError("opened count is more than equal to max purchases, returning, cant drop item");
                     hallowedIchorChestController.canDropItem = false;
-                    if (interactableObject.TryGetComponent<Highlight>(out var highlight))
-                    {
-                        highlight.strength = 0f;
-                        highlight.isOn = false;
-                    }
+                    new HallowedIchorHighlightSync(interactableObject, false).Send(NetworkDestination.Clients);
                     return;
                 }
 
@@ -409,13 +407,8 @@ namespace Sandswept.Items.Lunars
             yield return new WaitForSeconds(EntityStates.Barrel.Closing.duration / 2f);
 
             EffectManager.SpawnEffect(vfx, effectData, true);
-            if (interactableObject.TryGetComponent<Highlight>(out var highlight))
-            {
-                highlight.highlightColor = Highlight.HighlightColor.custom;
-                highlight.CustomColor = hallowedIchorBlue;
-                highlight.strength = 1f;
-                highlight.isOn = true;
-            }
+            // this coroutine only runs on the server, so the outline has to be sent to clients
+            new HallowedIchorHighlightSync(interactableObject, true).Send(NetworkDestination.Clients);
 
             yield return new WaitForSeconds(EntityStates.Barrel.Closing.duration / 2f);
 
@@ -459,6 +452,55 @@ namespace Sandswept.Items.Lunars
     {
         public int openedCount = 0;
         public bool canDropItem = false;
+    }
+
+    public class HallowedIchorHighlightSync : INetMessage
+    {
+        public GameObject chest;
+        public bool isOn;
+
+        public HallowedIchorHighlightSync()
+        {
+        }
+
+        public HallowedIchorHighlightSync(GameObject chest, bool isOn)
+        {
+            this.chest = chest;
+            this.isOn = isOn;
+        }
+
+        public void Serialize(NetworkWriter writer)
+        {
+            writer.Write(chest);
+            writer.Write(isOn);
+        }
+
+        public void Deserialize(NetworkReader reader)
+        {
+            chest = reader.ReadGameObject();
+            isOn = reader.ReadBoolean();
+        }
+
+        public void OnReceived()
+        {
+            if (!chest || !chest.TryGetComponent<Highlight>(out var highlight))
+            {
+                return;
+            }
+
+            if (isOn)
+            {
+                highlight.highlightColor = Highlight.HighlightColor.custom;
+                highlight.CustomColor = HallowedIchor.hallowedIchorBlue;
+                highlight.strength = 1f;
+                highlight.isOn = true;
+            }
+            else
+            {
+                highlight.strength = 0f;
+                highlight.isOn = false;
+            }
+        }
     }
 
     public class HallowedIchorController : MonoBehaviour

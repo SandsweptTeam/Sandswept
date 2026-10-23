@@ -35,7 +35,7 @@ namespace Sandswept.Survivors.Electrician
             {
                 foreach (PlayerCharacterMasterController pcmc in PlayerCharacterMasterController.instances)
                 {
-                    if (pcmc.body && ((Vector3.Distance(pcmc.body.corePosition, base.transform.position) < 40f) || damageInfo.attacker.GetComponent<CharacterBody>() == pcmc.body))
+                    if (pcmc.body && ((Vector3.Distance(pcmc.body.corePosition, base.transform.position) < 40f) || (damageInfo.attacker && damageInfo.attacker == pcmc.body.gameObject)))
                     {
                         OnUserUnlock?.Invoke(pcmc.body);
                         didAnyoneUnlock = true;
@@ -69,6 +69,15 @@ namespace Sandswept.Survivors.Electrician
             }
             else
             {
+                // unlock before the explosion, it kills everyone nearby and dead players don't have a body to grant it to
+                foreach (PlayerCharacterMasterController pcmc in PlayerCharacterMasterController.instances)
+                {
+                    if (pcmc.body && ((Vector3.Distance(pcmc.body.corePosition, base.transform.position) < 40f) || (sigma && sigma.gameObject == pcmc.body.gameObject)))
+                    {
+                        OnUserUnlock?.Invoke(pcmc.body);
+                    }
+                }
+
                 BlastAttack attack = new();
                 attack.teamIndex = TeamIndex.Void;
                 attack.baseDamage = 999999f;
@@ -94,14 +103,6 @@ namespace Sandswept.Survivors.Electrician
                 body.AddBuff(RoR2Content.Buffs.Intangible);
                 base.gameObject.CallNetworkedMethod("HandleActivationEffects");
                 HandleActivationEffects();
-
-                foreach (PlayerCharacterMasterController pcmc in PlayerCharacterMasterController.instances)
-                {
-                    if (pcmc.body && ((Vector3.Distance(pcmc.body.corePosition, base.transform.position) < 40f)))
-                    {
-                        OnUserUnlock?.Invoke(pcmc.body);
-                    }
-                }
             }
         }
 

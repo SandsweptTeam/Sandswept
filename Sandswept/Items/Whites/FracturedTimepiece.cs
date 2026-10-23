@@ -184,6 +184,18 @@ namespace Sandswept.Items.Whites
             On.RoR2.CharacterBody.OnSkillActivated += CharacterBody_OnSkillActivated;
             On.EntityStates.Mage.Weapon.PrepWall.OnExit += PrepWall_OnExit;
             On.EntityStates.Engi.EngiMissilePainter.Fire.FireMissile += Fire_FireMissile;
+            On.EntityStates.Drifter.Repossess.OnEnter += Repossess_OnEnter;
+        }
+
+        // drifter's aim state refunds the stock when cancelled (e.g. by sprinting), so only count the swing that actually happens
+        private void Repossess_OnEnter(On.EntityStates.Drifter.Repossess.orig_OnEnter orig, EntityStates.Drifter.Repossess self)
+        {
+            orig(self);
+            var skillLocator = self.skillLocator;
+            if (skillLocator)
+            {
+                TryHeal(self.characterBody, skillLocator.utility);
+            }
         }
 
         private void Fire_FireMissile(On.EntityStates.Engi.EngiMissilePainter.Fire.orig_FireMissile orig, EntityStates.Engi.EngiMissilePainter.Fire self, HurtBox target, Vector3 position)
@@ -195,6 +207,12 @@ namespace Sandswept.Items.Whites
                 var skill = skillLocator.utility;
                 TryHeal(self.characterBody, skill);
             }
+        }
+
+        // these skills trigger the item from their own hooks instead of on activation
+        public static bool IsBlacklisted(SkillDef skillDef)
+        {
+            return blacklistedSkills.Contains(skillDef.skillNameToken) || skillDef.activationState.stateType == typeof(EntityStates.Drifter.AimRepossess);
         }
 
         public static void TryHeal(CharacterBody characterBody, GenericSkill skill, bool checkUtilityAndBlacklist = false)
@@ -218,7 +236,7 @@ namespace Sandswept.Items.Whites
             var stack = inventory.GetItemCount(instance.ItemDef);
             var skillLocator = characterBody.GetComponent<SkillLocator>();
 
-            var passesCondition = stack > 0 && (!checkUtilityAndBlacklist || skillLocator && skill == skillLocator.utility && !blacklistedSkills.Contains(skill.skillDef.skillNameToken));
+            var passesCondition = stack > 0 && (!checkUtilityAndBlacklist || skillLocator && skill == skillLocator.utility && !IsBlacklisted(skill.skillDef));
 
             if (passesCondition && NetworkServer.active)
             {

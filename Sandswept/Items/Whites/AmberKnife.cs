@@ -81,7 +81,44 @@ namespace Sandswept.Items.Whites
         public override void Init()
         {
             base.Init();
+            CenterPickupModel();
             SetUpProjectile();
+        }
+
+        // the blade mesh sits ~2.75m above the holder's origin, so the pickup floated way above where it should be
+        // only the pickup clone is moved, item displays were positioned around the original offset
+        public void CenterPickupModel()
+        {
+            var pickupModel = ItemDef.pickupModelPrefab;
+            if (pickupModel == ItemModel)
+            {
+                pickupModel = PrefabAPI.InstantiateClone(ItemModel, "AmberKnifeHolder-centered", false);
+                ItemDef.pickupModelPrefab = pickupModel;
+            }
+
+            var knife = pickupModel.transform.Find("AmberKnife");
+            var blade = knife ? knife.Find("Blade") : null;
+            if (!blade || !blade.TryGetComponent(out MeshFilter meshFilter) || !meshFilter.sharedMesh)
+            {
+                return;
+            }
+
+            var meshCenter = blade.localPosition + blade.localRotation * Vector3.Scale(meshFilter.sharedMesh.bounds.center, blade.localScale);
+            knife.localPosition -= meshCenter;
+
+            // the model is centered on the origin now, so point the logbook camera there too
+            if (pickupModel.TryGetComponent(out ModelPanelParameters modelPanelParameters))
+            {
+                if (modelPanelParameters.focusPointTransform)
+                {
+                    modelPanelParameters.focusPointTransform.localPosition = Vector3.zero;
+                }
+
+                if (modelPanelParameters.cameraPositionTransform)
+                {
+                    modelPanelParameters.cameraPositionTransform.localPosition = Vector3.forward * modelPanelParameters.maxDistance;
+                }
+            }
         }
 
         public void SetUpProjectile()

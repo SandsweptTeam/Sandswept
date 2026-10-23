@@ -129,6 +129,17 @@ namespace Sandswept.Enemies.ThetaConstruct
 
             prefab.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(DeathState));
             EntityStateMachine.FindByCustomName(prefab, "Body").initialStateType = new(typeof(SpawnState));
+
+            // vanilla passes the already squared min distance into the buddy search, which squares it again, so "Chase Friendly"
+            // only ever found allies 400m+ away and theta idled unless someone happened to be within 20m.
+            // the root makes the search use the intended 20m (the final distance check is then lenient, which is fine for chasing)
+            foreach (RoR2.CharacterAI.AISkillDriver driver in prefabMaster.GetComponents<RoR2.CharacterAI.AISkillDriver>())
+            {
+                if (driver.customName == "Chase Friendly")
+                {
+                    driver.minDistance = Mathf.Sqrt(driver.minDistance);
+                }
+            }
         }
 
         public override void SetUpIDRS()

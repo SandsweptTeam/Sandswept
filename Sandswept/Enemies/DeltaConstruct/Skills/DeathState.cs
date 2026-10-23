@@ -21,6 +21,7 @@ namespace Sandswept.Enemies.DeltaConstruct
                 boxes[i].gameObject.SetActive(false);
             }
             cachedModelTransform.GetComponent<RagdollController>().BeginRagdoll(Vector3.one * -5f);
+            BaseConstructDeath.ExpireRagdoll(cachedModelTransform);
 
             EffectManager.SpawnEffect(deathEffect, new EffectData
             {

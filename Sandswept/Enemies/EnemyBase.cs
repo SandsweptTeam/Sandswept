@@ -70,6 +70,7 @@ namespace Sandswept.Enemies
             body = prefab.GetComponent<CharacterBody>();
             master = prefabMaster.GetComponent<CharacterMaster>();
             Modify();
+            RegisterLogUnlockable();
 
             var characterModel = body.GetComponentInChildren<CharacterModel>();
             if (characterModel)
@@ -95,6 +96,28 @@ namespace Sandswept.Enemies
         }
 
         public abstract void LoadPrefabs();
+
+        // log unlockables from the asset bundle never made it into the unlockable catalog, so picking up a log unlocked nothing and they kept dropping forever
+        public void RegisterLogUnlockable()
+        {
+            var deathRewards = prefab.GetComponent<DeathRewards>();
+            if (!deathRewards || !deathRewards.logUnlockableDef)
+            {
+                return;
+            }
+
+            var logUnlockableDef = deathRewards.logUnlockableDef;
+
+            // vanilla checks for the "Logs." prefix to treat it as a monster log
+            logUnlockableDef.cachedName = $"Logs.{prefab.name}.0";
+
+            if (string.IsNullOrEmpty(logUnlockableDef.nameToken) || logUnlockableDef.nameToken == "???")
+            {
+                logUnlockableDef.nameToken = body.baseNameToken;
+            }
+
+            ContentAddition.AddUnlockableDef(logUnlockableDef);
+        }
 
         public virtual void Modify()
         {

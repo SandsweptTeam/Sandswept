@@ -61,11 +61,17 @@ namespace Sandswept.Items.Whites
 
         public static GameObject orbEffect;
 
+        public static NetworkSoundEventDef jumpSound;
+
         public override void Init()
         {
             base.Init();
             SetUpBuff();
             SetUpVFX();
+
+            jumpSound = ScriptableObject.CreateInstance<NetworkSoundEventDef>();
+            jumpSound.eventName = "Play_transistor_jump";
+            ContentAddition.AddNetworkSoundEventDef(jumpSound);
         }
 
         public override object GetItemStatsDef()
@@ -171,24 +177,53 @@ namespace Sandswept.Items.Whites
         {
             GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
             On.EntityStates.GenericCharacterMain.ProcessJump_bool += ProcessJump;
+            RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
+        }
+
+        private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)
+        {
+            // stored jumps count towards max jumps like vanilla's rechargeable jumps, so anything checking jumpCount == maxJumpCount (artificer's hover toggle) keeps working
+            args.jumpCountAdd += sender.GetBuffCount(extraJump);
         }
 
         private void ProcessJump(On.EntityStates.GenericCharacterMain.orig_ProcessJump_bool orig, EntityStates.GenericCharacterMain self, bool ignoreRequirements)
         {
-            var extraJumps = self.characterBody.GetBuffCount(extraJump);
+            var body = self.characterBody;
+            var motor = self.characterMotor;
 
-            if (self.jumpInputReceived && extraJumps > 0 && self.characterMotor && self.characterMotor.jumpCount >= self.characterBody.maxJumpCount && !ignoreRequirements)
+            if (!body || !motor || !self.isAuthority)
             {
-                if (self.isAuthority)
-                {
-                    self.characterBody.SetBuffCountSynced(extraJump.buffIndex, extraJumps - 1);
-                }
-
-                Util.PlaySound("Play_transistor_jump", self.gameObject);
-                ignoreRequirements = true;
+                orig(self, ignoreRequirements);
+                return;
             }
 
+            var extraJumps = body.GetBuffCount(extraJump);
+            var tracker = body.GetComponent<TemporalTransistorJumpTracker>();
+
+            if (extraJumps <= 0 && !tracker)
+            {
+                orig(self, ignoreRequirements);
+                return;
+            }
+
+            tracker ??= body.gameObject.AddComponent<TemporalTransistorJumpTracker>();
+            tracker.Reconcile(extraJumps, motor);
+
+            int jumpCountBefore = motor.jumpCount;
+
             orig(self, ignoreRequirements);
+
+            int jumpCountAfter = motor.jumpCount;
+            int regularJumps = body.maxJumpCount - extraJumps;
+
+            if (!ignoreRequirements && jumpCountAfter > jumpCountBefore && jumpCountAfter > regularJumps && jumpCountAfter <= body.maxJumpCount)
+            {
+                // the jump stays counted until the server removes the buff, then Reconcile takes it back off along with the max jump count
+                tracker.pendingConsumed++;
+                body.RemoveBuffSynced(extraJump.buffIndex);
+
+                EffectManager.SimpleSoundEffect(jumpSound.index, body.footPosition, true);
+            }
         }
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport report)
@@ -284,6 +319,32 @@ namespace Sandswept.Items.Whites
                     Util.PlayAttackSpeedSound("Play_mage_m1_cast_lightning", body.gameObject, 1.5f);
                 }
             }
+        }
+    }
+
+    // authority-side bookkeeping for stored jumps that were used but whose buff removal hasn't synced back from the server yet
+    public class TemporalTransistorJumpTracker : MonoBehaviour
+    {
+        public int pendingConsumed;
+        public int lastBuffCount;
+
+        public void Reconcile(int buffCount, CharacterMotor motor)
+        {
+            if (motor.isGrounded)
+            {
+                // landing resets jumpCount anyway
+                pendingConsumed = 0;
+            }
+
+            int removed = lastBuffCount - buffCount;
+            if (removed > 0 && pendingConsumed > 0)
+            {
+                int toRefund = Mathf.Min(removed, pendingConsumed);
+                motor.jumpCount = Mathf.Max(0, motor.jumpCount - toRefund);
+                pendingConsumed -= toRefund;
+            }
+
+            lastBuffCount = buffCount;
         }
     }
 }
