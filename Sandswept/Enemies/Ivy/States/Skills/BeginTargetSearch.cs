@@ -22,16 +22,17 @@ namespace Sandswept.Enemies.Ivy {
                 filter.AddTeam(GetTeam());
                 search.FilterCandidatesByHurtBoxTeam(filter);
                 HurtBox[] results = search.GetHurtBoxes();
+                Debug.LogError("---");
+                Debug.LogError("prefilter results are " + results.Length);
                 results = results
                 .OrderByDescending(x => x.healthComponent.fullCombinedHealth)
                 .Where(x => !x.healthComponent.body.isBoss && x.healthComponent.body != base.characterBody && FilterRangedEnemy(x.healthComponent.body))
                 .ToArray();
                 
+                Debug.LogError("postfilter results are " + results.Length);
 
                 if (results.Length > 0) {
-                    Debug.Log("found a target");
                     base.characterBody.master.aiComponents[0].customTarget.gameObject = results[0].healthComponent.gameObject;
-                    skillLocator.secondary.DeductStock(1);
                 }
             }
 
@@ -93,7 +94,7 @@ namespace Sandswept.Enemies.Ivy {
 
         public override string ActivationMachineName => "Weapon";
 
-        public override float Cooldown => 10f;
+        public override float Cooldown => 2;
 
         public override Sprite Icon => null;
         public override bool BeginCooldownOnSkillEnd => true;
@@ -101,7 +102,6 @@ namespace Sandswept.Enemies.Ivy {
         public override void SetupSkillDef()
         {
             base.SetupSkillDef();
-            skillDef.stockToConsume = 0;
         }
     }
 }

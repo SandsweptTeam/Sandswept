@@ -25,11 +25,13 @@ namespace Sandswept {
             }
         }
 
-        public void DefaultEvalForDriver(AISkillDriver driver) {
+        public SkillDriverEvaluation DefaultEvalForDriver(AISkillDriver driver) {
             SkillDriverEvaluation eval = default;
             eval.dominantSkillDriver = driver;
             eval.target = FindMoveTarget(driver.moveTargetType);
             eval.aimTarget = FindAimTarget(driver.aimType, eval.target);
+
+            return eval;
         }
 
         public Target FindMoveTarget(AISkillDriver.TargetType targetType, float minDist = 0f, float maxDist = 180f) {
