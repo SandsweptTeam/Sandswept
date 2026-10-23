@@ -54,7 +54,20 @@ namespace Sandswept.Survivors.Electrician
             projectileProximityBeamController.enabled = false;
             // what is the point ? ? ?
 
-            controller.ghost.GetComponentInChildren<ParticleSystem>().Stop();
+            if (controller.ghost)
+            {
+                controller.ghost.GetComponentInChildren<ParticleSystem>().Stop();
+            }
+        }
+
+        // collisions are only handled on the server, so the stuck visuals are sent to everyone
+        public void OnStuckClient()
+        {
+            if (controller && controller.ghost)
+            {
+                controller.ghost.GetComponentInChildren<ParticleSystem>().Play();
+                controller.ghost.gameObject.FindComponent<MeshRenderer>("Radius").enabled = true;
+            }
         }
 
         public void OnDestroy()
@@ -182,11 +195,7 @@ namespace Sandswept.Survivors.Electrician
                         base.transform.up = collision.contacts[0].normal;
                         hasStuck = true;
 
-                        if (controller.ghost)
-                        {
-                            controller.ghost.GetComponentInChildren<ParticleSystem>().Play();
-                            controller.ghost.gameObject.FindComponent<MeshRenderer>("Radius").enabled = true;
-                        }
+                        new CallNetworkedMethod(base.gameObject, nameof(OnStuckClient)).Send(R2API.Networking.NetworkDestination.Clients);
                     }
                     else
                     {

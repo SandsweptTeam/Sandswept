@@ -963,7 +963,7 @@
           }
         }
       },
-      "UnityEngine.Modules/2021.3.33": {
+      "UnityEngine.Modules/2021.3.45": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/UnityEngine.AIModule.dll": {},
@@ -3137,13 +3137,12 @@
         "system.threading.tasks.nuspec"
       ]
     },
-    "UnityEngine.Modules/2021.3.33": {
-      "sha512": "7NtoEnLcehfJIW+DL9awtXAHj3SJcQBWOTPePwA6LmeWVz9YbHoSzs2uEOCt5meWokUqCWMVmqBT1Heu5ouWDw==",
+    "UnityEngine.Modules/2021.3.45": {
+      "sha512": "WLllEOMvO63PoPqSGGN4aO+RArGo2jTFnMlLC3j+TYiUdbm9wThXaZDlVNeWYLQVulnGJAPMojmvRiCHBRq85g==",
       "type": "package",
-      "path": "unityengine.modules/2021.3.33",
+      "path": "unityengine.modules/2021.3.45",
       "files": [
         ".nupkg.metadata",
-        ".signature.p7s",
         "lib/net35/UnityEngine.AIModule.dll",
         "lib/net35/UnityEngine.AccessibilityModule.dll",
         "lib/net35/UnityEngine.AndroidJNIModule.dll",
@@ -3342,7 +3341,7 @@
         "lib/netstandard2.0/UnityEngine.WindModule.dll",
         "lib/netstandard2.0/UnityEngine.XRModule.dll",
         "lib/netstandard2.0/UnityEngine.dll",
-        "unityengine.modules.2021.3.33.nupkg.sha512",
+        "unityengine.modules.2021.3.45.nupkg.sha512",
         "unityengine.modules.nuspec"
       ]
     }
@@ -3366,30 +3365,37 @@
       "R2API.RecalculateStats >= *",
       "R2API.Skills >= *",
       "R2API.Skins >= *",
-      "RiskOfRain2.GameLibs >= 1.5.0-r.1",
-      "UnityEngine.Modules >= 2021.3.33"
+      "RiskOfRain2.GameLibs >= *-*",
+      "UnityEngine.Modules >= 2021.3.45"
     ]
   },
   "packageFolders": {
-    "/home/pseudopulse/.nuget/packages/": {}
+    "C:\\Users\\Dani\\.nuget\\packages\\": {},
+    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
+      "projectUniqueName": "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj",
       "projectName": "Sandswept",
-      "projectPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
-      "packagesPath": "/home/pseudopulse/.nuget/packages/",
-      "outputPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/obj/",
+      "projectPath": "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj",
+      "packagesPath": "C:\\Users\\Dani\\.nuget\\packages\\",
+      "outputPath": "D:\\Games\\LostItems\\sandswept\\Sandswept\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/pseudopulse/Repos/Sandswept/nuget.config",
-        "/home/pseudopulse/.nuget/NuGet/NuGet.Config"
+        "D:\\Games\\LostItems\\sandswept\\NuGet.Config",
+        "C:\\Users\\Dani\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.1"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {},
         "https://nuget.bepinex.dev/v3/index.json": {}
       },
@@ -3409,7 +3415,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "netstandard2.1": {
@@ -3490,12 +3496,12 @@
           },
           "RiskOfRain2.GameLibs": {
             "target": "Package",
-            "version": "[1.5.0-r.1, )"
+            "version": "[*-*, )"
           },
           "UnityEngine.Modules": {
             "include": "Compile",
             "target": "Package",
-            "version": "[2021.3.33, )"
+            "version": "[2021.3.45, )"
           }
         },
         "imports": [
@@ -3514,7 +3520,11 @@
             "privateAssets": "all"
           }
         },
+<<<<<<< HEAD
         "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.112/RuntimeIdentifierGraph.json"
+=======
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.318\\RuntimeIdentifierGraph.json"
+>>>>>>> a3b22ebe3f67e87aee6ced06c25cff2acede0a77
       }
     }
   }

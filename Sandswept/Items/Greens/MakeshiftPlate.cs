@@ -113,6 +113,45 @@ namespace Sandswept.Items.Greens
             On.RoR2.Inventory.GiveItemPermanent_ItemIndex_int += GiveItemPermanent;
             On.RoR2.Inventory.GiveItemChanneled += GiveItemChanneled;
             On.RoR2.CharacterBody.OnInventoryChanged += OnInventoryChanged;
+            On.RoR2.CharacterBody.RecalculateStats += OnRecalculateStats;
+        }
+
+        public static float GetPlatingFraction(int count)
+        {
+            if (count <= 0)
+            {
+                return 0f;
+            }
+
+            return (basePercentPlatingGain + stackPercentPlatingGain * (count - 1)) / 100f;
+        }
+
+        public static int GetMaxPlating(CharacterBody body, int count)
+        {
+            return Mathf.RoundToInt((body.maxHealth + body.maxShield) * GetPlatingFraction(count));
+        }
+
+        private void OnRecalculateStats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        {
+            orig(self);
+
+            // keep max plating in line with max health (level ups, health items), current plating is never refilled
+            if (!NetworkServer.active || !self.TryGetComponent(out PlatingManager platingManager))
+            {
+                return;
+            }
+
+            int count = GetCount(self);
+            if (count <= 0)
+            {
+                return;
+            }
+
+            int newMax = GetMaxPlating(self, count);
+            if (newMax > 0 && newMax != Mathf.RoundToInt(platingManager.MaxPlating))
+            {
+                new MakeshiftPlateAddSync(self.gameObject, Mathf.Min(platingManager.CurrentPlating, newMax), newMax, false).Send(NetworkDestination.Clients);
+            }
         }
 
         private void GiveItemChanneled(On.RoR2.Inventory.orig_GiveItemChanneled orig, Inventory self, ItemIndex itemIndex, int countToAdd)
@@ -216,52 +255,41 @@ namespace Sandswept.Items.Greens
         {
             orig(self);
 
-            if (self.GetComponent<PlatingManager>() && self.inventory.GetItemCountEffective(ItemDef) == 0 && !self.inventory.inventoryDisabled)
+            // this runs on clients too, only the server should ever send the sync message
+            if (NetworkServer.active && self.inventory && self.GetComponent<PlatingManager>() && GetCount(self) == 0 && !self.inventory.inventoryDisabled)
             {
-                new MakeshiftPlateAddSync(self.gameObject, 0f, 0f, false).Send(NetworkDestination.Clients);
+                new MakeshiftPlateAddSync(self.gameObject, 0f, 0f, true).Send(NetworkDestination.Clients);
             }
         }
 
         private void HandleItemGain(Inventory self, ItemIndex itemIndex, int count)
         {
-            if (itemIndex == ItemDef.itemIndex && self.TryGetComponent(out CharacterMaster characterMaster) && characterMaster.bodyInstanceObject)
+            if (NetworkServer.active && itemIndex == ItemDef.itemIndex && count > 0 && self.TryGetComponent(out CharacterMaster characterMaster) && characterMaster.bodyInstanceObject)
             {
-                PlatingManager platingManager = characterMaster.bodyInstanceObject.GetComponent<PlatingManager>();
-                if (!platingManager)
+                CharacterBody characterBody = characterMaster.GetBody();
+                if (!characterBody)
                 {
-                    platingManager = characterMaster.AddComponent<PlatingManager>();
+                    return;
                 }
 
-                CharacterBody characterBody = characterMaster.bodyInstanceObject.GetComponent<CharacterBody>();
+                characterBody.TryGetComponent(out PlatingManager platingManager);
 
-                float platingMult = stackPercentPlatingGain / 100f * count;
+                int totalCount = GetCount(characterBody);
+                int newMax = GetMaxPlating(characterBody, totalCount);
+                int gained = newMax - GetMaxPlating(characterBody, totalCount - count);
 
-                // Main.ModLogger.LogError($"plating mult is {platingMult}");
-
-                int plating = Mathf.RoundToInt((characterBody.maxHealth + characterBody.maxShield) * platingMult);
-
-                // Main.ModLogger.LogError($"plating is {plating}");
-                // Main.ModLogger.LogError($"platingManager.CurrentPlating BEFORE ADDING is {platingManager.CurrentPlating}");
-
-                platingManager.CurrentPlating += plating;
-
-                // Main.ModLogger.LogError($"adding to currentPlating");
-                // Main.ModLogger.LogError($"platingManager.CurrentPlating AFTERRRRR ADDING is {platingManager.CurrentPlating}");
-
-                if (platingManager.MaxPlating <= 0)
-                {
-                    // Main.ModLogger.LogError("platingManager.MaxPlating is less than or equal to 0");
-                    platingManager.MaxPlating = plating;
-                }
-
-                platingManager.CurrentPlating = Mathf.Min(platingManager.CurrentPlating, platingManager.MaxPlating);
+                float currentPlating = platingManager ? platingManager.CurrentPlating : 0f;
+                currentPlating = Mathf.Min(currentPlating + gained, newMax);
 
                 Util.PlaySound("Play_loader_m1_shield", characterBody.gameObject);
                 Util.PlaySound("Play_loader_m1_shield", characterBody.gameObject);
 
-                platingManager.usedUpAllPlatingThisPickup = false;
+                new MakeshiftPlateAddSync(characterBody.gameObject, currentPlating, newMax, false).Send(NetworkDestination.Clients);
 
-                new MakeshiftPlateAddSync(characterBody.gameObject, platingManager.CurrentPlating, platingManager.MaxPlating, false).Send(NetworkDestination.Clients);
+                if (characterBody.TryGetComponent(out platingManager))
+                {
+                    platingManager.usedUpAllPlatingThisPickup = false;
+                }
             }
         }
 
@@ -288,11 +316,10 @@ namespace Sandswept.Items.Greens
         {
             orig(self);
 
-            if (self.inventory)
+            // Start runs on every peer, only the server should send the sync message
+            if (NetworkServer.active && self.inventory)
             {
-                float platingMult = (stackPercentPlatingGain / 100f) * self.inventory.GetItemCount(ItemDef);
-
-                int plating = Mathf.RoundToInt((self.maxHealth + self.maxShield) * platingMult);
+                int plating = GetMaxPlating(self, GetCount(self));
 
                 if (plating == 0)
                 {
@@ -340,21 +367,11 @@ namespace Sandswept.Items.Greens
 
         public static float TakeDamageHandler(HealthComponent self, DamageInfo info, float input)
         {
-            if (!info.HasModdedDamageType(BypassPlating) && self.body && MakeshiftPlate.instance.GetCount(self.body) > 0 && self.body.TryGetComponent(out PlatingManager platingManager) && !self.body.inventory.inventoryDisabled)
+            if (!info.HasModdedDamageType(BypassPlating) && self.body && MakeshiftPlate.instance.GetCount(self.body) > 0 && self.body.TryGetComponent(out PlatingManager platingManager) && platingManager.CurrentPlating > 0f && !self.body.inventory.inventoryDisabled)
             {
                 float plating = platingManager.CurrentPlating;
-                float toRemove = 0;
-
-                if (plating > input)
-                {
-                    toRemove = input;
-                    input = 0f;
-                }
-                else
-                {
-                    toRemove = input - plating;
-                    input -= plating;
-                }
+                float toRemove = Mathf.Min(plating, input);
+                input -= toRemove;
 
                 platingManager.CurrentPlating -= toRemove;
                 platingManager.CurrentPlating = Mathf.Clamp(platingManager.CurrentPlating, 0, platingManager.MaxPlating);
@@ -530,6 +547,12 @@ namespace Sandswept.Items.Greens
 
             public void Process()
             {
+                // the body may not exist on this client (yet)
+                if (!target)
+                {
+                    return;
+                }
+
                 if (remove)
                 {
                     target.RemoveComponent<PlatingManager>();

@@ -99,6 +99,7 @@ namespace Sandswept.Enemies.DeltaConstruct
             // zjebana pizda pierdolona dziwka kurwa co nadal jest pomaranczowa po recolorze
 
             DeltaBurnyTrail = Main.assets.LoadAsset<GameObject>("DeltaBurnyTrail.prefab");
+            DamageTrailManager.RegisterTrailEffect(DeltaBurnyTrail);
 
             // visuals fade bumped up to ~8s due to invfade
 

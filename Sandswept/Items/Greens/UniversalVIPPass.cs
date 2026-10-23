@@ -181,7 +181,8 @@ namespace Sandswept.Items.Greens
                                 var isCategoryChestFinal = interactableObject.name.ToLower().Contains("category") || isCategoryChest;
                                 if (isCategoryChestFinal)
                                 {
-                                    chestBehavior.dropCount = 1 + extraItems;
+                                    // add rather than set, sale star already set its drop count in PurchaseInteraction.OnInteractionBegin
+                                    chestBehavior.dropCount += extraItems;
 
                                     Util.PlaySound("Play_UI_commandHUD_select", chestBehavior.gameObject);
                                     Util.PlaySound("Play_UI_commandHUD_select", chestBehavior.gameObject);

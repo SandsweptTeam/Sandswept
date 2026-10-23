@@ -317,6 +317,7 @@ namespace Sandswept
             CursedConfig.Init();
             SwepSwepTheSandy.Init();
             NetworkingAPI.RegisterMessageType<CallNetworkedMethod>();
+            NetworkingAPI.RegisterMessageType<DamageTrailManager.DamageTrailSync>();
         }
 
         public void SetUpHooks()
@@ -556,9 +557,10 @@ namespace Sandswept
 
             List<ItemDef.Pair> itemRelationships = new();
 
+            // this used to index AllItems with EnabledItems' count, so any disabled item made the last few void items lose their corruption
             for (int i = EnabledItems.Count - 1; i >= 0; i--)
             {
-                var itemBase = AllItems[i];
+                var itemBase = EnabledItems[i];
                 var itemDef = itemBase.ItemDef;
                 // Logger.LogError("itemDef is " + Language.GetString(itemDef.nameToken));
                 var itemToCorrupt = itemBase.ItemToCorrupt;
