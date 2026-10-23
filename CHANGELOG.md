@@ -1,5 +1,4 @@
 ## 1.4.6 Patch Notes
-## 1.4.6 Patch Notes
 ### Thank you Phreel for this patch
 - **VOL-T**
   - Signal Overload: damage now scales off VOL-T's innate shield, so health items no longer lower it.
