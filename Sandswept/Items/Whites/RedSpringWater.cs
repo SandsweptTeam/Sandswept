@@ -43,13 +43,13 @@ namespace Sandswept.Items.Whites
         public override float modelPanelParametersMinDistance => 4f;
         public override float modelPanelParametersMaxDistance => 12f;
 
-        [ConfigField("Base Regen", "Only for the first stack", 0.6f)]
+        [ConfigField("Base Regen", "Only for the first stack", 0.5f)]
         public static float baseRegen;
 
-        [ConfigField("Base Regen Per Buff", "", 0.6f)]
+        [ConfigField("Base Regen Per Buff", "", 0.5f)]
         public static float baseRegenPerBuff;
 
-        [ConfigField("Stack Regen Per Buff", "", 0.6f)]
+        [ConfigField("Stack Regen Per Buff", "", 0.5f)]
         public static float stackRegenPerBuff;
 
         public override void Init()

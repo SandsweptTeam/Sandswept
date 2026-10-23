@@ -38,7 +38,7 @@ namespace Sandswept.Equipment.Lunar
         [ConfigField("Buff Duration", "", 15f)]
         public static float buffDuration;
 
-        [ConfigField("Buff Radius", "", 30f)]
+        [ConfigField("Buff Radius", "", 35f)]
         public static float buffRadius;
 
         public static List<BuffDef> moddedBuffWhitelist;

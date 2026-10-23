@@ -1,32 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj": {}
+    "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj": {}
   },
   "projects": {
-    "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj": {
+    "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj",
+        "projectUniqueName": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
         "projectName": "Sandswept",
-        "projectPath": "D:\\Games\\LostItems\\sandswept\\Sandswept\\Sandswept.csproj",
-        "packagesPath": "C:\\Users\\Dani\\.nuget\\packages\\",
-        "outputPath": "D:\\Games\\LostItems\\sandswept\\Sandswept\\obj\\",
+        "projectPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
+        "packagesPath": "/home/pseudopulse/.nuget/packages/",
+        "outputPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "D:\\Games\\LostItems\\sandswept\\NuGet.Config",
-          "C:\\Users\\Dani\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/pseudopulse/Repos/Sandswept/nuget.config",
+          "/home/pseudopulse/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {},
           "https://nuget.bepinex.dev/v3/index.json": {}
         },
@@ -46,7 +40,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "netstandard2.1": {
@@ -151,11 +145,7 @@
               "privateAssets": "all"
             }
           },
-<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.112/RuntimeIdentifierGraph.json"
-=======
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.318\\RuntimeIdentifierGraph.json"
->>>>>>> a3b22ebe3f67e87aee6ced06c25cff2acede0a77
         }
       }
     }

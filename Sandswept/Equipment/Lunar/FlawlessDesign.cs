@@ -55,19 +55,19 @@ namespace Sandswept.Equipment.Lunar
         [ConfigField("Base Health Cost", "", 10)]
         public static int baseHealthCost;
 
-        [ConfigField("Equipment Cost Multiplier", "", 1.5f)]
+        [ConfigField("Equipment Cost Multiplier", "", 1f)]
         public static float equipmentCostMultiplier;
 
         [ConfigField("Green and Void Green Cost Multiplier", "", 2f)]
         public static float greenAndVoidGreenCostMultiplier;
 
-        [ConfigField("Red and Void Red Cost Multiplier", "", 4f)]
+        [ConfigField("Red and Void Red Cost Multiplier", "", 5f)]
         public static float redAndVoidRedCostMultiplier;
 
         [ConfigField("Yellow and Void Yellow Cost Multiplier", "", 3f)]
         public static float yellowAndVoidYellowCostMultiplier;
 
-        [ConfigField("Lunar Cost Multiplier", "", 2f)]
+        [ConfigField("Lunar Cost Multiplier", "", 1.5f)]
         public static float lunarCostMultiplier;
 
         public static GameObject DesignIndicator;
@@ -130,6 +130,18 @@ namespace Sandswept.Equipment.Lunar
             base.Hooks();
             On.RoR2.GenericPickupController.CreatePickup += OnCreatePickup;
             On.RoR2.CharacterMaster.OnInventoryChanged += OnInventoryChanged;
+            On.RoR2.GenericPickupController.AttemptGrant += PickupItem;
+        }
+
+        private void PickupItem(On.RoR2.GenericPickupController.orig_AttemptGrant orig, GenericPickupController self, CharacterBody body)
+        {
+            orig(self, body);
+
+            if (self.GetComponent<FlawlessDesignMarker>()) {
+                int cost = GetCurseCostForPickup(self.pickupIndex);
+                body.inventory.GiveItem(Items.NoTier.TwistedWound.instance.ItemDef, cost);
+                CharacterMasterNotificationQueue.PushPickupNotification(body.master, PickupCatalog.FindPickupIndex(Items.NoTier.TwistedWound.instance.ItemDef.itemIndex));
+            }
         }
 
         public override object GetItemStatsDef()
@@ -212,9 +224,6 @@ namespace Sandswept.Equipment.Lunar
 
                 GenericPickupController pickup = designTracker.target.GetComponent<GenericPickupController>();
 
-                int cost = GetCurseCostForPickup(pickup.pickupIndex);
-                pickup.AddComponent<FlawlessDesignMarker>();
-
                 GenericPickupController.CreatePickupInfo info = new()
                 {
                     position = pickup.transform.position,
@@ -240,9 +249,6 @@ namespace Sandswept.Equipment.Lunar
 
                 Util.PlaySound("Play_lunar_wisp_attack1_shoot_bullet", pickup.gameObject);
                 Util.PlaySound("Play_lunar_wisp_attack1_shoot_bullet", pickup.gameObject);
-
-                slot.characterBody.inventory.GiveItem(Items.NoTier.TwistedWound.instance.ItemDef, cost);
-                CharacterMasterNotificationQueue.PushPickupNotification(slot.characterBody.master, PickupCatalog.FindPickupIndex(Items.NoTier.TwistedWound.instance.ItemDef.itemIndex));
             }
 
             return true;

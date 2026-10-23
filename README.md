@@ -21,8 +21,8 @@
 ![](https://i.postimg.cc/4dQSXLCW/Divider-UI.png)
 ![](https://i.postimg.cc/pdHm53ZG/Interactable-UI-2.png)
 ![](https://i.postimg.cc/4dQSXLCW/Divider-UI.png)
-![](https://i.postimg.cc/Qd3j8zvD/Item-UI-top.png)
-![](https://i.postimg.cc/4xQsm5T9/Item-UI-bottom.png)
+![](https://i.postimg.cc/SKnzGBzt/Item-UI(11)-top.png)
+![](https://i.postimg.cc/LmTBmR4Y/Item-UI(11).png)
 ![](https://i.postimg.cc/4dQSXLCW/Divider-UI.png)
 
 # Credits
@@ -30,7 +30,7 @@
 ### Support us on KOFI! https://linktr.ee/SandsweptTeam
 
 - Code: HIFU, Pseudopulse
-  - With small contributions from: Prod, Sandman, dgosling
+  - With small contributions from: Prod, Sandman, dgosling, Phreel
 - Models: Smxrez, Synodii, Pseudopulse, HIFU, Sandman
   - Formerly: GEMO
   - With small contributions from: Prod

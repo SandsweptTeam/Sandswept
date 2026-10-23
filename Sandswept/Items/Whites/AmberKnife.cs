@@ -54,7 +54,7 @@ namespace Sandswept.Items.Whites
         public override float modelPanelParametersMinDistance => 4f;
         public override float modelPanelParametersMaxDistance => 12f;
 
-        [ConfigField("Chance", "", 12f)]
+        [ConfigField("Chance", "", 10f)]
         public static float chance;
 
         [ConfigField("Base Damage", "Decimal.", 1.8f)]
@@ -69,7 +69,7 @@ namespace Sandswept.Items.Whites
         [ConfigField("Flat Barrier Gain", "Decimal.", 3f)]
         public static float flatBarrierGain;
 
-        [ConfigField("Percent Barrier Gain", "Decimal.", 0.035f)]
+        [ConfigField("Percent Barrier Gain", "Decimal.", 0.025f)]
         public static float percentBarrierGain;
 
         public static ProjectileController projectileController;

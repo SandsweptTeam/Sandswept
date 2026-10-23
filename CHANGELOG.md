@@ -1,3 +1,44 @@
+## 1.4.6 Patch Notes
+- Items/Equipment
+  - Nerfed Amber Knife proc chance from 12% to 10%
+  - Nerfed Amber Knife barrier gain from 3.5% to 2.5%
+  - Nerfed Red Spring Water regen per buff from 0.6 to 0.5 (there are a LOT more buffs you can obtain, many permanent, after AC and HC and RSW is a bit much now)
+  - Corrupted Catalyst buff aura raised from 30m to 35m
+  - Flawless Design now gives curse when picking up the duplicated item instead of on use
+  - Flawless Design equipment cost buffed from 15% to 10%
+  - Flawless Design lunar cost buffed from 20% to 15%
+  - Flawless Design legendary cost nerfed from 40% to 50%
+- VOL-T
+  - Nerfed Signal Overload maximum damage from 1584% -> 850% (what the fuck even what is this bug)
+  - Buffed Signal Overload minimum damage from 330% -> 350%
+# The following fixes are all courtesy of Phreel (thanks!)
+  - Fixed Makeshift Plate desync + error spam
+  - Fixed Makeshift Plate showing the wrong healthbar percentage
+  - Fixed Universal VIP Pass breaking Sale Star
+  - Fixed Temporal Transistor having a delay when paired with Artificer's passive
+  - Fixed Temporal Transistor not playing the correct sound for clients
+  - Fixed Temporal Transistor extra jumps not being consumed properly on clients
+  - Fixed Torn Feather dash inputs being inconsistent at high and low fps
+  - Fixed Torn Feather showing its default keybind as @
+  - Fixed Torn Feather causing fall damage
+  - Fixed Torn Feather sfx and vfx not showing to clients
+  - Fixed Hallowed Ichor not showing its vfx to clients
+  - Fixed Hallowed Ichor not letting chests be re-opened after the owner dies
+  - Fixed Fractured Timepiece being spammable with Drifter's Repossess
+  - Fixed Millenium and Preserved Atoll not corrupting their respective items if any item was disabled in the config
+  - Fixed Shrine of Ruin looping the simulacrum stage forever sometimes
+  - Fixed enemies always dropping their logbooks
+  - Fixed Delta Construct being able to kill its allies
+  - Fixed Delta Construct fire trail doing way less damage than intended
+  - Fixed Osmium elites having two bubbles on clients
+  - Fixed drones being gigantic fat chuds in multishops
+  - Fixed Amber Knife rendering incorrectly in multishops
+  - Fixed health items reducing the damage of Signal Overload
+  - Fixed Volatile Shields not showing vfx to clients
+  - Fixed Volatile Shields firing bolts for every single player in the lobby instead of once
+  - Fixed Static Snare teleport putting your camera at 0,0,0 for a brief time on clients
+  - Fixed Galvanic Bolt not showing its radius to clients
+
 ## 1.4.5 Patch Notes
 - Updated for Hallowed Concepts
 

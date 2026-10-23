@@ -89,7 +89,7 @@ namespace Sandswept.Survivors.Electrician.States
                 var percent = innateShield > 0f ? innateShield * 0.9f : healthComponent.fullHealth * baseMax;
 
                 radiusMultiplierParam = Util.Remap(shieldDrained, 0f, percent, 1f, 1.4f);
-                damageMultiplierParam = Util.Remap(shieldDrained, 0f, percent, 1f, 1.611f);
+                damageMultiplierParam = Util.Remap(shieldDrained, 0f, percent, 1f, 2.5f);
 
                 outer.SetNextState(new SignalOverloadDischarge());
             }
@@ -152,7 +152,7 @@ namespace Sandswept.Survivors.Electrician.States
     public class SignalOverloadDischarge : BaseSkillState
     {
         public float duration = 3f;
-        public float totalDamageCoef = 9.9f; // used to be 16f and scale down to 0.6x with no shield drained, and stay 16x with full shield - now it's 1x to 1.6x of this value depending on shield drained
+        public float totalDamageCoef = 3.5f; // used to be 16f and scale down to 0.6x with no shield drained, and stay 16x with full shield - now it's 1x to 1.6x of this value depending on shield drained
         public int totalHits = 10;
         public float delay;
         public float coeff;
@@ -180,6 +180,8 @@ namespace Sandswept.Survivors.Electrician.States
 
             totalHits = Mathf.FloorToInt(10 * attackSpeedStat);
             delay = duration / totalHits;
+
+            Debug.Log("mult is " + damageMultiplier);
             totalDamageCoef *= damageMultiplier;
             coeff = totalDamageCoef / 10f;
 
