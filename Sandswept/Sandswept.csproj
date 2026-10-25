@@ -44,6 +44,7 @@
 	<PackageReference Include="R2API.ProcType" Version="*" />
 	<PackageReference Include="R2API.Skills" Version="*" />
 	<PackageReference Include="R2API.CharacterBody" Version="*" />
+	<PackageReference Include="RoR2BepInExPack" Version="*" />
   </ItemGroup>
 
 	<ItemGroup>

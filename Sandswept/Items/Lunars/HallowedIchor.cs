@@ -4,6 +4,7 @@ using MonoMod.RuntimeDetour;
 using R2API.Networking;
 using R2API.Networking.Interfaces;
 using RoR2.UI;
+using RoR2BepInExPack.GameAssetPaths.Version_1_39_0;
 using System.Collections;
 using System.Linq;
 using UnityEngine.SceneManagement;

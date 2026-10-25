@@ -1,4 +1,5 @@
 ﻿using LookingGlass.ItemStatsNameSpace;
+using Sandswept.Items.NoTier;
 using UnityEngine.SceneManagement;
 
 namespace Sandswept.Items.Greens
@@ -10,9 +11,9 @@ namespace Sandswept.Items.Greens
 
         public override string ItemLangTokenName => "UNIVERSAL_VIP_PASS";
 
-        public override string ItemPickupDesc => "Category chests have a chance to drop an extra item.";
+        public override string ItemPickupDesc => "The first few chests every stage offer a discount and choice of item.";
 
-        public override string ItemFullDescription => $"$suCategory chests$se have a $su{baseChance * 100f}%$se $ss(+{stackChance * 100f}% per stack)$se chance of dropping $su{extraItems}$se $suextra item$se.".AutoFormat();
+        public override string ItemFullDescription => $"The first <style=cIsUtility>1</style> <style=cStack>(+1 per stack)</style> chests you open each stage have a <style=cIsDamage>{discount * 100f}% discount</style> and offer a <style=cIsUtility>choice</style> between <style=cIsDamage>{choices} items</style>.".AutoFormat();
 
         public override string ItemLore =>
         """
@@ -40,20 +41,16 @@ namespace Sandswept.Items.Greens
 
         public override Sprite ItemIcon => Main.mainAssets.LoadAsset<Sprite>("UniVIPIcon.png");
 
-        [ConfigField("Base Chance", "Decimal.", 0.4f)]
-        public static float baseChance;
-
-        [ConfigField("Stack Chance", "Decimal.", 0.4f)]
-        public static float stackChance;
-
-        [ConfigField("Extra Items", "", 1)]
-        public static int extraItems;
+        [ConfigField("Discount", "Decimal", 0.5f)]
+        public static float discount;
+        [ConfigField("Choices", "Number", 2)]
+        public static int choices;
 
         public static GameObject vfx;
 
         public static Color32 pink = new(229, 0, 218, 255);
 
-        public override ItemTag[] ItemTags => [ItemTag.Utility, ItemTag.InteractableRelated, ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.BrotherBlacklist, ItemTag.CanBeTemporary]; // since rusted key is temp, should this be too? ...
+        public override ItemTag[] ItemTags => [ItemTag.Utility, ItemTag.InteractableRelated, ItemTag.AIBlacklist, ItemTag.CannotCopy, ItemTag.BrotherBlacklist];
 
         public static int itemCount = 0;
 
@@ -66,26 +63,27 @@ namespace Sandswept.Items.Greens
         public override object GetItemStatsDef()
         {
             ItemStatsDef itemStatsDef = new();
-            itemStatsDef.descriptions.Add("Extra Item Chance: ");
+            //
+            itemStatsDef.descriptions.Add("Uses: ");
             itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Utility);
+            itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Number);
+            //
+            itemStatsDef.descriptions.Add("Discount: ");
+            itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
             itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
-            if (Main.cursedConfig.Value)
-            {
-                itemStatsDef.descriptions.Add("UwU~ Love is Love! ");
-                itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Healing);
-                itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
-            }
-            itemStatsDef.calculateValues = (master, stack) =>
+            //
+            itemStatsDef.descriptions.Add("Choices: ");
+            itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Number);
+            //
+            itemStatsDef.calculateValuesNew = (luck, stack, procChance) =>
             {
                 List<float> values = new()
                 {
-                    MathHelpers.InverseHyperbolicScaling(baseChance, stackChance, 1f, itemCount)
+                    stack,
+                    discount,
+                    choices
                 };
-
-                if (Main.cursedConfig.Value)
-                {
-                    values.Add(1f);
-                }
 
                 return values;
             };
@@ -133,83 +131,164 @@ namespace Sandswept.Items.Greens
 
         public override void Hooks()
         {
-            On.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
-            Run.onRunDestroyGlobal += OnRunEnd;
-            CharacterBody.onBodyInventoryChangedGlobal += CharacterBody_onBodyInventoryChangedGlobal;
+            On.RoR2.ChestBehavior.BaseItemDrop += AddOptions;
+            On.RoR2.PurchaseInteraction.GetContextString += ShowDiscount;
+            On.RoR2.PurchaseInteraction.CanBeAffordedByInteractor += CheckDiscount;
+            On.RoR2.PurchaseInteraction.OnInteractionBegin += ApplyDiscount;
+            On.RoR2.PurchaseInteraction.UpdateHologramContent += ShowDiscount2;
         }
 
-        private void OnRunEnd(Run run)
+        private void ShowDiscount2(On.RoR2.PurchaseInteraction.orig_UpdateHologramContent orig, PurchaseInteraction self, GameObject hologramContentObject, Transform viewer)
         {
-            itemCount = 0;
-        }
+            orig(self, hologramContentObject, viewer);
+            
+            if (self.costType == CostTypeIndex.Money && self.GetComponent<ChestBehavior>() && hologramContentObject.TryGetComponent<CostHologramContent>(out var component)) {
+                if (self.viewerBody && self.viewerBody.inventory.GetItemCountPermanent(ItemDef) > 0) {
+                    int oldCost = component.displayValue;
+                    int cost = (int)Math.Floor(component.displayValue * (1f - discount));
+                    
+                    CostHologramContent.sharedStringBuilder.Clear();
+                    Color color = Color.white;
+                    CostTypeDef costTypeDef = CostTypeCatalog.GetCostTypeDef(self.costType);
 
-        private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
-        {
-            itemCount = GetPlayerItemCountGlobal(instance.ItemDef.itemIndex, true);
-        }
-
-        private void GlobalEventManager_OnInteractionBegin(On.RoR2.GlobalEventManager.orig_OnInteractionBegin orig, GlobalEventManager self, Interactor interactor, IInteractable interactable, GameObject interactableObject)
-        {
-            bool isCategoryChest = false;
-            var chestBehavior = interactableObject.GetComponent<ChestBehavior>();
-            if (chestBehavior)
-            {
-                var purchaseInteraction = interactableObject.GetComponent<PurchaseInteraction>();
-                if (purchaseInteraction)
-                {
-                    isCategoryChest = isCategoryChest || purchaseInteraction.displayNameToken.ToLower().Contains("category") || purchaseInteraction.contextToken.ToLower().Contains("category");
-                }
-                var genericDisplayNameProvider = interactableObject.GetComponent<GenericDisplayNameProvider>();
-                if (genericDisplayNameProvider)
-                {
-                    isCategoryChest = isCategoryChest || genericDisplayNameProvider.displayToken.ToLower().Contains("category");
-                }
-
-                if (isCategoryChest)
-                {
-                    if (interactor)
+                    if (costTypeDef != null)
                     {
-                        var interactorBody = interactor.GetComponent<CharacterBody>();
-                        if (interactorBody)
-                        {
-                            var scale = 0.5f + Run.instance.participatingPlayerCount * 0.5f;
-
-                            var chance = MathHelpers.InverseHyperbolicScaling(baseChance, stackChance, 1f, itemCount) * 100f;
-
-                            if (itemCount > 0 && Util.CheckRoll(chance / scale))
-                            {
-                                var isCategoryChestFinal = interactableObject.name.ToLower().Contains("category") || isCategoryChest;
-                                if (isCategoryChestFinal)
-                                {
-                                    // add rather than set, sale star already set its drop count in PurchaseInteraction.OnInteractionBegin
-                                    chestBehavior.dropCount += extraItems;
-
-                                    Util.PlaySound("Play_UI_commandHUD_select", chestBehavior.gameObject);
-                                    Util.PlaySound("Play_UI_commandHUD_select", chestBehavior.gameObject);
-
-                                    EffectManager.SpawnEffect(vfx, new EffectData
-                                    {
-                                        origin = interactableObject.transform.position,
-                                        rotation = Quaternion.identity,
-                                        scale = 3f,
-                                        color = pink
-                                    }, true);
-
-                                    Util.PlaySound("Play_UI_obj_casinoChest_open", interactableObject);
-                                    Util.PlaySound("Play_ui_obj_lunarPool_activate", interactableObject);
-
-                                    if (Main.cursedConfig.Value)
-                                    {
-                                        Chat.AddMessage("<color=#DC4C7B>Universal VIP Paws :3 x3 OwO UwU :3 <3</color>");
-                                    }
-                                }
-                            }
-                        }
+                        CostHologramContent.sharedStringBuilder.Append("<style=cDeath><s>");
+                        costTypeDef.BuildCostStringStyled(component.displayValue, CostHologramContent.sharedStringBuilder, forWorldDisplay: true, includeColor: false);
+                        CostHologramContent.sharedStringBuilder.Append("</s></style> ");
+                        costTypeDef.BuildCostStringStyled(cost, CostHologramContent.sharedStringBuilder, forWorldDisplay: true, includeColor: false);
+                        color = costTypeDef.GetCostColor(forWorldDisplay: true);
                     }
+
+                    component.targetTextMesh.SetText(CostHologramContent.sharedStringBuilder);
+                    component.targetTextMesh.color = color;
                 }
             }
+        }
 
-            orig(self, interactor, interactable, interactableObject);
+        private void ApplyDiscount(On.RoR2.PurchaseInteraction.orig_OnInteractionBegin orig, PurchaseInteraction self, Interactor activator)
+        {
+            int oldCost = self.cost;
+
+            if (self.GetComponent<ChestBehavior>() && self.costType == CostTypeIndex.Money && activator != null && activator.GetComponent<CharacterBody>() != null && activator.GetComponent<CharacterBody>().inventory.GetItemCountPermanent(ItemDef) > 0) {
+                self.cost = (int)Math.Floor(self.cost * (1f - discount));     
+            }
+
+            orig(self, activator);
+
+            self.cost = oldCost;
+        }
+
+        private bool CheckDiscount(On.RoR2.PurchaseInteraction.orig_CanBeAffordedByInteractor orig, PurchaseInteraction self, Interactor activator)
+        {
+            if (self.GetComponent<ChestBehavior>() && self.costType == CostTypeIndex.Money && activator != null && activator.GetComponent<CharacterBody>() != null && activator.GetComponent<CharacterBody>().inventory.GetItemCountPermanent(ItemDef) > 0) {
+                int num = TeamManager.AdjustCostForLongstandingSolitude(self.costType, (int)Math.Floor(self.cost * (1f - discount)), activator.GetComponent<CharacterBody>());
+		        return CostTypeCatalog.GetCostTypeDef(self.costType).IsAffordable(num, activator);
+            }
+            else {
+                return orig(self, activator);
+            }
+        }
+
+        private string ShowDiscount(On.RoR2.PurchaseInteraction.orig_GetContextString orig, PurchaseInteraction self, Interactor activator)
+        {
+            if (self.GetComponent<ChestBehavior>() && self.costType == CostTypeIndex.Money && activator != null && activator.GetComponent<CharacterBody>() != null && activator.GetComponent<CharacterBody>().inventory.GetItemCountPermanent(ItemDef) > 0) {
+                PurchaseInteraction.sharedStringBuilder.Clear();
+                PurchaseInteraction.sharedStringBuilder.Append(Language.GetString(self.contextToken));
+                if (self.costType != 0)
+                {
+                    PurchaseInteraction.sharedStringBuilder.Append(" <nobr>(<style=cDeath><s>");
+                    int num = TeamManager.AdjustCostForLongstandingSolitude(self.costType, self.cost);
+                    CostTypeCatalog.GetCostTypeDef(self.costType).BuildCostStringStyled(num, PurchaseInteraction.sharedStringBuilder, forWorldDisplay: false);
+                    PurchaseInteraction.sharedStringBuilder.Append("</s></style> ");
+                    CostTypeCatalog.GetCostTypeDef(self.costType).BuildCostStringStyled((int)Math.Floor(num * (1f - discount)), PurchaseInteraction.sharedStringBuilder, forWorldDisplay: false);
+                    PurchaseInteraction.sharedStringBuilder.Append(")</nobr>");
+                }
+
+                return PurchaseInteraction.sharedStringBuilder.ToString();
+            }
+            else {
+                return orig(self, activator);
+            }
+        }
+
+        private void AddOptions(On.RoR2.ChestBehavior.orig_BaseItemDrop orig, ChestBehavior self)
+        {
+            PurchaseInteraction purchase = self.GetComponent<PurchaseInteraction>();
+
+            if (!purchase || purchase.costType != CostTypeIndex.Money) {
+                orig(self);
+                return;
+            }
+        
+            if (!purchase.lastActivator || !purchase.lastActivator.GetComponent<CharacterBody>()) {
+                orig(self);
+                return;
+            }
+
+            CharacterBody body = purchase.lastActivator.GetComponent<CharacterBody>();
+
+            if (body.inventory && body.inventory.GetItemCountPermanent(ItemDef.itemIndex) > 0) {
+                Inventory.ItemTransformation itemTransformation = default(Inventory.ItemTransformation);
+                itemTransformation.originalItemIndex = ItemDef.itemIndex;
+                itemTransformation.newItemIndex = UniversalVIPPassSpent.instance.ItemDef.itemIndex;
+                itemTransformation.maxToTransform = 1;
+                itemTransformation.transformationType = (ItemTransformationTypeIndex)5;
+                Inventory.ItemTransformation itemTransformation2 = itemTransformation;
+                itemTransformation2.TryTransform(body.inventory, out var _);
+
+                Util.PlaySound("Play_UI_commandHUD_select", self.gameObject);
+                Util.PlaySound("Play_UI_commandHUD_select", self.gameObject);
+
+                EffectManager.SpawnEffect(vfx, new EffectData
+                {
+                    origin = self.transform.position,
+                    rotation = Quaternion.identity,
+                    scale = 3f,
+                    color = pink
+                }, true);
+
+                Util.PlaySound("Play_UI_obj_casinoChest_open", self.gameObject);
+                Util.PlaySound("Play_ui_obj_lunarPool_activate", self.gameObject);
+
+                if (self.currentPickup.isValid && self.dropCount >= 1)
+                {
+                    ItemDef item = ItemCatalog.GetItemDef(PickupCatalog.GetPickupDef(self.currentPickup.pickupIndex).itemIndex);
+
+                    float angle = 360f / self.dropCount;
+                    Vector3 vector = Vector3.up * self.dropUpVelocityStrength + self.dropTransform.forward * self.dropForwardVelocityStrength;
+                    Quaternion quaternion = Quaternion.AngleAxis(angle, Vector3.up);
+                    
+                    for (int i = 0; i < self.dropCount; i++)
+                    {
+                        GenericPickupController.CreatePickupInfo createPickupInfo = default(GenericPickupController.CreatePickupInfo);
+                        createPickupInfo.pickupIndex = PickupCatalog.FindPickupIndex(item.tier);
+                        createPickupInfo.position = self.dropTransform.position + Vector3.up * 1.5f;
+                        createPickupInfo.chest = self;
+                        createPickupInfo.prefabOverride = Paths.GameObject.OptionPickup;
+
+                        createPickupInfo.pickerOptions = new PickupPickerController.Option[choices];
+
+                        for (int j = 0; j < choices; j++) {
+                            createPickupInfo.pickerOptions[j] = new PickupPickerController.Option() {
+                                pickupIndex = self.dropTable.GeneratePickup(self.rng).pickupIndex,
+                                available = true
+                            };
+                        }
+                        
+                        GenericPickupController.CreatePickupInfo pickupInfo = createPickupInfo;
+                        PickupDropletController.CreatePickupDroplet(pickupInfo, pickupInfo.position, vector);
+
+                        vector = quaternion * vector;
+                    }
+
+                    self.currentPickup = UniquePickup.none;
+                    self.NetworkisChestOpened = true;
+                }
+            }
+            else {
+                orig(self);
+            }
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -261,10 +340,5 @@ namespace Sandswept.Items.Greens
             return i;
 
         }
-    }
-
-    public class UniversalVipPassController : MonoBehaviour
-    {
-        public int lastItemCount = 0;
     }
 }

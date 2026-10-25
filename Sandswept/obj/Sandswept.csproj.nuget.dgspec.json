@@ -123,6 +123,10 @@
               "target": "Package",
               "version": "[*-*, )"
             },
+            "RoR2BepInExPack": {
+              "target": "Package",
+              "version": "[*, )"
+            },
             "UnityEngine.Modules": {
               "include": "Compile",
               "target": "Package",

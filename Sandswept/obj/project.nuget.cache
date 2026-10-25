@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "mCb/U5pusE0=",
+  "dgSpecHash": "EtIi6z2pWVg=",
   "success": true,
   "projectFilePath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "/home/pseudopulse/.nuget/packages/microsoft.netcore.targets/1.1.0/microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/mmhook.ror2/2026.10.8/mmhook.ror2.2026.10.8.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/mono.cecil/0.11.4/mono.cecil.0.11.4.nupkg.sha512",
+    "/home/pseudopulse/.nuget/packages/monodetour/0.7.7/monodetour.0.7.7.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/monomod.runtimedetour/21.12.13.1/monomod.runtimedetour.21.12.13.1.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/monomod.utils/21.12.13.1/monomod.utils.21.12.13.1.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.addressables/1.1.3/r2api.addressables.1.1.3.nupkg.sha512",
@@ -19,7 +20,7 @@
     "/home/pseudopulse/.nuget/packages/r2api.contentmanagement/1.1.0/r2api.contentmanagement.1.1.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.core/5.3.0/r2api.core.5.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.damagetype/1.1.7/r2api.damagetype.1.1.7.nupkg.sha512",
-    "/home/pseudopulse/.nuget/packages/r2api.director/3.1.2/r2api.director.3.1.2.nupkg.sha512",
+    "/home/pseudopulse/.nuget/packages/r2api.director/3.1.3/r2api.director.3.1.3.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.dot/1.1.3/r2api.dot.1.1.3.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.elites/1.1.3/r2api.elites.1.1.3.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.items/1.0.8/r2api.items.1.0.8.nupkg.sha512",
@@ -29,9 +30,9 @@
     "/home/pseudopulse/.nuget/packages/r2api.proctype/1.0.2/r2api.proctype.1.0.2.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.recalculatestats/1.7.0/r2api.recalculatestats.1.7.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.skills/1.0.6/r2api.skills.1.0.6.nupkg.sha512",
-    "/home/pseudopulse/.nuget/packages/r2api.skins/1.4.11/r2api.skins.1.4.11.nupkg.sha512",
+    "/home/pseudopulse/.nuget/packages/r2api.skins/1.4.14/r2api.skins.1.4.14.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/riskofrain2.gamelibs/1.5.0-r.1/riskofrain2.gamelibs.1.5.0-r.1.nupkg.sha512",
-    "/home/pseudopulse/.nuget/packages/ror2bepinexpack/1.41.0/ror2bepinexpack.1.41.0.nupkg.sha512",
+    "/home/pseudopulse/.nuget/packages/ror2bepinexpack/1.48.0/ror2bepinexpack.1.48.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections/4.3.0/system.collections.4.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections.nongeneric/4.3.0/system.collections.nongeneric.4.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections.specialized/4.3.0/system.collections.specialized.4.3.0.nupkg.sha512",
@@ -61,15 +62,5 @@
     "/home/pseudopulse/.nuget/packages/system.threading.tasks/4.3.0/system.threading.tasks.4.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/unityengine.modules/2021.3.45/unityengine.modules.2021.3.45.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "message": "Problem reading the cache file /home/pseudopulse/Repos/Sandswept/Sandswept/obj/project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
-      "projectPath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
-      "warningLevel": 1,
-      "filePath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
-      "targetGraphs": []
-    }
-  ]
+  "logs": []
 }

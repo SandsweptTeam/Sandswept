@@ -105,6 +105,30 @@
           }
         }
       },
+      "MonoDetour/0.7.7": {
+        "type": "package",
+        "dependencies": {
+          "MonoMod.RuntimeDetour": "21.12.13.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/com.github.MonoDetour.Bindings.Reorg.dll": {},
+          "lib/netstandard2.0/com.github.MonoDetour.Reflection.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/com.github.MonoDetour.dll": {
+            "related": ".Reflection.xml;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/com.github.MonoDetour.Bindings.Reorg.dll": {},
+          "lib/netstandard2.0/com.github.MonoDetour.Reflection.dll": {
+            "related": ".xml"
+          },
+          "lib/netstandard2.0/com.github.MonoDetour.dll": {
+            "related": ".Reflection.xml;.xml"
+          }
+        }
+      },
       "MonoMod.RuntimeDetour/21.12.13.1": {
         "type": "package",
         "dependencies": {
@@ -254,7 +278,7 @@
           }
         }
       },
-      "R2API.Director/3.1.2": {
+      "R2API.Director/3.1.3": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
@@ -468,7 +492,7 @@
           }
         }
       },
-      "R2API.Skins/1.4.11": {
+      "R2API.Skins/1.4.14": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
@@ -544,12 +568,13 @@
           "lib/netstandard2.0/com.unity.multiplayer-hlapi.Runtime.dll": {}
         }
       },
-      "RoR2BepInExPack/1.41.0": {
+      "RoR2BepInExPack/1.48.0": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
-          "RiskOfRain2.GameLibs": "1.4.1-r.0",
-          "UnityEngine.Modules": "2021.3.33"
+          "MonoDetour": "0.7.7",
+          "RiskOfRain2.GameLibs": "1.5.0-r.1",
+          "UnityEngine.Modules": "2021.3.45"
         },
         "compile": {
           "lib/netstandard2.1/RoR2BepInExPack.dll": {
@@ -1172,6 +1197,29 @@
         "mono.cecil.nuspec"
       ]
     },
+    "MonoDetour/0.7.7": {
+      "sha512": "6Vuj/uuP38/zslv0yFcHAl6monP8AOM00nK5tzLnQdS5HWmAWotT8/wbqNc6o6cU81WfkFE/ByokU8uiLlHmuw==",
+      "type": "package",
+      "path": "monodetour/0.7.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "lib/net9.0/com.github.MonoDetour.Bindings.Reorg.dll",
+        "lib/net9.0/com.github.MonoDetour.Reflection.dll",
+        "lib/net9.0/com.github.MonoDetour.Reflection.xml",
+        "lib/net9.0/com.github.MonoDetour.dll",
+        "lib/net9.0/com.github.MonoDetour.xml",
+        "lib/netstandard2.0/com.github.MonoDetour.Bindings.Reorg.dll",
+        "lib/netstandard2.0/com.github.MonoDetour.Reflection.dll",
+        "lib/netstandard2.0/com.github.MonoDetour.Reflection.xml",
+        "lib/netstandard2.0/com.github.MonoDetour.dll",
+        "lib/netstandard2.0/com.github.MonoDetour.xml",
+        "monodetour.0.7.7.nupkg.sha512",
+        "monodetour.nuspec"
+      ]
+    },
     "MonoMod.RuntimeDetour/21.12.13.1": {
       "sha512": "65mB+bHjT6UCGCgO+/pYhpuGPf96rQ1Whwkut/x7cqVIW0DTndDFyWc/3bngzhnY/Y6IYtBMlXsU2ATq+CxpHg==",
       "type": "package",
@@ -1275,16 +1323,16 @@
         "r2api.damagetype.nuspec"
       ]
     },
-    "R2API.Director/3.1.2": {
-      "sha512": "6IaCLyELEo4fA12SvwxBkm2dhS6Qw2NSfrlFMNONorlsi+Yr6WMSgeGUTLxNGb4MW2g9kfVBGc8nD9eqgLXIxg==",
+    "R2API.Director/3.1.3": {
+      "sha512": "W7zndJuX4RSHBbYnru75oaCmikSwx33qjLsVpmS07ZdM2uIY/RNsICn2Pkvco4X7G3jl0CCSX+wVD3yHfoilRQ==",
       "type": "package",
-      "path": "r2api.director/3.1.2",
+      "path": "r2api.director/3.1.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.Director.dll",
         "lib/netstandard2.1/R2API.Director.xml",
-        "r2api.director.3.1.2.nupkg.sha512",
+        "r2api.director.3.1.3.nupkg.sha512",
         "r2api.director.nuspec"
       ]
     },
@@ -1405,16 +1453,16 @@
         "r2api.skills.nuspec"
       ]
     },
-    "R2API.Skins/1.4.11": {
-      "sha512": "quwA3qvXwtzL3Edc8zgP6PEB/MrzMOOGnGt3VEIIA7h64a6Lk1O9ac6ejSeaeK5kxwb+aWhiVSv82rXCjDFzmg==",
+    "R2API.Skins/1.4.14": {
+      "sha512": "C20jzZS4u05zd35Q9vSiQBP8R2X4pvBTg1jVmzz9GnBx6lkvk2srqGj6UG/+I+oFs4ayMwSoj+/zJhXc+4dJcA==",
       "type": "package",
-      "path": "r2api.skins/1.4.11",
+      "path": "r2api.skins/1.4.14",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/R2API.Skins.dll",
         "lib/netstandard2.1/R2API.Skins.xml",
-        "r2api.skins.1.4.11.nupkg.sha512",
+        "r2api.skins.1.4.14.nupkg.sha512",
         "r2api.skins.nuspec"
       ]
     },
@@ -1452,16 +1500,16 @@
         "riskofrain2.gamelibs.nuspec"
       ]
     },
-    "RoR2BepInExPack/1.41.0": {
-      "sha512": "H0QaWDaLej55rSTYO4IkBpjWFLZtjQ0SzNP3E5xprPs0GPFlA5l2NK65kgf8XylN63DN7O5wFyqfhtNAU9wZ/g==",
+    "RoR2BepInExPack/1.48.0": {
+      "sha512": "knNnif1Zm1uYQ/rrehfD8F9IS1XsJMzeWJsFGdLVsGw1DPocGM49v/OYWqkJNWQVsxaQnxn5V/guw5OgR9jjOw==",
       "type": "package",
-      "path": "ror2bepinexpack/1.41.0",
+      "path": "ror2bepinexpack/1.48.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/RoR2BepInExPack.dll",
         "lib/netstandard2.1/RoR2BepInExPack.xml",
-        "ror2bepinexpack.1.41.0.nupkg.sha512",
+        "ror2bepinexpack.1.48.0.nupkg.sha512",
         "ror2bepinexpack.nuspec"
       ]
     },
@@ -3366,6 +3414,7 @@
       "R2API.Skills >= *",
       "R2API.Skins >= *",
       "RiskOfRain2.GameLibs >= *-*",
+      "RoR2BepInExPack >= *",
       "UnityEngine.Modules >= 2021.3.45"
     ]
   },
@@ -3491,6 +3540,10 @@
             "target": "Package",
             "version": "[*-*, )"
           },
+          "RoR2BepInExPack": {
+            "target": "Package",
+            "version": "[*, )"
+          },
           "UnityEngine.Modules": {
             "include": "Compile",
             "target": "Package",
@@ -3516,13 +3569,5 @@
         "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.112/RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Problem reading the cache file /home/pseudopulse/Repos/Sandswept/Sandswept/obj/project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0."
-    }
-  ]
+  }
 }

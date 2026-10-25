@@ -11,9 +11,9 @@ namespace Sandswept.Items.Greens
 
         public override string ItemLangTokenName => "CROWNS_DIAMOND";
 
-        public override string ItemPickupDesc => "Being out of danger periodically grants barrier. Barrier decays slower while out of combat or danger.";
+        public override string ItemPickupDesc => "Entering combat grants barrier. Strengthen you and nearby allies while you have an active barrier.";
 
-        public override string ItemFullDescription => $"Being out of danger grants $sh{barrierGain * 100f}% barrier$se every $sh7$se seconds. $shBarrier$se decays $su{baseBarrierDecayReduction * 100f}%$se $ss(+{stackBarrierDecayReduction * 100f}% per stack)$se $suslower$se while out of combat or danger.".AutoFormat();
+        public override string ItemFullDescription => $"Entering combat grants a <style=cIsHealing>temporary barrier</style> for <style=cIsHealing>{barrierGain * 100f}% maximum health</style>. While you have an active <style=cIsHealing>barrier</style>, project a ward that grants allies <style=cIsDamage>+{damageGain * 100f}% damage</style> <style=cStack>(+{damageGain * 100f}% per stack)</style> and <style=cIsDamage>+{attackSpeedGain * 100f}% attack speed</style> <style=cStack>(+{attackSpeedGain * 100f}% per stack)<style>".AutoFormat();
 
         public override string ItemLore =>
         """
@@ -34,14 +34,12 @@ namespace Sandswept.Items.Greens
 
         For the glory of Immortal Mercury.
         """;
-        [ConfigField("Barrier Gain", "Decimal.", 0.2f)]
+        [ConfigField("Barrier Gain", "Decimal.", 0.3f)]
         public static float barrierGain;
-
-        [ConfigField("Base Barrier Decay Reduction", "Decimal.", 0.15f)]
-        public static float baseBarrierDecayReduction;
-
-        [ConfigField("Stack Barrier Decay Reduction", "Decimal.", 0.15f)]
-        public static float stackBarrierDecayReduction;
+        [ConfigField("Attack Speed Gain", "Decimal.", 0.25f)]
+        public static float attackSpeedGain;
+        [ConfigField("Damage Gain", "Decimal.", 0.25f)]
+        public static float damageGain;
 
         public override ItemTier Tier => ItemTier.Tier2;
 
@@ -53,17 +51,67 @@ namespace Sandswept.Items.Greens
 
         public override float modelPanelParametersMinDistance => 4f;
         public override float modelPanelParametersMaxDistance => 11f;
+        public static BuffDef bdDiamondBoost;
+        public static GameObject DiamondWardEffect;
 
         public override void Init()
         {
             base.Init();
+
+            bdDiamondBoost = ScriptableObject.CreateInstance<BuffDef>();
+            bdDiamondBoost.isHidden = false;
+            bdDiamondBoost.isDebuff = false;
+            bdDiamondBoost.canStack = true;
+            bdDiamondBoost.isCooldown = false;
+            bdDiamondBoost.buffColor = Color.white;
+            bdDiamondBoost.iconSprite = Main.assets.LoadAsset<Sprite>("bdDiamondBoost.png");
+            bdDiamondBoost.name = "Crown's Grace";
+            ContentAddition.AddBuffDef(bdDiamondBoost);
+
+            DiamondWardEffect = PrefabAPI.InstantiateClone(Paths.GameObject.CrippleWard, "DiamondWardEffect");
+            DiamondWardEffect.RemoveComponent<Deployable>();
+            DiamondWardEffect.RemoveComponent<EventFunctions>();
+            DiamondWardEffect.RemoveComponent<StartEvent>();
+            DiamondWardEffect.RemoveComponent<Rigidbody>();
+            DiamondWardEffect.EditComponent<BuffWard>((x) => {
+                x.buffDef = bdDiamondBoost;
+                x.buffDuration = 1f;
+                x.interval = 1f;
+                x.invertTeamFilter = false;
+            });
+
+            MeshRenderer mesh = DiamondWardEffect.transform.Find("Totem").Find("Mesh").GetComponent<MeshRenderer>();
+            mesh.sharedMaterials = new Material[] { 
+                Paths.Material.matFireRingGemstone, Paths.Material.matBarrier
+            };
+            mesh.EditComponent<ObjectScaleCurve>((x) => {
+                x.resetOnDisable = true;
+                x.useOverallCurveOnly = true;
+                x.overallCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(0.8f, 1.2f), new Keyframe(1f, 1f));
+            });
+            mesh.RemoveComponent<MeshCollider>();
+            mesh.GetComponent<MeshFilter>().sharedMesh = ItemModel.GetComponentInChildren<MeshFilter>().sharedMesh;
+            mesh.transform.parent.Find("Infection").gameObject.SetActive(false);
+            mesh.transform.localPosition = Vector3.zero;
+            mesh.transform.localRotation = Quaternion.Euler(270, 0, 0);
+            mesh.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+            mesh.transform.parent.gameObject.SetActive(false);
+            mesh.RemoveComponent<DitherModel>();
+            Light light = mesh.transform.parent.Find("Point Light").GetComponent<Light>();
+            light.gameObject.SetActive(false);
+
+            DiamondWardEffect.transform.Find("Decal").gameObject.SetActive(false);
+            DiamondWardEffect.transform.Find("Indicator").Find("IndicatorSphere").GetComponent<MeshRenderer>().sharedMaterials = new Material[] {
+                Paths.Material.matMajorConstructDefenseMatrixEdges, Paths.Material.matRunicLensMeteorStrikeImpactIndicator
+            };
+
+            DiamondWardEffect.transform.Find("Indicator").Find("IndicatorSphere").Find("Drips").gameObject.SetActive(false);
+            DiamondWardEffect.transform.Find("Indicator").gameObject.SetActive(false);
         }
 
         public override void Hooks()
         {
-            // IL.RoR2.HealthComponent.ServerFixedUpdate += HealthComponent_ServerFixedUpdate;
             CharacterBody.onBodyInventoryChangedGlobal += CharacterBody_onBodyInventoryChangedGlobal;
-            // MoreStats.StatHooks.GetMoreStatCoefficients += StatHooks_GetMoreStatCoefficients;
             RecalculateStatsAPI.GetStatCoefficients += OnGetStatCoefficients;
         }
 
@@ -71,12 +119,11 @@ namespace Sandswept.Items.Greens
         {
             if (sender)
             {
-                var stack = GetCount(sender);
-                if (stack > 0 && (sender.outOfCombat || sender.outOfDanger))
+                var stack = sender.GetBuffCount(bdDiamondBoost);
+                if (stack > 0)
                 {
-                    var reduction = MathHelpers.GetHyperbolic(baseBarrierDecayReduction, 100f, baseBarrierDecayReduction + stackBarrierDecayReduction * (stack - 1));
-
-                    args.barrierDecayMult -= reduction;
+                    args.attackSpeedMultAdd += attackSpeedGain * stack;
+                    args.damageMultAdd += damageGain * stack;
                 }
             }
         }
@@ -84,14 +131,26 @@ namespace Sandswept.Items.Greens
         public override object GetItemStatsDef()
         {
             ItemStatsDef itemStatsDef = new();
-            itemStatsDef.descriptions.Add("Barrier Decay Reduction: ");
+            //
+            itemStatsDef.descriptions.Add("Barrier:");
             itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Healing);
             itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
-            itemStatsDef.calculateValues = (master, stack) =>
+            //
+            itemStatsDef.descriptions.Add("Attack Speed: ");
+            itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            //
+            itemStatsDef.descriptions.Add("Damage: ");
+            itemStatsDef.valueTypes.Add(ItemStatsDef.ValueType.Damage);
+            itemStatsDef.measurementUnits.Add(ItemStatsDef.MeasurementUnits.Percentage);
+            //
+            itemStatsDef.calculateValuesNew = (luck, stack, procChance) =>
             {
                 List<float> values = new()
                 {
-                    MathHelpers.GetHyperbolic(baseBarrierDecayReduction, 100f, baseBarrierDecayReduction + stackBarrierDecayReduction * (stack - 1))
+                    barrierGain,
+                    attackSpeedGain * stack,
+                    damageGain * stack
                 };
 
                 return values;
@@ -102,43 +161,7 @@ namespace Sandswept.Items.Greens
 
         private void CharacterBody_onBodyInventoryChangedGlobal(CharacterBody body)
         {
-            if (!NetworkServer.active) return;
             body.AddItemBehavior<CrownsDiamondController>(GetCount(body));
-        }
-
-        private void HealthComponent_ServerFixedUpdate(ILContext il)
-        {
-            ILCursor c = new(il);
-
-            if (c.TryGotoNext(MoveType.Before,
-                x => x.MatchCallOrCallvirt(typeof(CharacterBody).GetProperty("barrierDecayRate").GetGetMethod())))
-            {
-                c.Index++;
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<float, HealthComponent, float>>((orig, self) =>
-                {
-                    var body = self.body;
-                    var stack = GetCount(body);
-
-                    if (stack > 0 && body && (body.outOfDanger || body.outOfCombat))
-                    {
-                        var reduction = MathHelpers.InverseHyperbolicScaling(1f - baseBarrierDecayReduction, stackBarrierDecayReduction, 0f, stack);
-                        // Main.ModLogger.LogError("reduction multiplier is " + reduction);
-                        // var final = Util.ConvertAmplificationPercentageIntoReductionPercentage(orig * reduction);
-                        var final = orig * reduction;
-                        // Main.ModLogger.LogError("barrier decay BEFORE changes is " + orig);
-                        //Main.ModLogger.LogError("final barrier DECAY is " + final);
-                        // all works fine
-                        return final;
-                    }
-
-                    return orig;
-                });
-            }
-            else
-            {
-                Main.ModLogger.LogError("Failed to apply Barrier Decay Rate hook");
-            }
         }
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
@@ -195,30 +218,62 @@ namespace Sandswept.Items.Greens
     public class CrownsDiamondController : CharacterBody.ItemBehavior
     {
         public HealthComponent hc;
-        public float timer = 0f;
-        public float interval = 7f;
+        public bool wasOutOfCombat = true;
+        public BuffWard ward;
+        public GameObject DiamondWard;
+        public GameObject mesh;
 
-        public void Start()
+        public void OnEnable()
         {
+            body = GetComponent<CharacterBody>();
             hc = body.healthComponent;
+
+            DiamondWard = GameObject.Instantiate(CrownsDiamond.DiamondWardEffect, body.transform);
+            DiamondWard.GetComponent<TeamFilter>().teamIndex = body.teamComponent.teamIndex;
+            ward = DiamondWard.GetComponent<BuffWard>();
+            ward.onBuffApplied += OnBuffApplied;
+
+            mesh = DiamondWard.transform.Find("Totem").gameObject;
+            mesh.transform.localPosition = new Vector3(0, 0, 0.7f * body.bestFitRadius); 
+        }
+
+        private void OnBuffApplied(CharacterBody body)
+        {
+            for (int i = 0; i < stack - 1; i++) {
+                body.AddTimedBuff(CrownsDiamond.bdDiamondBoost, 1f, int.MaxValue);
+            }
+        }
+
+        public void OnDisable() {
+            if (DiamondWard) {
+                GameObject.Destroy(DiamondWard);
+            }
         }
 
         public void FixedUpdate()
         {
-            if (body.outOfDanger)
-            {
-                timer += Time.fixedDeltaTime;
-            }
-            else
-            {
-                timer = 0f;
+            if (hc == null) {
+                return;
             }
 
-            if (timer >= interval && stack > 0)
-            {
+            if (wasOutOfCombat && !body.outOfCombat) {
                 hc.AddBarrierAuthority(hc.fullCombinedHealth * CrownsDiamond.barrierGain);
-                timer = 0f;
             }
+
+            if (hc.barrier > 0f) {
+                ward.radius = 20f;
+                ward.buffDef = CrownsDiamond.bdDiamondBoost;
+                mesh.gameObject.SetActive(true);
+                ward.rangeIndicator.gameObject.SetActive(true);
+            }
+            else {
+                mesh.gameObject.SetActive(false);
+                ward.radius = 0f;
+                ward.buffDef = null;
+                ward.rangeIndicator.gameObject.SetActive(false);
+            }
+
+            wasOutOfCombat = body.outOfCombat;
         }
     }
 }

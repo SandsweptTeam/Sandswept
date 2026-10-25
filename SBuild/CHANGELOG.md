@@ -1,3 +1,8 @@
+# 1.5.0 Patch Notes
+- Items/Equipment
+  - Crown's Diamond reworked. New effect is: Entering combat grants temporary barrier for 30% maximum health. While you have an active barrier, project a ward that grants allies +25% damage and +25% attack speed.
+  - Nerfed Nuclear Salvo missile damage from 100% to 70%
+  - Nerfed Nuclear Salvo missile radius from 8m to 6m
 ## 1.4.6 Patch Notes
 - Items/Equipment
   - Nerfed Amber Knife proc chance from 12% to 10%

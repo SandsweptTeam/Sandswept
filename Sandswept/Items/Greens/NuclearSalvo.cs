@@ -62,13 +62,13 @@ namespace Sandswept.Items.Greens
         [ConfigField("Stack Missile Count", "", 2)]
         public static int stackMissileCount;
 
-        [ConfigField("Base Missile Damage", "Decimal.", 1f)]
+        [ConfigField("Base Missile Damage", "Decimal.", 0.7f)]
         public static float baseMissileDamage;
 
         [ConfigField("Missile Proc Coefficient", "", 0.33f)]
         public static float missileProcCoefficient;
 
-        [ConfigField("Missile Explosion Radius", "", 8f)]
+        [ConfigField("Missile Explosion Radius", "", 6f)]
         public static float missileExplosionRadius;
 
         public static List<string> stageBlacklist = ["bazaar", "computationalexchange"];
