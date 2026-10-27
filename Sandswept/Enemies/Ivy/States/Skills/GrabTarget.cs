@@ -10,15 +10,10 @@ namespace Sandswept.Enemies.Ivy {
             base.OnEnter();
 
             IvyMainState main = EntityStateMachine.FindByCustomName(base.gameObject, "Body").state as IvyMainState;
-            if (main.controller.headActive) {
-                outer.SetNextStateToMain();
-                return;
-            }
 
             if (NetworkServer.active) {
                 TeleportHelper.TeleportBody(main.IvyHeadBody, GetComponent<VehicleSeat>().seatPosition.position);
             }
-
         }
 
         public override void FixedUpdate()
@@ -29,7 +24,6 @@ namespace Sandswept.Enemies.Ivy {
                 if (NetworkServer.active) {
                     IvyMainState main = EntityStateMachine.FindByCustomName(base.gameObject, "Body").state as IvyMainState;
                     main.IvyHeadBody.master.aiComponents[0].customTarget.gameObject = base.characterBody.master.aiComponents[0].customTarget.gameObject;
-                    main.controller.headActive = true;
                     base.characterMotor.walkSpeedPenaltyCoefficient = 0f;
                     // PlayAnimation("Body", "Open", "Generic.playbackRate", 0.5f);
                 }
@@ -62,7 +56,7 @@ namespace Sandswept.Enemies.Ivy {
             }
 
             IvyMainState main = EntityStateMachine.FindByCustomName(base.characterBody.master.minionOwnership.ownerMaster.GetBody().gameObject, "Body").state as IvyMainState;
-            main.PlayAnimation("Body", "Close", "Generic.playbackRate", 0.5f);
+            // main.PlayAnimation("Body", "Close", "Generic.playbackRate", 0.5f);
             
             outer.SetNextStateToMain();
         }

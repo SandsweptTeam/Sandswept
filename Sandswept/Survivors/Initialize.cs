@@ -24,7 +24,7 @@ namespace Sandswept.Survivors
                 ChargeGain.Init();
 
                 Material matRanger = Main.assets.LoadAsset<Material>("matRanger.mat");
-                matRanger.shader = Utils.Assets.Shader.HopooGamesDeferredStandard;
+                matRanger.shader = Utils.Assets.Shader.HGStandard;
                 matRanger.SetColor("_EmColor", Color.white);
                 matRanger.SetFloat("_EmPower", 2.5f);
                 matRanger.EnableKeyword("DITHER");

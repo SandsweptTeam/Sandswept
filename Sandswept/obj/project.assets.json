@@ -568,7 +568,7 @@
           "lib/netstandard2.0/com.unity.multiplayer-hlapi.Runtime.dll": {}
         }
       },
-      "RoR2BepInExPack/1.48.0": {
+      "RoR2BepInExPack/1.49.0": {
         "type": "package",
         "dependencies": {
           "BepInEx.Core": "5.4.21",
@@ -1500,16 +1500,16 @@
         "riskofrain2.gamelibs.nuspec"
       ]
     },
-    "RoR2BepInExPack/1.48.0": {
-      "sha512": "knNnif1Zm1uYQ/rrehfD8F9IS1XsJMzeWJsFGdLVsGw1DPocGM49v/OYWqkJNWQVsxaQnxn5V/guw5OgR9jjOw==",
+    "RoR2BepInExPack/1.49.0": {
+      "sha512": "it8j63If9x4FcVLRFUrWnFSBR2qkfmudWjpDl0gT6jsGGiGx6VjnLkGAeVdMBiOSRDyQmptr1JFsvTeZSQb7Aw==",
       "type": "package",
-      "path": "ror2bepinexpack/1.48.0",
+      "path": "ror2bepinexpack/1.49.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "lib/netstandard2.1/RoR2BepInExPack.dll",
         "lib/netstandard2.1/RoR2BepInExPack.xml",
-        "ror2bepinexpack.1.48.0.nupkg.sha512",
+        "ror2bepinexpack.1.49.0.nupkg.sha512",
         "ror2bepinexpack.nuspec"
       ]
     },
@@ -3566,7 +3566,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.112/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.113/RuntimeIdentifierGraph.json"
       }
     }
   }

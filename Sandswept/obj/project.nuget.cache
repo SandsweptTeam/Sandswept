@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "EtIi6z2pWVg=",
+  "dgSpecHash": "6QJbJ3MG+pM=",
   "success": true,
   "projectFilePath": "/home/pseudopulse/Repos/Sandswept/Sandswept/Sandswept.csproj",
   "expectedPackageFiles": [
@@ -32,7 +32,7 @@
     "/home/pseudopulse/.nuget/packages/r2api.skills/1.0.6/r2api.skills.1.0.6.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/r2api.skins/1.4.14/r2api.skins.1.4.14.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/riskofrain2.gamelibs/1.5.0-r.1/riskofrain2.gamelibs.1.5.0-r.1.nupkg.sha512",
-    "/home/pseudopulse/.nuget/packages/ror2bepinexpack/1.48.0/ror2bepinexpack.1.48.0.nupkg.sha512",
+    "/home/pseudopulse/.nuget/packages/ror2bepinexpack/1.49.0/ror2bepinexpack.1.49.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections/4.3.0/system.collections.4.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections.nongeneric/4.3.0/system.collections.nongeneric.4.3.0.nupkg.sha512",
     "/home/pseudopulse/.nuget/packages/system.collections.specialized/4.3.0/system.collections.specialized.4.3.0.nupkg.sha512",

@@ -70,8 +70,8 @@ namespace Sandswept.Enemies.Ivy
             IvyHeadMaster = Main.assets.LoadAsset<GameObject>("IvyHeadMaster.prefab");
             IvyHeadBody.AddComponent<IvyBodyMarker>();
             IvyHeadBody.EditComponent<CharacterBody>((x) => {
-                x.baseMoveSpeed = 20;
-                x.baseAcceleration = 140;
+                x.baseMoveSpeed = 30;
+                x.baseAcceleration = 800;
             });
             IvyHeadBody.GetComponent<ModelLocator>().modelBaseTransform.gameObject.SetActive(false);
             IvyHeadBody.layer = LayerIndex.noCollision.intVal;

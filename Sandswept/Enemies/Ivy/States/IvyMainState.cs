@@ -80,7 +80,6 @@ namespace Sandswept.Enemies.Ivy {
         private void OnPassengerExit(GameObject passenger)
         {
             skillLocator.secondary.SetBlockedCooldownSkillState(false);
-            controller.headActive = false;
 
             CharacterBody body = passenger.GetComponent<CharacterBody>();
 

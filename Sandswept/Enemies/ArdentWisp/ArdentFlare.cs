@@ -132,6 +132,7 @@ namespace Sandswept.Enemies.ArdentWisp
                 stopwatch += Time.fixedDeltaTime;
 
                 if (stopwatch >= blastTime && NetworkServer.active) {
+                    GameObject.Instantiate(Paths.GameObject.Gravestone, base.transform.position, Quaternion.identity);
                     explosion.DetonateServer();
                     base.enabled = false;
                     GameObject.Destroy(base.gameObject);

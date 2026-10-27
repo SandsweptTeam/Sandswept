@@ -5,10 +5,40 @@ using static RoR2.CharacterAI.BaseAI;
 namespace Sandswept.Enemies.Ivy {
     public class IvyAIController : AISkillDriverSelectionOverride
     {
+        public IvyHeadAIController head;
+        public void FixedUpdate() {
+            if (!head && ai && ai.body) {
+                head = (EntityStateMachine.FindByCustomName(ai.body.gameObject, "Body").state as IvyMainState).IvyHeadBody.master.GetComponent<IvyHeadAIController>();
+            }
+        }
         public override SkillDriverEvaluation EvaluateSkillDrivers()
         {
-            return default;
+            Target enemy = ai.currentEnemy;
+            Target leader = ai.leader;
+            Target custom = ai.customTarget;
+
+            /*if (custom.gameObject != null) {
+                float dist = Vector3.Distance(ai.body.gameObject.transform.position, leader.gameObject.transform.position);
+
+                if (dist <= grabRange) {
+                    state = "grabbing";
+                    return DefaultEvalForDriver(GrabTarget);
+                }
+                else {
+                    state = "grab chase";
+                    return DefaultEvalForDriver(ChaseGrabTarget);
+                }
+            }*/
+
+            return DefaultEvalForDriver(Idle);
         }
+
+        public AISkillDriver DeployHead => FindDriver("Deploy Head");
+        public AISkillDriver ChaseAlly => FindDriver("Enter Deploy Range");
+        public AISkillDriver FleeEnemy => FindDriver("Flee Enemy");
+        public AISkillDriver StrafeEnemy => FindDriver("Strafe Enemy");
+        public AISkillDriver ChaseEnemy => FindDriver("Chase Enemy");
+        public AISkillDriver Idle => FindDriver("Idle");
     }
     public class IvyHeadAIController : AISkillDriverSelectionOverride
     {
@@ -16,9 +46,10 @@ namespace Sandswept.Enemies.Ivy {
         public float maxHeadRange = 35f;
         public float maxHeadStretchTime = 2.5f;
         private float headStretchTimer = 0f;
-        private float chaseDistance = 15f;
-        private bool outOfRange = false;
-        private float grabRange = 5f;
+        public float chaseDistance = 15f;
+        public bool outOfRange = false;
+        public float grabRange = 8f;
+        public string state = "";
         public override SkillDriverEvaluation EvaluateSkillDrivers()
         {
             Target enemy = ai.currentEnemy;
@@ -28,10 +59,14 @@ namespace Sandswept.Enemies.Ivy {
             if (custom.gameObject != null) {
                 float dist = Vector3.Distance(ai.body.gameObject.transform.position, leader.gameObject.transform.position);
 
+                Debug.LogError("dist from target is " + dist);
+
                 if (dist <= grabRange) {
+                    state = "grabbing";
                     return DefaultEvalForDriver(GrabTarget);
                 }
                 else {
+                    state = "grab chase";
                     return DefaultEvalForDriver(ChaseGrabTarget);
                 }
             }
@@ -43,6 +78,7 @@ namespace Sandswept.Enemies.Ivy {
                     outOfRange = true;
 
                     if (headStretchTimer >= maxHeadStretchTime) {
+                        state = "tether oor";
                         return DefaultEvalForDriver(TetherToBody);
                     }
                 }
@@ -54,18 +90,22 @@ namespace Sandswept.Enemies.Ivy {
                         float enemyDist = Vector3.Distance(ai.body.gameObject.transform.position, enemy.gameObject.transform.position);
 
                         if (enemyDist >= chaseDistance) {
+                            state = "chase enemy";
                             return DefaultEvalForDriver(ChaseEnemy);
                         }
                         else {
+                            state = "strafe";
                             return DefaultEvalForDriver(StrafeLeader);
                         }
                     }
                     else {
+                        state = "wander";
                         return DefaultEvalForDriver(DetachLeader);
                     }
                 }
             }
 
+            state = "tether def";
             return DefaultEvalForDriver(TetherToBody);
         }
 

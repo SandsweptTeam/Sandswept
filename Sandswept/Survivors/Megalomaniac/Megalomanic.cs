@@ -69,8 +69,8 @@ namespace Sandswept.Survivors.Megalomaniac
 
             SkillLocator locator = Body.GetComponent<SkillLocator>();
             ReplaceSkills(locator.primary, new SkillDef[] { Skills.Shatter.instance });
-            ReplaceSkills(locator.secondary, new SkillDef[] { Renegade.Skills.Charge.instance });
-            ReplaceSkills(locator.utility, new SkillDef[] { Renegade.Skills.Charge.instance });
+            ReplaceSkills(locator.secondary, new SkillDef[] { Ranger.SkillDefs.Special.HeatSink.instance });
+            ReplaceSkills(locator.utility, new SkillDef[] {Ranger.SkillDefs.Special.HeatSink.instance });
             ReplaceSkills(locator.special, new SkillDef[] { Skills.Expel.instance });
             locator.passiveSkill.icon = null;
 

@@ -9,9 +9,7 @@ namespace Sandswept.Enemies.ArdentWisp
     [ConfigSection("Enemies :: Ardent Wisp")]
     public class ArdentWisp : EnemyBase<ArdentWisp>
     {
-        public static GameObject JellyCoreProjectile;
-
-        [ConfigField("Director Credit Cost", "", 300)]
+        [ConfigField("Director Credit Cost", "", 250)]
         public static int directorCreditCost;
 
         public override DirectorCardCategorySelection family => Paths.FamilyDirectorCardCategorySelection.dccsWispFamily;
@@ -20,14 +18,10 @@ namespace Sandswept.Enemies.ArdentWisp
         public static GameObject ArdentChargeLine;
         public static GameObject ArdentExplosion;
         public static GameObject ArdentFireball;
-        public static GameObject ArdentBombProjectile;
+        public static GameObject ArdentDeathEffect;
         public static Material IndicatorArdentWisp;
+        public static GameObject WispBarrageShot;
 
-        public override void Create()
-        {
-            return;
-        }
-        
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("ArdentWispBody.prefab");
@@ -62,17 +56,35 @@ namespace Sandswept.Enemies.ArdentWisp
             ArdentFireball = Main.assets.LoadAsset<GameObject>("ArdentFlameProjectile.prefab");
             ContentAddition.AddEffect(ArdentFireball);
 
-            ArdentBombProjectile = Main.assets.LoadAsset<GameObject>("ArdentBombProjectile.prefab");
-            // ArdentBombProjectile.GetComponent<ProjectileExplosion>().explosionEffect = Paths.GameObject.ExplosionGolem;
+            ArdentDeathEffect = Main.assets.LoadAsset<GameObject>("ArdentWispDeath.prefab");
+            ContentAddition.AddEffect(ArdentDeathEffect);
 
-            ContentAddition.AddProjectile(ArdentBombProjectile);
+            WispBarrageShot = PrefabAPI.InstantiateClone(Paths.GameObject.GravekeeperTrackingFireball, "ArdentWispShot");
+            WispBarrageShot.EditComponent<VelocityRandomOnStart>((x) => {
+                x.minSpeed = 10f;
+                x.maxSpeed = 15f;
+            });
+            GameObject ghost = PrefabAPI.InstantiateClone(Paths.GameObject.GravekeeperTrackingFireballGhost, "ArdentWispShotGhost");
+            ghost.transform.Find("Spinner").gameObject.SetActive(true);
+            ghost.transform.Find("Flames").GetComponent<ParticleSystemRenderer>().sharedMaterial = Main.assets.LoadAsset<Material>("matArdentFlame.mat");
+            WispBarrageShot.GetComponent<ProjectileController>().ghostPrefab = ghost;
+            WispBarrageShot.GetComponent<ProjectileController>().ghostPrefabAddress = null;
+            ContentAddition.AddBody(WispBarrageShot);
+            ContentAddition.AddProjectile(WispBarrageShot);
         }
 
         public override void PostCreation()
         {
             base.PostCreation();
-            var stages = new List<Stage>() { Stage.AbandonedAqueduct, DirectorAPI.Stage.AbandonedAqueductSimulacrum, DirectorAPI.Stage.AphelianSanctuary, DirectorAPI.Stage.ArtifactReliquary, DirectorAPI.Stage.ArtifactReliquary_AbandonedAqueduct_Theme, DirectorAPI.Stage.ArtifactReliquary_ScorchedAcres_Theme, DirectorAPI.Stage.ScorchedAcres, DirectorAPI.Stage.DisturbedImpact, DirectorAPI.Stage.GoldenDieback, DirectorAPI.Stage.HelminthHatchery, DirectorAPI.Stage.TitanicPlains, DirectorAPI.Stage.TitanicPlainsSimulacrum, DirectorAPI.Stage.SkyMeadow, DirectorAPI.Stage.SkyMeadowSimulacrum, DirectorAPI.Stage.TreebornColony, DirectorAPI.Stage.SunderedGrove, DirectorAPI.Stage.ViscousFalls };
-            RegisterEnemy(prefab, prefabMaster, stages, MonsterCategory.BasicMonsters);
+            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
+
+            string[] stages = new string[] {
+                "skymeadow", "helminthroost", "dampcavesimple", "rootjungle", "sanctum", "meridian", "itobservatory_wormsworms"
+            };
+
+            foreach (string stage in stages) {
+                DirectorAPI.Helpers.AddNewMonsterToStage(card, MonsterCategory.Minibosses, Stage.Custom, stage);
+            }
         }
 
         public override void Modify()
@@ -84,10 +96,11 @@ namespace Sandswept.Enemies.ArdentWisp
 
             var locator = body.GetComponent<SkillLocator>();
 
-            ReplaceSkill(locator.primary, States.ArdentBombSkill.instance.skillDef);
+            ReplaceSkill(locator.primary, States.WispBarrageSkill.instance.skillDef);
             ReplaceSkill(locator.secondary, States.CarpetFireSkill.instance.skillDef);
 
             body.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(ArdentWispDeath));
+            body.GetComponent<CharacterDeathBehavior>().deathStateMachine.initialStateType = new(typeof(ArdentWispSpawn));
 
             LanguageAPI.Add(body.baseNameToken.Replace("_NAME", "_LORE"),
             """

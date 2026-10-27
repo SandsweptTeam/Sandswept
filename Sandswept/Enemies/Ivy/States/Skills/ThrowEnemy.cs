@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Sandswept.Buffs;
 using Sandswept.Survivors;
 
 namespace Sandswept.Enemies.Ivy {
@@ -18,19 +19,27 @@ namespace Sandswept.Enemies.Ivy {
 
             controller = GetModelTransform().GetComponent<IvyModelController>();
             controller.headActive = false;
+
+            Debug.LogError("recalling head");
+
+            if (seat.currentPassengerBody) {
+                seat.currentPassengerBody.RemoveBuff(IvyBuff.instance.BuffDef);
+            }
         }
 
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            if (controller.interpolationStopwatch >= 1.2f * controller.interpolationTime && !startedAnim) {
+            if (controller.interpolationStopwatch >= 0.8f * controller.interpolationTime && !startedAnim) {
                 startedAnim = true;
-                PlayAnimation("Body", "Throw", "Generic.playbackRate", duration);
+                Debug.LogError("started throw anim");
+                PlayAnimation("Body", "Throw");
                 base.fixedAge = 0f;
             }
 
             if (anim.CheckEvent("Event.throw") && NetworkServer.active) {
+                Debug.LogError("threw passenger");
                 seat.additionalExitVelocity = (-controller.head.up).normalized * 15f;
                 seat.EjectPassenger();
             }
@@ -43,6 +52,8 @@ namespace Sandswept.Enemies.Ivy {
         public override void OnExit()
         {
             base.OnExit();
+
+            Debug.LogError("finished throw, releasing head");
 
             controller.EnableHead(this);
         }

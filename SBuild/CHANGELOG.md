@@ -1,8 +1,14 @@
 # 1.5.0 Patch Notes
+- Enemies
+  - Added Ardent Wisp
 - Items/Equipment
   - Crown's Diamond reworked. New effect is: Entering combat grants temporary barrier for 30% maximum health. While you have an active barrier, project a ward that grants allies +25% damage and +25% attack speed.
+  - Universal VIP Pass reworked. New effect is: The first chest you open each stage has a 50% discount and offers a choice between two items
   - Nerfed Nuclear Salvo missile damage from 100% to 70%
   - Nerfed Nuclear Salvo missile radius from 8m to 6m
+- Interactables
+  - Inferno Drone max health raised from 150 -> 300
+  - Voltaic Drone max health raised from 150 -> 300
 ## 1.4.6 Patch Notes
 - Items/Equipment
   - Nerfed Amber Knife proc chance from 12% to 10%
@@ -16,7 +22,7 @@
 - VOL-T
   - Nerfed Signal Overload maximum damage from 1584% -> 850% (what the fuck even what is this bug)
   - Buffed Signal Overload minimum damage from 330% -> 350%
-# The following fixes are all courtesy of Phreel (thanks!)
+- The following fixes are all courtesy of Phreel (thanks!)
   - Fixed Makeshift Plate desync + error spam
   - Fixed Makeshift Plate showing the wrong healthbar percentage
   - Fixed Universal VIP Pass breaking Sale Star

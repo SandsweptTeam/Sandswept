@@ -85,6 +85,8 @@ namespace Sandswept.Enemies.ArdentWisp.States
 
             stopwatch += Time.fixedDeltaTime;
 
+            base.rigidbody.velocity = Vector3.zero;
+
             if (stopwatch > delay && totalFired < totalVolleys)
             {
                 stopwatch = 0f;

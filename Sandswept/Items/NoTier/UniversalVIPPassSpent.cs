@@ -11,7 +11,7 @@ namespace Sandswept.Items.NoTier
 
         public override string ItemPickupDesc => "A spent pass that has already provided its worth. At the start of each stage, transforms into Universal VIP Pass.";
 
-        public override string ItemFullDescription => "A spent pass that has already provided its worth. At the start of each stage, transforms into Universal VIP Pass.".AutoFormat();
+        public override string ItemFullDescription => "A spent certificate that has already provided its worth. At the start of each stage, transforms into Universal VIP Pass.".AutoFormat();
 
         public override string ItemLore => "OwO UwU :333 >w< >_< <3 uwuuu owo <3 <3";
 
@@ -38,6 +38,10 @@ namespace Sandswept.Items.NoTier
         private void RegenPass(On.RoR2.CharacterMaster.orig_TryRegenerateScrap orig, RoR2.CharacterMaster self)
         {
             orig(self);
+
+            if (!self || !self.inventory || UniversalVIPPass.instance == null) {
+                return;
+            }
 
             Inventory.ItemTransformation itemTransformation = default(Inventory.ItemTransformation);
             itemTransformation.originalItemIndex = ItemDef.itemIndex;
