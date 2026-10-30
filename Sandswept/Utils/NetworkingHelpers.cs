@@ -151,8 +151,8 @@ namespace Sandswept.Utils
             public BuffIndex index;
             void INetMessage.OnReceived()
             {
-                if (body) {
-                    body.AddBuff(index);
+                if (body && body.HasBuff(index)) {
+                    body.RemoveBuff(index);
                 }
             }
             void ISerializableObject.Deserialize(NetworkReader reader)
@@ -165,7 +165,7 @@ namespace Sandswept.Utils
                 writer.Write(body.gameObject);
                 writer.WriteBuffIndex(index);
             }
-            
+
             public RemoveBuffMessage(CharacterBody body, BuffIndex index) {
                 this.body = body;
                 this.index = index;

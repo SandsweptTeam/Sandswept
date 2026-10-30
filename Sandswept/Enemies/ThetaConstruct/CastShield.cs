@@ -17,21 +17,20 @@ namespace Sandswept.Enemies.ThetaConstruct
         {
             base.OnEnter();
 
-            BaseAI ai = base.characterBody.master.GetComponent<BaseAI>();
+            BaseAI ai = base.characterBody.master ? base.characterBody.master.GetComponent<BaseAI>() : null;
 
-            buddy = ai.buddy.gameObject;
+            buddy = ai ? ai.buddy.gameObject : null;
 
             if (!buddy)
             {
-                outer.SetNextStateToMain();
+                FailCast();
                 return;
             }
 
             if (buddy.GetComponent<CharacterBody>() && buddy.GetComponent<CharacterBody>().bodyIndex == ThetaConstruct.ThetaIndex)
             {
                 ai.buddy.gameObject = null;
-                ai.UpdateTargets();
-                outer.SetNextStateToMain();
+                FailCast();
                 return;
             }
 
@@ -42,8 +41,7 @@ namespace Sandswept.Enemies.ThetaConstruct
                 if (Physics.Raycast(base.transform.position, dir, (Vector3.Distance(base.transform.position, buddy.transform.position) * 0.75f), LayerIndex.world.mask))
                 {
                     ai.buddy.gameObject = null;
-                    ai.UpdateTargets();
-                    outer.SetNextStateToMain();
+                    FailCast();
                     return;
                 }
 
@@ -70,6 +68,25 @@ namespace Sandswept.Enemies.ThetaConstruct
 
             base.GetModelAnimator().SetBool("isShielding", true);
         }
+
+        // failing used to leave the stock untouched, so the AI re-entered this state every single frame and ran a full
+        // UpdateTargets search each time, which tanked performance whenever a theta had nothing valid to shield.
+        // consume the stock and only wait a short retry delay instead of the full cooldown
+        private void FailCast()
+        {
+            GenericSkill primary = base.skillLocator ? base.skillLocator.primary : null;
+            if (primary && primary.stock > 0)
+            {
+                primary.DeductStock(1);
+                primary.rechargeStopwatch = Mathf.Max(0f, primary.finalRechargeInterval - failRetryDelay);
+            }
+
+            shieldInstance = null;
+            buddy = null;
+            outer.SetNextStateToMain();
+        }
+
+        public const float failRetryDelay = 1.5f;
 
         public void DoYuriBlast()
         {
