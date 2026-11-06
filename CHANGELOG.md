@@ -1,6 +1,21 @@
 # 1.5.0 Patch Notes
+- VOL-T
+  - Tempest Sphere now stops in place when it collides with the world
+  - Tempest Sphere now grabs Galvanic Bolt projectiles and carries them along. Held projectiles have their duration refreshed and explode a second time when dropped
+  - Tempest Sphere cooldown raised from 7s to 8s
+  - Tempest Sphere lifetime lowered from 10s to 6s
+  - Tempest Sphere hit rate reduced from 4/s to 3/s (dps unchanged)
+  - Galvanic Bolt radius increased from 4m to 6m
+  - Static Snare reworked. New effect is: Deploy a pylon that forms a zipline connection to nearby pylons. Pylons propagate electric attacks to connected pylons. Can deploy up to 3.
+  - Static Snare cooldown lowered to 4 seconds
 - Enemies
   - Added Ardent Wisp
+  - Added Brass Bell
+  - Added Stone Fragment
+  - Generally fixed enemy lasers being choppy
+  - Generally fixed enemy lasers having weird hitboxes
+  - Fixed Delta Construct creating fire trails where the laser dissipates in the air
+  - Fixed Gamma Construct creating rock particles where the laser dissipates in the air
 - Items/Equipment
   - Crown's Diamond reworked. New effect is: Entering combat grants temporary barrier for 30% maximum health. While you have an active barrier, project a ward that grants allies +25% damage and +25% attack speed.
   - Universal VIP Pass reworked. New effect is: The first chest you open each stage has a 50% discount and offers a choice between two items
@@ -9,6 +24,7 @@
 - Interactables
   - Inferno Drone max health raised from 150 -> 300
   - Voltaic Drone max health raised from 150 -> 300
+  
 ## 1.4.6 Patch Notes
 - Items/Equipment
   - Nerfed Amber Knife proc chance from 12% to 10%

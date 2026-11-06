@@ -38,7 +38,7 @@ namespace Sandswept.Utils
             origWidth = lr.widthMultiplier;
             Owner = owner;
 
-            targetEndpoint = GetEndpoint(out _);
+            targetEndpoint = GetEndpoint(out _, out _);
             lastEndpoint = targetEndpoint;
             end.transform.position = targetEndpoint;
             origin.transform.position = TargetMuzzle.transform.position;
@@ -53,7 +53,11 @@ namespace Sandswept.Utils
 
             lr.widthMultiplier = origWidth * info.FiringWidthMultiplier;
             firing = true;
+
+            lastEndpoint = end.transform.position;
+            targetEndpoint = GetEndpoint(out Vector3 impact, out bool hit);
             stopwatch = 0f;
+            stopwatch2 = 0f;
         }
 
         public void UpdateVisual(float deltaTime)
@@ -80,17 +84,18 @@ namespace Sandswept.Utils
 
             if (stopwatch >= delay)
             {
-                lastEndpoint = targetEndpoint;
-                targetEndpoint = GetEndpoint(out Vector3 impact);
+                lastEndpoint = end.transform.position;
+                targetEndpoint = GetEndpoint(out Vector3 impact, out bool hit);
                 stopwatch = 0f;
+                stopwatch2 = 0f;
 
                 if (firing)
                 {
-                    if (Owner.hasAuthority) {
+                    if (Owner.hasEffectiveAuthority) {
                         GetBulletAttack().Fire();
                     }
 
-                    if (info.ImpactEffect)
+                    if (info.ImpactEffect && hit)
                     {
                         EffectManager.SpawnEffect(info.ImpactEffect, new EffectData
                         {
@@ -99,26 +104,31 @@ namespace Sandswept.Utils
                         }, false);
                     }
 
-                    info.ImpactCallback?.Invoke(impact);
+                    if (hit) {
+                        info.ImpactCallback?.Invoke(impact);
+                    }
                 }
             }
         }
 
-        public Vector3 GetEndpoint(out Vector3 unmodified)
+        public Vector3 GetEndpoint(out Vector3 unmodified, out bool hitAnything)
         {
             Vector3 dir = (info.FiringMode == LaserFiringMode.TrackAim) ? Owner.inputBank.aimDirection : info.UseUP ? TargetMuzzle.up : TargetMuzzle.forward;
             Vector3 pos = (info.FiringMode == LaserFiringMode.TrackAim) ? Owner.inputBank.aimOrigin : TargetMuzzle.position;
             Vector3 endpoint = new Ray(pos, dir).GetPoint(info.MaxRange);
 
+            hitAnything = false;
+
             if (Physics.Raycast(pos, dir, out RaycastHit hit, info.MaxRange, LayerIndex.world.mask))
             {
                 endpoint = hit.point;
+                hitAnything = true;
             }
 
             unmodified = endpoint;
-            endpoint += dir * 5f;
+            endpoint += dir * 1f;
 
-            return endpoint;
+            return info.DontOffsetEndpoint ? unmodified : endpoint;
         }
 
         public BulletAttack GetBulletAttack()
@@ -128,9 +138,7 @@ namespace Sandswept.Utils
             attack.radius = lr.startWidth * lr.widthMultiplier * 0.5f;
             attack.damage = Owner.damage * DamageCoefficient;
             attack.origin = (info.FiringMode == LaserFiringMode.TrackAim) ? Owner.inputBank.aimOrigin : TargetMuzzle.position;
-            // aim at the endpoint that was just calculated from this origin. this used to aim from the muzzle at the visual endpoint,
-            // which lags a tick behind and sits 5m past the impact, so the bullet ran beside / behind the target instead of at it
-            attack.aimVector = (targetEndpoint - attack.origin).normalized;
+            attack.aimVector = (end.transform.position - attack.origin).normalized;
             attack.maxDistance = info.MaxRange + 5f;
             attack.procCoefficient = 1f;
             attack.owner = Owner.gameObject;
@@ -178,6 +186,7 @@ namespace Sandswept.Utils
         public bool SingleHit = false;
         public bool UseUP = false;
         public Action<Vector3> ImpactCallback;
+        public bool DontOffsetEndpoint = false;
     }
 
     public enum LaserFiringMode

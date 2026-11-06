@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using RoR2.CharacterAI;
 using RoR2.Navigation;
 using Sandswept.Enemies.ArdentWisp;
@@ -9,7 +10,7 @@ namespace Sandswept.Enemies.ArdentWisp
     [ConfigSection("Enemies :: Ardent Wisp")]
     public class ArdentWisp : EnemyBase<ArdentWisp>
     {
-        [ConfigField("Director Credit Cost", "", 250)]
+        [ConfigField("Director Credit Cost", "", 200)]
         public static int directorCreditCost;
 
         public override DirectorCardCategorySelection family => Paths.FamilyDirectorCardCategorySelection.dccsWispFamily;
@@ -78,13 +79,26 @@ namespace Sandswept.Enemies.ArdentWisp
             base.PostCreation();
             RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
 
-            string[] stages = new string[] {
-                "skymeadow", "helminthroost", "dampcavesimple", "rootjungle", "sanctum", "meridian", "itobservatory_wormsworms"
-            };
+            DirectorCardHolder holder = new();
+            holder.Card = card;
+            holder.MonsterCategory = MonsterCategory.BasicMonsters;
+            holder.MonsterCategorySelectionWeight = 1;
 
-            foreach (string stage in stages) {
-                DirectorAPI.Helpers.AddNewMonsterToStage(card, MonsterCategory.Minibosses, Stage.Custom, stage);
-            }
+            DirectorAPI.Helpers.AddNewMonsterToStagesWhere(holder, true, (x) => {
+                if (x.CustomStageName == "itobservatory_wormsworms") {
+                    return true;
+                }
+
+                Stage[] stages = new DirectorAPI.Stage[] {
+                    DirectorAPI.Stage.SkyMeadow, DirectorAPI.Stage.SkyMeadowSimulacrum,
+                    DirectorAPI.Stage.HelminthHatchery,
+                    DirectorAPI.Stage.AbyssalDepths, DirectorAPI.Stage.AbyssalDepthsSimulacrum,
+                    DirectorAPI.Stage.LuridBasilica,
+                    DirectorAPI.Stage.PrimeMeridian,
+                };
+
+                return stages.Contains(x.stage);
+            });
         }
 
         public override void Modify()

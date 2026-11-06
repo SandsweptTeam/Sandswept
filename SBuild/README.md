@@ -55,38 +55,38 @@
       <td><img src="https://i.postimg.cc/fRqDz6fz/image.png" width="64"/></td>
       <td><b>Passive:</b> Overcharged Protection
 	  <br>
-          Hold up to 20 Charge. Charge increases health regeneration by up to 2.5 hp/s and armor by up to 15. Charge decays over time.</td>
+          Hold up to <b>20</b> Charge. Charge increases health regeneration by up to <b>2.5</b> hp/s and armor by up to <b>15</b>. Charge decays over time.</td>
     </tr>
 	<tr>
       <td><img src="https://i.postimg.cc/qR8P3YyC/image3.png" width="64"/></td>
       <td><b>Passive:</b> Overcharged Speed
 	  <br>
-          Hold up to 20 Charge. Charge increases movement speed by up to 25%. Consume 5 Charge to double jump. Charge decays over time.</td>
+          Hold up to <b>20</b> Charge. Charge increases movement speed by up to <b>25%</b>. Consume <b>5</b> Charge to double jump. Charge decays over time.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/FzvQCmNZ/image1.png" width="64"/></td>
       <td><b>Primary:</b> Direct Current
 	  <br>
-		  Surging. Fire an arcing electric current for 150% damage. Hitting enemies generates 1 Charge, increased up to 3 on direct hits. 
+		  Surging. Fire an arcing electric current for <b>150%</b> damage. Hitting enemies generates <b>1</b> Charge, increased up to <b>3</b> on direct hits. 
 </td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/TwM8hGL6/image2.png" width="64"/></td>
       <td><b>Secondary:</b> Release
 	  <br>
-          Consume all Charge. Fire a piercing blast for 600% damage, increasing up to 1800% at full Charge.</td>
+          Consume all Charge. Fire a piercing blast for <b>600%</b> damage, increasing up to <b>1800%</b> at full Charge.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/JhgLFXHk/b1.png" width="64"/></td>
       <td><b>Alt-Secondary:</b> Galvanize
 	  <br>
-		  Consume all Charge. Fire 3 orbs of electricity, increasing up to 10 at full Charge for 80% damage per second each.</td>
+		  Consume all Charge. Fire <b>3</b> orbs of electricity, increasing up to <b>10</b> at full Charge for <b>80%</b> damage per second each.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/C5GmjyVK/sand4.png" width="64"/></td>
       <td><b>Utility:</b> Sidestep
 	  <br>
-          Agile. Quickly sidestep a short distance. Getting hit during Sidestep generates 10 Charge.</td>
+          Agile. Quickly sidestep a short distance. Getting hit during Sidestep generates <b>10</b> Charge.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/Kct29RG1/tex-Ranger-Skill-Icon-spc.png" width="64"/></td>
@@ -104,31 +104,31 @@
       <td><img src="https://i.postimg.cc/XJCb6v9D/tex-Ranger-Skill-Icon-hm1.png" width="64"/></td>
       <td><b>Primary:</b> Enflame
 	  <br>
-          Fire a rapid stream of bullets for 90% damage. Fire rate and ignite chance increase with heat.</td>
+          Fire a rapid stream of bullets for <b>90%</b> damage. Fire rate and ignite chance increase with heat.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/m2DBKrYy/tex-Exhaust.png" width="64"/></td>
       <td><b>Secondary:</b> Exhaust
 	  <br>
-          Ignite. Reduce current heat by 50%. Fire a spread of heat for 4x300% damage. Burst count increases with heat spent.</td>
+          Ignite. Reduce current heat by <b>50%</b>. Fire a spread of heat for <b>4x300%</b> damage. Burst count increases with heat spent.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/rpkkRSPw/b2.png" width="64"/></td>
       <td><b>Alt-Secondary:</b> Char
 	  <br>
-          Ignite. Reduce current heat by 50%. Fire off a blazing orb for 200% damage that engulfs the ground on impact for 200% damage per second. Damage increases with heat spent.</td>
+          Ignite. Reduce current heat by <b>50%</b>. Fire off a blazing orb for <b>200%</b> damage that engulfs the ground on impact for <b>200%</b> damage per second. Damage increases with heat spent.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/WbV9s4Mq/sand5.png" width="64"/></td>
       <td><b>Utility:</b> Heat Signature
 	  <br>
-          Agile. Stunning. Sidestep a short distance and deal 390% damage. Hitting enemies generates 5 Charge and extends the dash. Dash distance increases with heat.</td>
+          Agile. Stunning. Sidestep a short distance and deal <b>390%</b> damage. Hitting enemies generates <b>5</b> Charge and extends the dash. Dash distance increases with heat.</td>
     </tr>
     <tr>
       <td><img src="https://i.postimg.cc/DwBpjK4J/sand8.png" width="64"/></td>
       <td><b>Special:</b> Heat Sink
 	  <br>
-          Agile. Ignite. Consume all heat and exit overdrive. Release a fire nova around you that deals 300% damage. Damage increases with heat spent.</td>
+          Agile. Ignite. Consume all heat and exit overdrive. Release a fire nova around you that deals <b>300%</ damage. Damage increases with heat spent.</td>
     </tr>
     <tr>
       <td colspan="2" align="center"><h3>VOL-T</h3></td>
@@ -213,7 +213,7 @@
 			<td>
 				<b>Theta Construct</b>
 				<br>
-				Guards an enemy, preventing all damage, giving it 35% attack speed, 35% cooldown reduction and sharing its elite aspect effect. 
+				Guards an enemy, preventing all damage, giving it <b>35%</b> attack speed, <b>35%</b> cooldown reduction and sharing its elite aspect effect. 
 			</td>
 		</tr>
 	</tbody>
@@ -287,7 +287,7 @@
 			<td>
 				<b>Shrine of Sacrifice</b>
 				<br>
-				Gain 20% curse to drop two copies of a random common item. 
+				Gain <b>20%</b> curse to drop two copies of a random common item. 
 				<br>
 			</td>
 		</tr>
@@ -296,14 +296,14 @@
 			<td>
 				<b>Shrine of Ruin</b>
 				<br>
-				Sacrifice 10 random common items to corrupt the next stage, making it a harder simulacrum variant that exclusively drops void items.
+				Sacrifice <b>10</b> random common items to corrupt the next stage, making it a harder simulacrum variant that exclusively drops <b>void</b> items.
 		</tr>
 		<tr>
 			<td><img src="https://i.postimg.cc/Bv3RF8Zg/tex-Shrine-Of-The-Future.png" width="64"/></td>
 			<td>
 				<b>Shrine of The Future</b>
 				<br>
-				Summon two random Tier 2 Elite Minibosses with halved stats that, upon being defeated, drop 3 item potentials per player. 
+				Summon two random <b>Tier 2 Elite Minibosses</b> with halved stats that, upon being defeated, drop <b>3</b> item potentials per player. 
 			</td>
 		</tr>
 	</tbody>
@@ -372,7 +372,7 @@
 			<td>
 				<b>Makeshift Plate</b>
 				<br>
-				Begin each stage with 150% (+150% per stack) plating. Plating acts as secondary health, but cannot be recovered in any way.
+				Begin each stage with <b>150% (+150% per stack)</b> plating. Plating acts as secondary health, but cannot be recovered in any way.
 			</td>
 		</tr>
 		<tr>
@@ -455,7 +455,7 @@
 			<td>
 				<b>Preserved Atoll</b>
 				<br>
-				Getting hit causes you to implode, inflicting up to 5 (+3 per stack) permanent decay for 250% base damage to all targets in a 24m radius based on health lost. Recharges every 10 seconds. Corrupts all Sacrifical Bands.
+				Getting hit causes you to implode, inflicting up to <b>5 (+3 per stack)</b> permanent decay for <b>250%</b> base damage to all targets in a <b>24m</b> radius based on health lost. Recharges every <b>10</b> seconds. Corrupts all Sacrifical Bands.
 			</td>
 		</tr>
 		<tr>
@@ -490,7 +490,7 @@
 			<td>
 				<b>Glacial Plasma</b>
 				<br>
-				Activating your Primary Skill also conjures a piercing javelin that deals 2000% (+2000% per stack) damage and freezes enemies. Recharges over 10 seconds. Your stuns have an 6% chance to freeze for 3 seconds.
+				Activating your Primary Skill also conjures a piercing javelin that deals <b>2000% (+2000% per stack)</b> damage and freezes enemies. Recharges over <b>10</b> seconds. Your stuns have an <b>6%</b> chance to freeze for <b>3</b> seconds.
 			</td>
 		</tr>
 		<tr>
@@ -517,7 +517,7 @@
 			<td>
 				<b>Flawless Design</b>
 				<br>
-				Permanently sacrifice 10% of your maximum health to duplicate a targeted item. Health cost increases with item rarity.
+				Permanently sacrifice <b>10%</b> of your maximum health to duplicate a targeted item. Health cost increases with item rarity.
 			</td>
 		</tr>
 		<tr>
@@ -525,7 +525,7 @@
 			<td>
 				<b>Hallowed Ichor</b>
 				<br>
-				Chests may be re-opened 1 (+1 per stack) additional times, but re-opening them increases difficulty by 30% permanently. Difficulty increase scales with chest rarity.
+				Chests may be re-opened <b>1 (+1 per stack)</b> additional times, but re-opening them increases difficulty by <b>30%</b> permanently. Difficulty increase scales with chest rarity.
 			</td>
 		</tr>
 		<tr>
@@ -533,7 +533,7 @@
 			<td>
 				<b>Sequenced Fate</b>
 				<br>
-				Using a Shrine of Order grants 6 (+1 per stack) additional random items. Shrines of order appear more frequently.
+				Using a Shrine of Order grants <b>6 (+1 per stack)</b> additional random items. Shrines of order appear more frequently.
 			</td>
 		</tr>
 		<tr>

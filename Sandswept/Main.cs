@@ -869,6 +869,8 @@ namespace Sandswept
             detachAndCollapse.collapseTime = 0.4f;
             detachAndCollapse.target = sphereVFX.transform;
 
+            tempestOrb.gameObject.SetActive(false);
+
             // ContentAddition.AddEffect(tempestSphereIndicator);
             // ContentAddition.AddEffect(tempestOrb);
         }

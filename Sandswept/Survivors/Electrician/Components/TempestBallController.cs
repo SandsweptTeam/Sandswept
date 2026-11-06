@@ -6,7 +6,7 @@ namespace Sandswept.Survivors.Electrician
 {
     public class TempestBallController : MonoBehaviour
     {
-        public float ticksPerSecond = 4;
+        public float ticksPerSecond = 3;
         public SphereCollider sphere;
         public LineRenderer lr;
         public float stopwatch = 0f;
@@ -21,7 +21,7 @@ namespace Sandswept.Survivors.Electrician
         public float damagePerTick;
         public Transform lineOrigin;
         public float sigma;
-
+        public List<GalvanicBallController> balls = new();
         public void Start()
         {
             controller = GetComponent<ProjectileController>();
@@ -52,6 +52,20 @@ namespace Sandswept.Survivors.Electrician
             Util.PlayAttackSpeedSound("Play_env_moon_shuttle_engineIdle_loop", gameObject, 3f);
             Util.PlayAttackSpeedSound("Play_loader_R_active_loop", gameObject, 2f);
         }
+        
+        public void OnTriggerEnter(Collider col) {
+            if (col != null) {
+                Debug.LogError(col.gameObject.name);
+                if (col.gameObject.layer == LayerIndex.world.intVal || (col.gameObject.layer == LayerIndex.defaultLayer.intVal && !col.GetComponent<CharacterBody>())) {
+                    this.Lock();
+                    return;
+                }
+
+                if (col.TryGetComponent<GalvanicBallController>(out var ball)) {
+                    balls.Add(ball);
+                }
+            }
+        }
 
         public void FixedUpdate()
         {
@@ -61,6 +75,22 @@ namespace Sandswept.Survivors.Electrician
             }
 
             stopwatch += Time.fixedDeltaTime;
+
+            foreach (GalvanicBallController ball in balls) {
+                if (ball) {
+                    ball.simple.stopwatch = 0f;
+
+                    float speed = 10f * (Math.Max(Vector3.Distance(ball.transform.position, sphere.transform.position) - (sphere.radius * 0.7f), 0) / sphere.radius);
+
+                    ball.body.velocity = speed * (sphere.transform.position - ball.transform.position).normalized;
+
+                    if (ball.hasStuck) {
+                        ball.body.isKinematic = false;
+                        ball.hasStuck = false;
+                        ball.body.useGravity = false;
+                    }
+                }
+            }
 
             if (stopwatch >= delay)
             {
@@ -167,6 +197,12 @@ namespace Sandswept.Survivors.Electrician
                 if (body && orbs.ContainsKey(body))
                 {
                     orbs[body].Remove(this);
+                }
+            }
+
+            foreach (GalvanicBallController ball in balls) {
+                if (ball) {
+                    ball.body.useGravity = true;
                 }
             }
 

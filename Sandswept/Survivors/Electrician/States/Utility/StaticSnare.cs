@@ -35,12 +35,14 @@ namespace Sandswept.Survivors.Electrician.States
 
             }
 
-            if (isAuthority && !TripwireController.ControllerMap.ContainsKey(gameObject))
+            if (isAuthority)
             {
                 tossedOut = true;
 
                 FireProjectileInfo info = MiscUtils.GetProjectile(staticSnareProjectile, 1f, characterBody, DamageTypeCombo.GenericUtility);
                 ProjectileManager.instance.FireProjectile(info);
+
+                // GameObject.Instantiate(Main.assets.LoadAsset<GameObject>("ZiprailTestObject.prefab"), base.transform.position, Quaternion.identity);
 
                 Util.PlaySound("Play_MULT_m2_throw", gameObject);
 
@@ -62,9 +64,9 @@ namespace Sandswept.Survivors.Electrician.States
                 {
                     if (TripwireController.ControllerMap.ContainsKey(gameObject))
                     {
-                        TripwireController controller = TripwireController.ControllerMap[gameObject];
-                        new CallNetworkedMethod(controller.gameObject, "StartZip").Send(R2API.Networking.NetworkDestination.Server);
-                        FUCKINGEXPLODE = false;
+                        // TripwireController controller = TripwireController.ControllerMap[gameObject];
+                        // new CallNetworkedMethod(controller.gameObject, "StartZip").Send(R2API.Networking.NetworkDestination.Server);
+                        // FUCKINGEXPLODE = false;
                     }
                 }
             }

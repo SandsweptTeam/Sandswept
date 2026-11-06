@@ -1,0 +1,11 @@
+ManifestFileVersion: 0
+CRC: 1337088122
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: sandsweptassets2
+      Dependencies: {}
+    Info_1:
+      Name: contactlight
+      Dependencies:
+        Dependency_0: sandsweptassets2

@@ -23,6 +23,7 @@ namespace Sandswept.Survivors.Electrician
         public float maxTargets;
         public Transform modelTransform;
         public GameObject impactVFX;
+        public ProjectileSimple simple;
 
         public void Start()
         {
@@ -30,6 +31,7 @@ namespace Sandswept.Survivors.Electrician
             controller = GetComponent<ProjectileController>();
             owner = controller.owner.GetComponent<CharacterBody>();
             body = GetComponent<Rigidbody>();
+            simple = GetComponent<ProjectileSimple>();
 
             modelTransform = GetModelTransform();
 

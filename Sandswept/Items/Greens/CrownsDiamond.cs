@@ -233,6 +233,10 @@ namespace Sandswept.Items.Greens
             ward = DiamondWard.GetComponent<BuffWard>();
             ward.onBuffApplied += OnBuffApplied;
 
+            if (!NetworkServer.active) {
+                ward.buffDef = null;
+            }
+
             mesh = DiamondWard.transform.Find("Totem").gameObject;
             mesh.transform.localPosition = new Vector3(0, 0, 0.7f * body.bestFitRadius); 
         }
@@ -262,7 +266,9 @@ namespace Sandswept.Items.Greens
 
             if (hc.barrier > 0f) {
                 ward.radius = 20f;
-                ward.buffDef = CrownsDiamond.bdDiamondBoost;
+                if (NetworkServer.active) {
+                    ward.buffDef = CrownsDiamond.bdDiamondBoost;
+                }
                 mesh.gameObject.SetActive(true);
                 ward.rangeIndicator.gameObject.SetActive(true);
             }

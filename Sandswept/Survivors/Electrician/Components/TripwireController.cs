@@ -1,5 +1,6 @@
 using System;
 using R2API.Networking.Interfaces;
+using RoR2BepInExPack.Utilities;
 
 namespace Sandswept.Survivors.Electrician
 {
@@ -53,6 +54,7 @@ namespace Sandswept.Survivors.Electrician
         public float baseSpeedMultiplier = 5f;
         public float accelerationCoefficient = 4f;
         public float decelerationCoefficient = 12f;
+        public static FixedConditionalWeakTable<CharacterBody, List<TripwireController>> ActivePylons = new();
 
         public void OnInteract(Interactor interactor)
         {
