@@ -88,6 +88,12 @@ namespace Sandswept.Interactables.Regular
             prefab.RemoveComponent<CombatDirector>();
             prefab.AddComponent<ImpPotController>();
 
+            // inherited from ShrineCombat; Drifter's Repossess (and anything else using it) would pick the pot up
+            foreach (var attributes in prefab.GetComponentsInChildren<SpecialObjectAttributes>(true))
+            {
+                attributes.grabbable = false;
+            }
+
             interactableSpawnCard.prefab = prefab;
 
             PrefabAPI.RegisterNetworkPrefab(prefab);

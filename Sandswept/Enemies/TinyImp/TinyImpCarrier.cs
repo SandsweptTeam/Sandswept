@@ -13,7 +13,8 @@ namespace Sandswept.Enemies.TinyImp
     {
         public const float ReachDistance = 4f;
         public const float StealDistance = 5f;
-        public const float StuckBlinkTime = 15f;
+        // no progress for this long means it can't path there (seen all over Aphelian Sanctuary), so it blinks instead
+        public const float StuckTime = 5f;
         public const float ZigzagInterval = 0.8f;
         public const float ZigzagWidth = 7f;
         public const float StepLength = 12f;
@@ -30,7 +31,8 @@ namespace Sandswept.Enemies.TinyImp
         private CharacterBody body;
         private GameObject waypoint;
         private bool returning;
-        private float outboundTimer;
+        private float stuckTimer;
+        private float closestDistance = float.MaxValue;
         private float zigzagTimer;
         private float blinkTimer;
         private int zigzagSide = 1;
@@ -76,7 +78,7 @@ namespace Sandswept.Enemies.TinyImp
             {
                 ReleaseTarget();
                 target = potController ? potController.ClaimNextTarget() : null;
-                outboundTimer = 0f;
+                ResetStuck();
                 if (!target)
                 {
                     // nothing left to steal, head home empty-handed
@@ -94,11 +96,9 @@ namespace Sandswept.Enemies.TinyImp
                 return;
             }
 
-            outboundTimer += Time.fixedDeltaTime;
-            if (outboundTimer >= StuckBlinkTime)
+            if (IsStuck(Mathf.Sqrt((targetPosition - body.footPosition).sqrMagnitude)))
             {
-                // probably can't path there, so blink next to it instead of standing around
-                outboundTimer = 0f;
+                ResetStuck();
                 Blink(SnapToGround(targetPosition), targetPosition - body.footPosition);
             }
         }
@@ -114,6 +114,7 @@ namespace Sandswept.Enemies.TinyImp
             target = null;
 
             returning = true;
+            ResetStuck();
             blinkTimer = Random.Range(1.5f, 3f);
             Util.PlaySound("Play_imp_attack_blink", gameObject);
 
@@ -155,6 +156,13 @@ namespace Sandswept.Enemies.TinyImp
                 return;
             }
 
+            if (IsStuck(distance))
+            {
+                Blink(pot.position, toPot);
+                ReachPot();
+                return;
+            }
+
             var forward = toPot / distance;
             var right = Vector3.Cross(Vector3.up, forward);
 
@@ -183,6 +191,25 @@ namespace Sandswept.Enemies.TinyImp
                     Blink(SnapToGround(body.footPosition + forward * Random.Range(4f, 10f) + right * Random.Range(-9f, 9f)), forward);
                 }
             }
+        }
+
+        private bool IsStuck(float distance)
+        {
+            if (distance < closestDistance - 1f)
+            {
+                closestDistance = distance;
+                stuckTimer = 0f;
+                return false;
+            }
+
+            stuckTimer += Time.fixedDeltaTime;
+            return stuckTimer >= StuckTime;
+        }
+
+        private void ResetStuck()
+        {
+            closestDistance = float.MaxValue;
+            stuckTimer = 0f;
         }
 
         private void Blink(Vector3 destination, Vector3 forward)
