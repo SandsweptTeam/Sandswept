@@ -3,6 +3,7 @@ using R2API.Networking.Interfaces;
 using RoR2.Artifacts;
 using RoR2.CharacterAI;
 using RoR2.Navigation;
+using System.Linq;
 using Sandswept.Interactables.Regular;
 
 namespace Sandswept.Enemies.TinyImp
@@ -17,12 +18,14 @@ namespace Sandswept.Enemies.TinyImp
         public const float ZigzagWidth = 7f;
         public const float StepLength = 12f;
 
-        // what drops if the imp dies: a normal chest item, or a void potential (picker options)
-        public GenericPickupController.CreatePickupInfo loot;
+        // what drops if the imp dies: chest items (a whole Scavenger bag's worth at most), or a void potential (picker options)
+        public List<GenericPickupController.CreatePickupInfo> loot = new();
         public bool hasLoot;
         public Transform pot;
         public ImpPotController potController;
-        public PurchaseInteraction target;
+        public MonoBehaviour target;
+        // an Aetherium brazier flame the imp is carrying instead of an item, -1 if none
+        public int brazierBuffIndex = -1;
 
         private CharacterBody body;
         private GameObject waypoint;
@@ -31,14 +34,14 @@ namespace Sandswept.Enemies.TinyImp
         private float zigzagTimer;
         private float blinkTimer;
         private int zigzagSide = 1;
-        private GameObject heldDisplay;
+        private readonly List<GameObject> heldDisplays = new();
 
         public void Awake()
         {
             body = GetComponent<CharacterBody>();
         }
 
-        public void Init(PurchaseInteraction target, ImpPotController potController)
+        public void Init(MonoBehaviour target, ImpPotController potController)
         {
             this.target = target;
             this.potController = potController;
@@ -104,7 +107,8 @@ namespace Sandswept.Enemies.TinyImp
         {
             // read first, emptying the terminal clears it; the real item stays hidden until it drops
             bool isHidden = target.TryGetComponent<ShopTerminalBehavior>(out var terminal) && terminal.pickupIndexIsHidden;
-            loot = ImpPotController.StealLoot(target, out _);
+            brazierBuffIndex = ImpPotController.GetBrazierBuffIndex(target);
+            loot = potController.StealLoot(target, body);
             hasLoot = true;
             ReleaseTarget();
             target = null;
@@ -113,20 +117,21 @@ namespace Sandswept.Enemies.TinyImp
             blinkTimer = Random.Range(1.5f, 3f);
             Util.PlaySound("Play_imp_attack_blink", gameObject);
 
-            bool isVoidPotential = loot.prefabOverride;
-            bool isCommandEssence = WillDropCommandEssence();
-            SetCarriedPickupDisplay(loot.pickupIndex, isVoidPotential, isCommandEssence, isHidden);
-            new SetCarriedPickupMessage(gameObject, loot.pickupIndex, isVoidPotential, isCommandEssence, isHidden).Send(NetworkDestination.Clients);
+            var pickups = loot.Select(x => x.pickupIndex).ToArray();
+            var commandEssences = loot.Select(WillDropCommandEssence).ToArray();
+            bool isVoidPotential = loot.Any(x => x.prefabOverride);
+            SetCarriedPickupDisplay(pickups, commandEssences, isVoidPotential, isHidden);
+            new SetCarriedPickupMessage(gameObject, pickups, commandEssences, isVoidPotential, isHidden).Send(NetworkDestination.Clients);
         }
 
         // same check as PickupDropletController.CreatePickup, so the imp holds whatever would land if it died
-        private bool WillDropCommandEssence()
+        private static bool WillDropCommandEssence(GenericPickupController.CreatePickupInfo info)
         {
-            bool isCommand = CommandArtifactManager.IsCommandArtifactEnabled || (loot.artifactFlag & GenericPickupController.PickupArtifactFlag.Command) != 0;
-            bool isDelusion = (loot.artifactFlag & GenericPickupController.PickupArtifactFlag.Delusion) != 0;
-            var pickupDef = PickupCatalog.GetPickupDef(loot.pickupIndex);
+            bool isCommand = CommandArtifactManager.IsCommandArtifactEnabled || (info.artifactFlag & GenericPickupController.PickupArtifactFlag.Command) != 0;
+            bool isDelusion = (info.artifactFlag & GenericPickupController.PickupArtifactFlag.Delusion) != 0;
+            var pickupDef = PickupCatalog.GetPickupDef(info.pickupIndex);
 
-            return isCommand && !isDelusion && !loot.pickup.ignoreArtifactBasedPickupReplacements && pickupDef != null
+            return isCommand && !isDelusion && !info.pickup.ignoreArtifactBasedPickupReplacements && pickupDef != null
                 && (pickupDef.itemIndex != ItemIndex.None || pickupDef.equipmentIndex != EquipmentIndex.None || pickupDef.itemTier != ItemTier.NoTier);
         }
 
@@ -223,10 +228,32 @@ namespace Sandswept.Enemies.TinyImp
                 return;
             }
 
-            loot.position = body.corePosition;
-            PickupDropletController.CreatePickupDroplet(loot, body.corePosition, Vector3.up * 20f);
+            if (brazierBuffIndex >= 0)
+            {
+                // whoever killed the imp (or owns the minion that did) gets the flame
+                var killerMaster = damageReport.attackerMaster;
+                if (killerMaster && killerMaster.minionOwnership.ownerMaster)
+                {
+                    killerMaster = killerMaster.minionOwnership.ownerMaster;
+                }
+                var killer = killerMaster ? killerMaster.GetBody() : null;
+                if (killer)
+                {
+                    ImpPotController.SendBrazierFlame(brazierBuffIndex, body.corePosition, killer.gameObject);
+                }
+                ImpPotController.RemoveBrazierFlames(body.master);
+            }
+
+            for (int i = 0; i < loot.Count; i++)
+            {
+                var info = loot[i];
+                info.position = body.corePosition;
+                // a bag's worth fans out in a ring instead of landing in one pile
+                var spread = loot.Count > 1 ? Quaternion.AngleAxis(360f * i / loot.Count, Vector3.up) * Vector3.forward * 5f : Vector3.zero;
+                PickupDropletController.CreatePickupDroplet(info, body.corePosition, Vector3.up * 20f + spread);
+            }
             hasLoot = false;
-            new SetCarriedPickupMessage(gameObject, PickupIndex.none, false, false, false).Send(NetworkDestination.Clients);
+            new SetCarriedPickupMessage(gameObject, Array.Empty<PickupIndex>(), Array.Empty<bool>(), false, false).Send(NetworkDestination.Clients);
         }
 
         public void OnDestroy()
@@ -240,7 +267,7 @@ namespace Sandswept.Enemies.TinyImp
         }
 
         // holds the same uninteractable pickup as the Solus Extractor, so the item gets its tier outline and glow; void potentials and command essences clone their own orb instead
-        public void SetCarriedPickupDisplay(PickupIndex pickupIndex, bool isVoidPotential, bool isCommandEssence, bool isHidden)
+        public void SetCarriedPickupDisplay(PickupIndex[] pickups, bool[] commandEssences, bool isVoidPotential, bool isHidden)
         {
             var modelTransform = body.modelLocator ? body.modelLocator.modelTransform : null;
             if (!modelTransform)
@@ -248,22 +275,32 @@ namespace Sandswept.Enemies.TinyImp
                 return;
             }
 
-            modelTransform.GetComponent<Animator>()?.SetBool("isCarrying", pickupIndex.isValid);
+            modelTransform.GetComponent<Animator>()?.SetBool("isCarrying", pickups.Length > 0);
 
-            if (heldDisplay)
+            foreach (var held in heldDisplays)
             {
-                Destroy(heldDisplay);
+                Destroy(held);
             }
+            heldDisplays.Clear();
 
             var pivot = modelTransform.GetComponent<ChildLocator>()?.FindChild("HoldingPivot");
-            if (!pickupIndex.isValid || !pivot)
+            if (!pivot)
             {
                 return;
             }
 
+            // stacked on top of each other, so a raided Scavenger bag becomes a tower
+            for (int i = 0; i < pickups.Length; i++)
+            {
+                heldDisplays.Add(CreateHeldDisplay(pivot, pivot.position + Vector3.up * (0.9f * i), pickups[i], commandEssences[i], isVoidPotential, isHidden));
+            }
+        }
+
+        private static GameObject CreateHeldDisplay(Transform pivot, Vector3 position, PickupIndex pickupIndex, bool isCommandEssence, bool isVoidPotential, bool isHidden)
+        {
             var orbPrefab = isCommandEssence ? Paths.GameObject.CommandCube : isVoidPotential ? Paths.GameObject.OptionPickup : null;
             var source = orbPrefab ? orbPrefab.GetComponentInChildren<PickupDisplay>(true).gameObject : Paths.GameObject.GenericPickupUninteractable;
-            heldDisplay = Instantiate(source, pivot.position, Quaternion.identity, pivot);
+            var heldDisplay = Instantiate(source, position, Quaternion.identity, pivot);
             // the pivot sits inside a scaled rig; undo that so the pickup is the same size as one on the ground
             heldDisplay.transform.localScale = Vector3.one / Mathf.Max(pivot.lossyScale.x, 0.0001f);
             foreach (var collider in heldDisplay.GetComponentsInChildren<Collider>())
@@ -291,6 +328,7 @@ namespace Sandswept.Enemies.TinyImp
             }
 
             display.SetPickup(new UniquePickup(pickupIndex), isHidden);
+            return heldDisplay;
         }
 
         private static Vector3 SnapToGround(Vector3 position)
@@ -308,17 +346,17 @@ namespace Sandswept.Enemies.TinyImp
         public class SetCarriedPickupMessage : INetMessage
         {
             private GameObject imp;
-            private PickupIndex pickupIndex;
+            private PickupIndex[] pickups;
+            private bool[] commandEssences;
             private bool isVoidPotential;
-            private bool isCommandEssence;
             private bool isHidden;
 
-            public SetCarriedPickupMessage(GameObject imp, PickupIndex pickupIndex, bool isVoidPotential, bool isCommandEssence, bool isHidden)
+            public SetCarriedPickupMessage(GameObject imp, PickupIndex[] pickups, bool[] commandEssences, bool isVoidPotential, bool isHidden)
             {
                 this.imp = imp;
-                this.pickupIndex = pickupIndex;
+                this.pickups = pickups;
+                this.commandEssences = commandEssences;
                 this.isVoidPotential = isVoidPotential;
-                this.isCommandEssence = isCommandEssence;
                 this.isHidden = isHidden;
             }
 
@@ -328,18 +366,28 @@ namespace Sandswept.Enemies.TinyImp
             public void Serialize(NetworkWriter writer)
             {
                 writer.Write(imp);
-                writer.Write(pickupIndex.value);
+                writer.Write(pickups.Length);
+                for (int i = 0; i < pickups.Length; i++)
+                {
+                    writer.Write(pickups[i].value);
+                    writer.Write(commandEssences[i]);
+                }
                 writer.Write(isVoidPotential);
-                writer.Write(isCommandEssence);
                 writer.Write(isHidden);
             }
 
             public void Deserialize(NetworkReader reader)
             {
                 imp = reader.ReadGameObject();
-                pickupIndex = new PickupIndex(reader.ReadInt32());
+                int count = reader.ReadInt32();
+                pickups = new PickupIndex[count];
+                commandEssences = new bool[count];
+                for (int i = 0; i < count; i++)
+                {
+                    pickups[i] = new PickupIndex(reader.ReadInt32());
+                    commandEssences[i] = reader.ReadBoolean();
+                }
                 isVoidPotential = reader.ReadBoolean();
-                isCommandEssence = reader.ReadBoolean();
                 isHidden = reader.ReadBoolean();
             }
 
@@ -347,7 +395,7 @@ namespace Sandswept.Enemies.TinyImp
             {
                 if (imp && imp.TryGetComponent<TinyImpCarrier>(out var carrier))
                 {
-                    carrier.SetCarriedPickupDisplay(pickupIndex, isVoidPotential, isCommandEssence, isHidden);
+                    carrier.SetCarriedPickupDisplay(pickups, commandEssences, isVoidPotential, isHidden);
                 }
             }
         }
