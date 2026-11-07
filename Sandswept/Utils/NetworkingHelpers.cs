@@ -83,6 +83,7 @@ namespace Sandswept.Utils
             NetworkingAPI.RegisterMessageType<AddBuffMessage>();
             NetworkingAPI.RegisterMessageType<RemoveBuffMessage>();
             NetworkingAPI.RegisterMessageType<TakeDamageMessage>();
+            NetworkingAPI.RegisterMessageType<Enemies.TinyImp.TinyImpCarrier.SetCarriedPickupMessage>();
         }
 
         private class TakeDamageMessage : INetMessage

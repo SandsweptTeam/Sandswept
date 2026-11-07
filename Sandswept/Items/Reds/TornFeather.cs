@@ -537,27 +537,31 @@ namespace Sandswept.Items.Reds
     {
         public GameObject target;
         public int vfxCycle;
+        public bool relayed;
 
         public FeatherDashSync()
         {
         }
 
-        public FeatherDashSync(GameObject target, int vfxCycle)
+        public FeatherDashSync(GameObject target, int vfxCycle, bool relayed = false)
         {
             this.target = target;
             this.vfxCycle = vfxCycle;
+            this.relayed = relayed;
         }
 
         public void Serialize(NetworkWriter writer)
         {
             writer.Write(target);
             writer.Write(vfxCycle);
+            writer.Write(relayed);
         }
 
         public void Deserialize(NetworkReader reader)
         {
             target = reader.ReadGameObject();
             vfxCycle = reader.ReadInt32();
+            relayed = reader.ReadBoolean();
         }
 
         public void OnReceived()
@@ -569,7 +573,7 @@ namespace Sandswept.Items.Reds
 
             target.TryGetComponent(out FeatherBehaviour featherBehaviour);
 
-            if (NetworkServer.active)
+            if (NetworkServer.active && !relayed)
             {
                 body.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, FeatherBehaviour.dashDuration + 0.2f);
 
@@ -578,7 +582,9 @@ namespace Sandswept.Items.Reds
                     featherBehaviour.fallDamageImmunityTimer = FeatherBehaviour.fallDamageImmunityDuration;
                 }
 
-                new FeatherDashSync(target, vfxCycle).Send(NetworkDestination.Clients);
+                // on a host Send(Clients) also runs OnReceived locally, relayed stops that from re-entering this branch forever
+                new FeatherDashSync(target, vfxCycle, true).Send(NetworkDestination.Clients);
+                return;
             }
 
             // the dashing player already played these locally

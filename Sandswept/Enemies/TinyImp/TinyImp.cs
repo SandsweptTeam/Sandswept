@@ -44,6 +44,9 @@ namespace Sandswept.Enemies.TinyImp
             master.bodyPrefab = prefab;
 
             body.baseNameToken.Add("Tiny Imp");
+            // the prefab's passive was copied from VOL-T
+            prefab.GetComponent<SkillLocator>().passiveSkill.enabled = false;
+            prefab.AddComponent<TinyImpCarrier>();
         }
 
         public override void SetUpIDRS()
