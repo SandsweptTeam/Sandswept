@@ -56,7 +56,10 @@ namespace Sandswept.Interactables.Regular
             // the model is rotated so mesh z points up; normalize to a fixed height since the import scale is unreliable
             var scale = 3.5f / mesh.bounds.size.z;
             mdl.transform.localScale = Vector3.one * scale;
-            mdl.transform.localPosition = Vector3.up * (-mesh.bounds.min.z * scale);
+            mdl.transform.localPosition = Vector3.zero;
+            mdl.transform.localRotation = Quaternion.identity;
+            // ModelLocator snaps the model onto Base every frame, so Base is what has to lift the pot out of the ground
+            modelBase.localPosition = Vector3.up * (-mesh.bounds.min.z * scale);
             var collider = mdl.AddComponent<BoxCollider>();
             collider.center = mesh.bounds.center;
             collider.size = mesh.bounds.size;
