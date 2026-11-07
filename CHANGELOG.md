@@ -1,5 +1,6 @@
 # 1.5.0 Patch Notes
 - VOL-T
+  - Model overhauled in most areas
   - Tempest Sphere now stops in place when it collides with the world
   - Tempest Sphere now grabs Galvanic Bolt projectiles and carries them along. Held projectiles have their duration refreshed and explode a second time when dropped
   - Tempest Sphere cooldown raised from 7s to 8s
@@ -12,6 +13,7 @@
   - Added Ardent Wisp
   - Added Brass Bell
   - Added Stone Fragment
+  - Added Tiny Imp
   - Generally fixed enemy lasers being choppy
   - Generally fixed enemy lasers having weird hitboxes
   - Fixed Delta Construct creating fire trails where the laser dissipates in the air
@@ -22,6 +24,7 @@
   - Nerfed Nuclear Salvo missile damage from 100% to 70%
   - Nerfed Nuclear Salvo missile radius from 8m to 6m
 - Interactables
+  - Added Broken Bell
   - Inferno Drone max health raised from 150 -> 300
   - Voltaic Drone max health raised from 150 -> 300
   
@@ -77,7 +80,7 @@
 - Enemies
   - Banished Ardent Wisp back to indev
 
-## 6.7.0 Patch Notes
+# 6.7.0 Patch Notes
 - Items
   - Added Equine Electrolyte Blend
 - Ranger
@@ -128,7 +131,7 @@
   - Fixed drone cameras with remote operation.
   - Fixed Voltaic Drone spike being invisible to clients.
 
-## 1.4.0 Patch Notes
+# 1.4.0 Patch Notes
 - General
   - Added Temporary, Partial Russian translation (Language file support with configs will come in a later update)
   - Fixed Survivor toggle config causing enemies to spam NREs
@@ -300,7 +303,7 @@
 - Enemies
   - Fixed Gamma Construct lasers being **red**
 
-## 1.3.0 Patch Notes
+# 1.3.0 Patch Notes
 - General
   - Updated mod icon
   - Fixed README scaling
