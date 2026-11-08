@@ -171,7 +171,7 @@ namespace Sandswept.Artifacts
         private void ClassicStageInfo_RebuildCards(On.RoR2.ClassicStageInfo.orig_RebuildCards orig, ClassicStageInfo self, DirectorCardCategorySelection forcedMonsterCategory, DirectorCardCategorySelection forcedInteractableCategory)
         {
             orig(self, forcedMonsterCategory, forcedInteractableCategory);
-            if (ArtifactEnabled)
+            if (ArtifactEnabled && self.interactableCategories)
             {
                 self.interactableCategories.RemoveCardsThatFailFilter(FuckOff);
 

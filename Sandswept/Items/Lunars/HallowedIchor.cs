@@ -260,8 +260,12 @@ namespace Sandswept.Items.Lunars
 
         private void UnsetValues(Run run)
         {
-            var runDifficultyDef = DifficultyCatalog.GetDifficultyDef(run.selectedDifficulty);
-            runDifficultyDef.scalingValue = cachedDifficultyDefScalingValue;
+            // null when the run is torn down on application quit or the difficulty was never resolved
+            var runDifficultyDef = run ? DifficultyCatalog.GetDifficultyDef(run.selectedDifficulty) : null;
+            if (runDifficultyDef != null)
+            {
+                runDifficultyDef.scalingValue = cachedDifficultyDefScalingValue;
+            }
             anyoneHadHallowedIchorThisStage = false;
             anyoneHadHallowedIchorThisRun = false;
             globalReopenCount = 0;

@@ -44,6 +44,11 @@ namespace Sandswept.Enemies.TinyImp
             master.bodyPrefab = prefab;
 
             body.baseNameToken.Add("Tiny Imp");
+            // the prefab's passive was copied from VOL-T
+            prefab.GetComponent<SkillLocator>().passiveSkill.enabled = false;
+            prefab.AddComponent<TinyImpCarrier>();
+            // the Wake's UpdateAggro retargets every monster without this onto its soul conduits, which would pull the imps off their chests
+            prefabMaster.GetComponent<RoR2.CharacterAI.BaseAI>().prioritizePlayers = true;
         }
 
         public override void SetUpIDRS()

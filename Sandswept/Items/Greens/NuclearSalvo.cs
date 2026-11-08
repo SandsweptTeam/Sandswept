@@ -1096,11 +1096,29 @@ namespace Sandswept.Items.Greens
                 finalDamageCoefficient = NuclearSalvo.baseMissileDamage * MissileUtils.GetMoreMissileDamageMultiplier(pocketIcbmCount);
             }
 
-            float baseDuration = Mathf.Max(Vector3.Distance(body.corePosition, Util.FindBodyMainHurtBox(enemyBody).transform.position) / 45f, 0.33f);
+            // the holder can die or get destroyed while the volley is still going
+            var initialTarget = enemyBody ? Util.FindBodyMainHurtBox(enemyBody) : null;
+            if (!body || !initialTarget)
+            {
+                yield break;
+            }
+
+            float baseDuration = Mathf.Max(Vector3.Distance(body.corePosition, initialTarget.transform.position) / 45f, 0.33f);
             float waitDelay = 0.33f + (1f / Math.Clamp(missileCount - 1, 1, missileCount));
             for (int i = 0; i < missileCount; i++)
             {
+                if (!body || !body.coreTransform)
+                {
+                    yield break;
+                }
+
                 if (!enemyBody || (enemyBody.healthComponent && !enemyBody.healthComponent.alive))
+                {
+                    continue;
+                }
+
+                var target = Util.FindBodyMainHurtBox(enemyBody);
+                if (!target)
                 {
                     continue;
                 }
@@ -1108,7 +1126,7 @@ namespace Sandswept.Items.Greens
                 var nuclearSalvoOrb = new NuclearSalvoOrb
                 {
                     origin = body.corePosition,
-                    target = Util.FindBodyMainHurtBox(enemyBody),
+                    target = target,
                     attacker = gameObject,
                     isCrit = body.RollCrit(),
                     damageType = DamageType.IgniteOnHit,

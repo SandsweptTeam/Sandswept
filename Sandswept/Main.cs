@@ -400,8 +400,16 @@ namespace Sandswept
 
             foreach (Type type in types)
             {
-                T instance = (T)Activator.CreateInstance(type);
-                action(instance);
+                // one broken piece of content (e.g. an asset missing from an outdated bundle) shouldn't stop the rest of the mod loading
+                try
+                {
+                    T instance = (T)Activator.CreateInstance(type);
+                    action(instance);
+                }
+                catch (Exception e)
+                {
+                    ModLogger.LogError($"Failed to load {type.Name}: {e}");
+                }
             }
         }
 
