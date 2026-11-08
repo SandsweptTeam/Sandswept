@@ -115,7 +115,9 @@ namespace Sandswept.Enemies.BrassBell.States {
                 FireProjectileInfo info = new();
                 info.owner = base.gameObject;
                 info.damage = base.damageStat * damageCoeff;
-                info.rotation = Util.QuaternionSafeLookRotation((target.transform.position - prepBall.transform.position).normalized);
+                info.rotation = Util.QuaternionSafeLookRotation(
+                    Util.ApplySpread((target.transform.position - prepBall.transform.position).normalized, -1f, 1f, 1f, 1f)
+                );
                 info.position = prepBall.transform.position;
                 info.projectilePrefab = GetBall();
                 info.crit = base.RollCrit();
@@ -193,5 +195,6 @@ namespace Sandswept.Enemies.BrassBell.States {
         public override Sprite Icon => null;
         public override bool BeginCooldownOnSkillEnd => true;
         public override bool CanceledFromSprinting => false;
+        public override bool FullRestockOnAssign => false;
     }
 }

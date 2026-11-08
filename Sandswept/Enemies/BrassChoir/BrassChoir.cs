@@ -1,0 +1,214 @@
+using System;
+using System.Linq;
+using RoR2.CharacterAI;
+using RoR2.Navigation;
+using Sandswept.Enemies.BrassChoir.States;
+using static RoR2.MasterCatalog;
+
+namespace Sandswept.Enemies.BrassChoir
+{
+    [ConfigSection("Enemies :: Brass Choir")]
+    public class BrassChoir : EnemyBase<BrassChoir>
+    {
+        public override DirectorCardCategorySelection family => null;
+        public override MonsterCategory cat => MonsterCategory.BasicMonsters;
+        public static GameObject BellShotProjectile;
+        public static GameObject BellShotPrep;
+        private static MasterIndex BrassSpireIndex = MasterIndex.none;
+
+        public override void LoadPrefabs()
+        {
+            prefab = Main.assets.LoadAsset<GameObject>("BrassChoirBody.prefab");
+            prefabMaster = Main.assets.LoadAsset<GameObject>("BrassChoirMaster.prefab");
+
+            LanguageAPI.Add(prefab.GetComponent<CharacterBody>().baseNameToken.Replace("_NAME", "_LORE"),
+            """
+            
+            """);
+
+            prefab.FindComponent<MeshRenderer>("Indicator").sharedMaterial = Paths.Material.matRailgunnerMineAreaIndicator;
+            prefab.GetComponent<BuffWard>().buffDef = Buffs.BellBoost.instance.BuffDef;
+
+            BellShotProjectile = PrefabAPI.InstantiateClone(Paths.GameObject.BellBall, "ChoirBellShotProjectile");
+            GameObject ghost = PrefabAPI.InstantiateClone(Paths.GameObject.BellBallGhost, "ChoirBellShotGhost");
+            ghost.GetComponent<ProjectileGhostController>().inheritScaleFromProjectile = true;
+
+            BellShotProjectile.EditComponent<ProjectileController>((x) => {
+                x.ghostPrefabAddress = null;
+                x.ghostPrefab = ghost;
+            });
+
+            BellShotPrep = PrefabAPI.InstantiateClone(Paths.GameObject.PreppedBellBall, "ChoirBellShotPrep");
+
+            BellShotProjectile.transform.localScale *= 2f;
+            ghost.transform.localScale *= 2f;
+            BellShotPrep.transform.localScale *= 2f;
+
+            ContentAddition.AddProjectile(BellShotProjectile);
+
+            On.RoR2.ProjectileCatalog.Init += PrepAllBrassShots;
+        }
+
+        private static string[] AllBrassShots = {
+            "BellBall", "ChoirBellShotProjectile", "BellShotProjectile", "SpireBellShotProjectile"
+        };
+        private void PrepAllBrassShots(On.RoR2.ProjectileCatalog.orig_Init orig)
+        {
+            orig();
+
+            var effect = Paths.GameObject.HermitCrabBombExplosion;
+
+            foreach (string name in AllBrassShots) {
+                GameObject prefab = ProjectileCatalog.GetProjectilePrefab(ProjectileCatalog.FindProjectileIndex(name));
+
+                var explo = prefab.AddComponent<ProjectileExplosion>((x) => {
+                    x.blastRadius = 4f * prefab.transform.localScale.x;
+                    x.blastDamageCoefficient = 1f;
+                    x.falloffModel = BlastAttack.FalloffModel.SweetSpot;
+                    x.blastProcCoefficient = 1f;
+                    x.explosionEffect = effect;
+                });
+
+                prefab.AddComponent<BellShotController>().explosion = explo;
+            }
+        }
+
+        public class BellShotController : MonoBehaviour {
+            public static List<BellShotController> instancesList = new();
+            public ProjectileExplosion explosion;
+            private GameObject radius;
+            private float stopwatch = 0f;
+            private bool isExploding;
+            private float exploTime = 1.2f;
+            private float radiusTime = 0.8f;
+
+            public void OnEnable() {
+                instancesList.Add(this);
+            }
+
+            public void OnDisable() {
+                instancesList.Remove(this);
+            }
+
+            public void Start() {
+                explosion.enabled = false;
+
+                radius = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                radius.RemoveComponent<SphereCollider>();
+                radius.GetComponent<MeshRenderer>().sharedMaterial = Paths.Material.matTeamAreaIndicatorIntersectionMonster;
+                radius.transform.localScale = Vector3.zero;
+
+                foreach (CharacterMaster master in CharacterMaster.instancesList) {
+                    if (master.masterIndex == BrassChoir.Instance.master.masterIndex) {
+                        GetComponent<ProjectileSimple>().lifetime = 15f;
+                        if (TryGetComponent<ProjectileImpactExplosion>(out var exp)) {
+                            exp.lifetime = 15f;
+                            exp.lifetimeAfterImpact = 15f;
+                        }
+
+                        return;
+                    }
+                }
+            }
+
+            public void Explode() {
+                isExploding = true;
+                explosion.enabled = true;
+            }
+
+            public void Update() {
+                radius.transform.position = base.transform.position;
+
+                if (isExploding) {
+                    stopwatch += Time.deltaTime;
+                    float rad = explosion.blastRadius * Mathf.Clamp01(stopwatch / radiusTime);
+
+                    radius.transform.localScale = Vector3.one * rad * 2f;
+
+                    if (stopwatch >= exploTime && NetworkServer.active) {
+                        stopwatch = 0f;
+                        isExploding = false;
+
+                        explosion.Detonate();
+                    }
+                }
+            }
+
+            public void OnDestroy() {
+                if (radius) {
+                    GameObject.Destroy(radius);
+                }
+            }
+        }
+
+        public static void ReplicateToSpires(CharacterBody body, SkillSlot slot) {
+            if (BrassSpireIndex == MasterIndex.none) {
+                BrassSpireIndex = MasterCatalog.FindMasterIndex("BrassSpireMaster");
+            }
+
+            BaseAI ai = body.master.GetComponent<BaseAI>();
+
+            foreach (CharacterMaster master in CharacterMaster.instancesList) {
+                if (master.masterIndex == BrassSpireIndex) {
+                    CharacterBody spire = master.GetBody();
+
+                    master.GetComponent<BaseAI>().currentEnemy.gameObject = ai.currentEnemy.gameObject;
+
+                    if (spire) {
+                        switch (slot) {
+                            case SkillSlot.Primary:
+                                spire.skillLocator.primary.ExecuteIfReady();
+                                break;
+                            case SkillSlot.Secondary:
+                                spire.skillLocator.secondary.ExecuteIfReady();
+                                break;
+                            case SkillSlot.Utility:
+                                spire.skillLocator.utility.ExecuteIfReady();
+                                break;
+                            case SkillSlot.Special:
+                                spire.skillLocator.special.ExecuteIfReady();
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public override void PostCreation()
+        {
+            base.PostCreation();
+            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
+        }
+
+        public override void AddDirectorCard()
+        {
+            base.AddDirectorCard();
+        }
+
+        public override void AddSpawnCard()
+        {
+            base.AddSpawnCard();
+        }
+
+        public override void Modify()
+        {
+            base.Modify();
+
+            master.bodyPrefab = prefab;
+
+            body.baseNameToken.Add("Brass Choir");
+
+            var locator = body.GetComponent<SkillLocator>();
+
+            ReplaceSkill(locator.primary, BarrageSkill.instance);
+            ReplaceSkill(locator.secondary, DetonateSkill.instance);
+            ReplaceSkill(locator.utility, SummonSkill.instance);
+            ReplaceSkill(locator.special, BellAuraSkill.instance);
+        }
+
+        public override void SetUpIDRS()
+        {
+            CollapseIDRS();
+        }
+    }
+}

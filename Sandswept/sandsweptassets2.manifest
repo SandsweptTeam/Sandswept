@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2915734757
+CRC: 632965203
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f2d26dd48ff7b0d7e42efcd7180d91e1
+    Hash: f899496a48ff468ce3959240bb7f2bc8
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 6030c2418e5cb498f7e5500b974e679b
+    Hash: 3b1c2d4c28bd6d63ba48f9c0792f2dfd
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -179,6 +179,8 @@ ClassTypes:
   Script: {fileID: -354346302, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -1358022786, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
+- Class: 114
+  Script: {fileID: -1845404088, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
   Script: {fileID: -1067940895, guid: 951ce57ad999ac1f040a4dceb5f8b763, type: 3}
 - Class: 114
@@ -511,12 +513,13 @@ Assets:
 - Assets/Sandswept/Base/Characters/StoneFragment/StoneFragmentBody.prefab
 - Assets/Sandswept/Base/Characters/Ranger/important/matHorse.mat
 - Assets/Sandswept/Base/Characters/Electrician/effects/matChargeFlare.mat
+- Assets/Sandswept/Base/Characters/BrassSpire/BrassSpireMaster.prefab
 - Assets/Sandswept/Base/Characters/CannonJelly/mdl/mdlCannonJelly.prefab
-- Assets/Sandswept/Base/Characters/Ranger/skills/b2.png
 - Assets/Sandswept/Base/Characters/DeltaConstruct/DeltaConstructMaster.prefab
 - Assets/Sandswept/Base/Characters/ArdentWisp/fx/matArdentFlame.mat
 - Assets/Sandswept/Base/Items/TemporalTransistor/matTransistor.mat
 - Assets/Sandswept/Base/Items/LunarCatalyst/PickupLunarCatalyst.prefab
+- Assets/Sandswept/Base/Characters/Ranger/skills/b2.png
 - Assets/Sandswept/Base/Items/GlacialPlasma/matGlacialSwirl.mat
 - Assets/Sandswept/Base/Items/CellShield/DisplayCellShield.prefab
 - Assets/Sandswept/Base/Characters/Providence/Providence/Projectiles/GildedShockwave/matShockwaveGilded.mat
@@ -554,11 +557,11 @@ Assets:
 - Assets/Sandswept/Base/Characters/InfernoDrone/matInfernoDrone.mat
 - Assets/Sandswept/Base/Characters/Ivy/IvyBody.prefab
 - Assets/Sandswept/Base/Characters/ThetaConstruct/matThetaConstruct_OUTRUN.mat
-- Assets/Sandswept/Base/Characters/ArdentWisp/fx/ArdentExplosionEffect.prefab
 - Assets/Sandswept/Base/Characters/Ivy/IvyMaster.prefab
+- Assets/Sandswept/Base/Characters/ThetaConstruct/ThetaConstructBody.prefab
 - Assets/Sandswept/Base/Items/TornFeather/matFeatherBlue.mat
 - Assets/Sandswept/Base/Characters/Ranger/Skindefault.asset
-- Assets/Sandswept/Base/Characters/ThetaConstruct/ThetaConstructBody.prefab
+- Assets/Sandswept/Base/Characters/ArdentWisp/fx/ArdentExplosionEffect.prefab
 - Assets/Sandswept/Base/Items/TornFeather/matFeatherParticle.mat
 - Assets/Sandswept/Base/Characters/Electrician/skins/sdElecMastery.asset
 - Assets/Sandswept/Base/Stages/contactlight/meshes/ArenaGemHolderMesh.asset
@@ -692,6 +695,7 @@ Assets:
 - Assets/Sandswept/Base/Items/TemporalTransistor/TransistorPickup.prefab
 - Assets/Sandswept/Base/Characters/Providence/Providence/Clone/matProviClone.mat
 - Assets/Sandswept/Base/Items/GlacialPlasma/matGlacialFlow.mat
+- Assets/Sandswept/Base/Characters/BrassChoir/BrassChoirMaster.prefab
 - Assets/Sandswept/Base/Characters/Ranger/RangerMonsterMaster.prefab
 - Assets/Sandswept/Base/Items/TheirProminence/matTheirProminence.mat
 - Assets/Sandswept/Base/Characters/CannonJelly/CannonJellyBody.prefab
@@ -709,6 +713,7 @@ Assets:
 - Assets/Sandswept/Base/Characters/Providence/Providence/Umbral/mdlProvi Variant.prefab
 - Assets/Sandswept/Base/Stages/contactlight/meshes/MSFloatingRock3.asset
 - Assets/Sandswept/Base/Characters/BellConstruct/fx/matBrassChime.mat
+- Assets/Sandswept/Base/Characters/BrassSpire/mdlBrassSpire.prefab
 - Assets/Sandswept/Base/Characters/Megalomaniac/projectiles/core/LunarCoreProjectile.prefab
 - Assets/Sandswept/Base/Items/LunarCatalyst/matLunarCatalyst.mat
 - Assets/Sandswept/Base/Items/GlacialPlasma/vfx/matGlacialTrail.mat
@@ -728,6 +733,7 @@ Assets:
 - Assets/Sandswept/Base/Stages/contactlight/meshes/MSFloatingIsland1.asset
 - Assets/Sandswept/Base/Characters/Providence/Providence/Projectiles/GildedShockwave/GildedShockwaveGhost.prefab
 - Assets/Sandswept/Base/Characters/StoneFragment/StoneFragmentMaster.prefab
+- Assets/Sandswept/Base/Characters/BrassChoir/mdl/mdlBrassChoir.prefab
 - Assets/Sandswept/Base/Items/VIPPass/texPassSpent.png
 - Assets/Sandswept/Base/Characters/GammaConstruct/mdl/GammaLog.asset
 - Assets/Sandswept/Base/Characters/Megalomaniac/projectiles/sticky orb/MegaloStickyProjectile.prefab
@@ -751,13 +757,17 @@ Assets:
 - Assets/Sandswept/Base/Characters/Electrician/effects/matMuzzleFlash.mat
 - Assets/Sandswept/Base/Characters/StoneFragment/LogStoneFragment.asset
 - Assets/Sandswept/Base/Characters/VoltaicDrone/VoltaicDroneBroken.prefab
+- Assets/Sandswept/Base/Characters/BrassChoir/LogBrassChoir.asset
 - Assets/Sandswept/Base/Characters/Providence/Providence/Umbral/matUmbraProv.mat
+- Assets/Sandswept/Base/Characters/BrassChoir/BrassChoirBody.prefab
 - Assets/Sandswept/Base/Characters/Electrician/projectiles/galvanic bolt/matBoltFlare.mat
 - Assets/Sandswept/Base/Characters/ThetaConstruct/ThetaShieldEffect.prefab
 - Assets/Sandswept/Base/Characters/Providence/Providence/muPrecipitation.asset
 - Assets/Sandswept/Base/Characters/Ivy/IvyLog.asset
+- Assets/Sandswept/Base/Characters/BrassSpire/BrassSpireBody.prefab
 - Assets/Sandswept/Base/Characters/GammaConstruct/GammaConstructBody.prefab
 - Assets/Sandswept/Base/Items/LunarCatalyst/matCatalystFlame.mat
+- Assets/Sandswept/Base/Characters/BrassSpire/DisplayBrassSpire.prefab
 - Assets/Sandswept/Base/Stages/contactlight/meshes/CrystalMeshSmall.asset
 - Assets/Sandswept/Base/Characters/DeltaConstruct/mdl/matDeltaConstruct_OUTRUN.mat
 - Assets/Sandswept/Base/Characters/Ranger/important/texHorseDiffuse.png

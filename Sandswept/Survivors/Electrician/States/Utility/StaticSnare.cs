@@ -1,106 +1,77 @@
 using System;
+using EntityStates.Engi.EngiWeapon;
 using R2API.Networking.Interfaces;
 
 namespace Sandswept.Survivors.Electrician.States
 {
-    public class StaticSnare : BaseSkillState
-    {
-        public float duration = 0.3f;
-        public bool tossedOut = false;
-        public bool FUCKINGEXPLODE = true;
-        public Transform modelTransform;
-        public GameObject staticSnareProjectile;
-
+    public class StaticSnare : PlaceTurret {
         public override void OnEnter()
         {
+            base.blueprintPrefab = Paths.GameObject.EngiTurretBlueprints;
             base.OnEnter();
-
-            // duration /= attackSpeedStat;
-
-            PlayAnimation("Gesture, Override", "Throw", "Generic.playbackRate", duration);
-
-            characterBody.SetSpreadBloom(12f, true);
-
-            modelTransform = GetModelTransform();
-
-            if (modelTransform)
-            {
-                var skinNameToken = modelTransform.GetComponent<ModelSkinController>().skins[characterBody.skinIndex].nameToken;
-
-                staticSnareProjectile = skinNameToken switch
-                {
-                    "VOLT_SKIN_COVENANT_NAME" => VFX.StaticSnare.staticSnareCovenant,
-                    _ => VFX.StaticSnare.staticSnareDefault
-                };
-
-            }
-
-            if (isAuthority)
-            {
-                tossedOut = true;
-
-                FireProjectileInfo info = MiscUtils.GetProjectile(staticSnareProjectile, 1f, characterBody, DamageTypeCombo.GenericUtility);
-                ProjectileManager.instance.FireProjectile(info);
-
-                // GameObject.Instantiate(Main.assets.LoadAsset<GameObject>("ZiprailTestObject.prefab"), base.transform.position, Quaternion.identity);
-
-                Util.PlaySound("Play_MULT_m2_throw", gameObject);
-
-                FUCKINGEXPLODE = false;
-            }
-
-            Util.PlaySound("Play_mage_m1_impact_lightning", gameObject);
-
-            skillLocator.utility.DeductStock(1);
         }
 
         public override void FixedUpdate()
         {
-            base.FixedUpdate();
+            base.fixedAge += GetDeltaTime();
 
-            if (!inputBank.skill3.down && isAuthority)
+            if (!base.isAuthority)
             {
-                if (!tossedOut)
+                return;
+            }
+
+            entryCountdown -= GetDeltaTime();
+
+            if (exitPending)
+            {
+                exitCountdown -= GetDeltaTime();
+
+                if (exitCountdown <= 0f)
                 {
-                    if (TripwireController.ControllerMap.ContainsKey(gameObject))
+                    outer.SetNextStateToMain();
+                }
+            }
+            else
+            {
+                if (!base.inputBank || !(entryCountdown <= 0f))
+                {
+                    return;
+                }
+
+                if ((base.inputBank.skill1.down || base.inputBank.skill3.justPressed) && currentPlacementInfo.ok)
+                {
+                    if (base.characterBody)
                     {
-                        // TripwireController controller = TripwireController.ControllerMap[gameObject];
-                        // new CallNetworkedMethod(controller.gameObject, "StartZip").Send(R2API.Networking.NetworkDestination.Server);
-                        // FUCKINGEXPLODE = false;
+                        FireProjectileInfo info = new();
+                        info.position = currentPlacementInfo.position;
+                        info.damage = base.damageStat;
+                        info.owner = base.gameObject;
+                        info.projectilePrefab = VFX.StaticSnare.staticSnareDefault;
+                        info.rotation = Quaternion.identity;
+
+                        ProjectileManager.instance.FireProjectile(info);
+
+                        if (base.skillLocator)
+                        {
+                            GenericSkill skill = base.skillLocator.GetSkill(SkillSlot.Utility);
+                            if (skill)
+                            {
+                                skill.DeductStock(1);
+                            }
+                        }
                     }
+
+                    Util.PlaySound(placeSoundString, base.gameObject);
+                    DestroyBlueprints();
+                    exitPending = true;
                 }
-            }
 
-            if (fixedAge >= duration)
-            {
-                outer.SetNextStateToMain();
-            }
-        }
-
-        public override void OnExit()
-        {
-            base.OnExit();
-
-            if (tossedOut)
-            {
-                float cd = skillLocator.utility.baseRechargeInterval * 0.75f;
-                skillLocator.utility.RunRecharge(cd);
-
-            }
-
-            if (FUCKINGEXPLODE && base.isAuthority)
-            {
-                if (TripwireController.ControllerMap.ContainsKey(gameObject))
+                if (base.inputBank.skill2.justPressed)
                 {
-                    TripwireController controller = TripwireController.ControllerMap[gameObject];
-                    new CallNetworkedMethod(controller.gameObject, "KABOOM").Send(R2API.Networking.NetworkDestination.Server);
+                    DestroyBlueprints();
+                    exitPending = true;
                 }
             }
-        }
-
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.PrioritySkill;
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Sandswept.Survivors.Electrician
         public static DamageAPI.ModdedDamageType LIGHTNING = DamageAPI.ReserveDamageType();
         public static DamageAPI.ModdedDamageType ReallyShittyGrounding = DamageAPI.ReserveDamageType();
         public static DamageAPI.ModdedDamageType bypassVoltResistance = DamageAPI.ReserveDamageType();
+        public static GameObject ZiprailVehicle;
 
         public override void CreateLang()
         {
@@ -175,6 +176,10 @@ namespace Sandswept.Survivors.Electrician
             LanguageAPI.Add("SANDSWEPT_VOLATILEINSERT", "<style=cDeath>[Voltage regulation offline. Rejecting unknown power source.]</style>");
 
             Body.GetComponent<ModelLocator>()._modelTransform.AddComponent<StupidDebugComponent>();
+
+            ZiprailVehicle = PrefabAPI.InstantiateClone(Paths.GameObject.ZiprailVehicle, "ElectricianZiprailVehicle");
+            ZiprailVehicle.AddComponent<ElecZiprailVehicle>();
+            ContentAddition.AddNetworkedObject(ZiprailVehicle);
         }
 
         public class StupidDebugComponent : MonoBehaviour {
