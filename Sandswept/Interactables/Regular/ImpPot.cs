@@ -1,3 +1,4 @@
+using MonoMod.RuntimeDetour;
 using Sandswept.Enemies.TinyImp;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace Sandswept.Interactables.Regular
 
         public override bool SlightlyRandomizeOrientation => false;
 
-        public override string inspectInfoDescription => $"When activated by a survivor, the pot releases a Tiny Imp for each nearby chest, lunar pod, void cradle, void potential, multishop terminal, Fuel Array, Sepulcher and modded shrine (up to {impCount}, multishops last). Each imp runs to its target, opens it for free and runs off with the item. Kill them before they get back to the pot to keep the loot.";
+        public override string inspectInfoDescription => $"When activated by a survivor, the pot releases a Tiny Imp for each nearby chest, lunar pod, void cradle, void potential, multishop terminal, Fuel Array, Sepulcher, page, N'tormat and modded shrine (up to {impCount}, multishops last). Each imp runs to its target, opens it for free and runs off with the item. Kill them before they get back to the pot to keep the loot.";
 
         public GameObject prefab;
 
@@ -35,6 +36,9 @@ namespace Sandswept.Interactables.Regular
 
         [ConfigField("Chest Search Radius", "", 80f)]
         public static float searchRadius;
+
+        [ConfigField("Troll Mode", "On their way to a target, imps set off nearby combat and mountain shrines, newt altars, Ethereal Saplings, Halcyon Shrines, the shrines of Sandswept, MoreMountains and Extra Challenge Shrines, and the teleporter. A stolen 57 Leaf Clover gets taken to a nearby scrapper first.", false)]
+        public static bool trollMode;
 
         public override void Init()
         {
@@ -104,6 +108,7 @@ namespace Sandswept.Interactables.Regular
             LanguageAPI.Add("SANDSWEPT_IMP_POT_FAIL_MESSAGE", "<style=cShrine>The imps find nothing worth stealing nearby.</color>");
 
             SceneDirector.onPostPopulateSceneServer += ImpPotController.RemovePotsWithoutChests;
+            RoR2Application.onLoad += ImpPotController.HookLynxShrineName;
 
             PostInit();
 
@@ -163,6 +168,17 @@ namespace Sandswept.Interactables.Regular
 
         public const string RelicOfEnergyToken = "INTERACTIBLE_RELICENERGY_NAME";
         public const string JudgementShrineToken = "OBJECT_BOSSSHRINE_NAME";
+        public const float TrollDetourDistance = 40f;
+
+        private static readonly HashSet<string> TrollShrines = new()
+        {
+            nameof(ShrineBossBehavior), nameof(ShrineCombatBehavior), nameof(ShrineCombatTroopBehavior), nameof(PortalStatueBehavior), nameof(HalcyoniteShrineInteractable),
+            nameof(ShrineOfRuinController), nameof(ShrineOfSacrificeController), nameof(ShrineOfTheFutureController),
+            "ShrineEtherealBehavior", "MoreMountainShrineBehavior",
+            "ExtraChallengeShrinesShrineCrownBehaviour", "ExtraChallengeShrinesShrineEyeBehaviour", "ExtraChallengeShrinesShrineRockBehaviour",
+        };
+
+        private List<MonoBehaviour> trollTargets = new();
 
         // purchasables (chests, lunar pods, void cradles/potentials, trishops, modded shrines and pedestals), Fuel Arrays and the Ancient Sepulcher's N'tormat
         public static IEnumerable<MonoBehaviour> FindStealableChests(Vector3 origin, bool requireLoot)
@@ -217,7 +233,19 @@ namespace Sandswept.Interactables.Regular
 
             if (target is GenericPickupController pickupController)
             {
-                return !pickupController.consumed && pickupController.pickup.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Equipment.QuestVolatileBattery.equipmentIndex);
+                if (pickupController.consumed)
+                {
+                    return false;
+                }
+
+                // PagePotentialHidden only rolls its page in Start, so it can still be empty while the stage populates
+                if (pickupController.GetComponent<PagePotentialPicker>())
+                {
+                    return !requireLoot || pickupController.pickup.isValid;
+                }
+
+                var pickupIndex = pickupController.pickup.pickupIndex;
+                return pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Equipment.QuestVolatileBattery.equipmentIndex) || pickupIndex == PickupCatalog.FindPickupIndex(DLC4Content.KeyItems.CursedBook.keyItemIndex);
             }
 
             if (target is not PurchaseInteraction purchaseInteraction || !purchaseInteraction.available)
@@ -266,6 +294,118 @@ namespace Sandswept.Interactables.Regular
             }
 
             return purchaseInteraction.displayNameToken == RelicOfEnergyToken && GetRelicOfEnergyItem(purchaseInteraction);
+        }
+
+        // EnemiesReturns' GetDisplayName reads the shrine's item without a null check, so anything naming an emptied shrine (like a ping) throws
+        public static void HookLynxShrineName()
+        {
+            var shrine = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetType("EnemiesReturns.Enemies.LynxTribe.LynxTribeShrine")).FirstOrDefault(x => x != null);
+            if (shrine != null)
+            {
+                new Hook(shrine.GetMethod("GetDisplayName"), typeof(ImpPotController).GetMethod(nameof(LynxShrineName), BindingFlags.NonPublic | BindingFlags.Static));
+            }
+        }
+
+        private static string LynxShrineName(Func<MonoBehaviour, string> orig, MonoBehaviour self)
+        {
+            return ((PickupIndex)GetMember(self, "pickupIndex")).isValid ? orig(self) : Language.GetString("ENEMIES_RETURNS_LYNX_SHRINE_NAME");
+        }
+
+        private static bool IsTrollShrine(MonoBehaviour target)
+        {
+            return target.GetComponents<MonoBehaviour>().Any(x => x && TrollShrines.Contains(x.GetType().Name) && (x is not PortalStatueBehavior statue || statue.portalType == PortalStatueBehavior.PortalType.Shop));
+        }
+
+        private bool CanTroll(MonoBehaviour target)
+        {
+            var activator = purchaseInteraction.lastActivator;
+            if (!activator)
+            {
+                return false;
+            }
+
+            // only ever started, interacting with a charged teleporter would end the stage
+            return target is TeleporterInteraction teleporter
+                ? teleporter.isIdle && teleporter.GetInteractability(activator) == Interactability.Available
+                : ((PurchaseInteraction)target).available;
+        }
+
+        public MonoBehaviour ClaimTrollTarget(Vector3 position)
+        {
+            var target = trollTargets
+                .Where(x => x && !claimedTargets.Contains(x) && (x.transform.position - position).sqrMagnitude <= TrollDetourDistance * TrollDetourDistance)
+                .OrderBy(x => (x.transform.position - position).sqrMagnitude)
+                .FirstOrDefault(CanTroll);
+
+            if (target)
+            {
+                claimedTargets.Add(target);
+            }
+
+            return target;
+        }
+
+        public bool IsTrollValid(MonoBehaviour target)
+        {
+            return target && CanTroll(target);
+        }
+
+        // same filters as Shrine of the Wind's own picker
+        private static BodyIndex FindMostExpensiveBoss()
+        {
+            var director = TeleporterInteraction.instance ? TeleporterInteraction.instance.bossDirector : null;
+            var selection = director ? director.finalMonsterCardsSelection : null;
+            var boss = BodyIndex.None;
+            var highestCost = -1;
+
+            for (int i = 0; selection != null && i < selection.Count; i++)
+            {
+                var card = selection.GetChoice(i).value;
+                var body = card.spawnCard.prefab.GetComponent<CharacterMaster>().bodyPrefab.GetComponent<CharacterBody>();
+                var forbidden = card.spawnCard is CharacterSpawnCard characterCard && characterCard.forbiddenAsBoss;
+                if (body.isChampion && !forbidden && card.IsAvailable() && card.spawnCard.directorCreditCost > highestCost)
+                {
+                    highestCost = card.spawnCard.directorCreditCost;
+                    boss = body.bodyIndex;
+                }
+            }
+
+            return boss;
+        }
+
+        // sets the target off in the name of whoever disturbed the pot, free of charge
+        public void Troll(MonoBehaviour target)
+        {
+            trollTargets.Remove(target);
+            claimedTargets.Remove(target);
+            var activator = purchaseInteraction.lastActivator;
+
+            if (target is TeleporterInteraction teleporter)
+            {
+                teleporter.OnInteractionBegin(activator);
+                return;
+            }
+
+            var interaction = (PurchaseInteraction)target;
+
+            // Shrine of the Wind would open a boss picker for the activator, so the imp makes the choice for them
+            var windShrine = FindModComponent(interaction, "ExtraChallengeShrinesShrineEyeBehaviour");
+            var boss = windShrine ? FindMostExpensiveBoss() : BodyIndex.None;
+            if (boss != BodyIndex.None)
+            {
+                interaction.SetAvailable(false);
+                windShrine.GetType().GetField("selectedBody").SetValue(windShrine, boss);
+                windShrine.GetType().GetMethod("AddShrineStack").Invoke(windShrine, new object[] { activator });
+                return;
+            }
+
+            var costType = interaction.costType;
+            var cost = interaction.cost;
+            interaction.costType = CostTypeIndex.None;
+            interaction.cost = 0;
+            interaction.OnInteractionBegin(activator);
+            interaction.costType = costType;
+            interaction.cost = cost;
         }
 
         // Forgotten Relics is a soft dependency, so its relic item is found through the relic's own drop component
@@ -328,6 +468,11 @@ namespace Sandswept.Interactables.Regular
                 return;
             }
 
+            if (ImpPot.trollMode)
+            {
+                trollTargets = InstanceTracker.GetInstancesList<PurchaseInteraction>().Where(IsTrollShrine).Cast<MonoBehaviour>().Append(TeleporterInteraction.instance).Where(x => x).ToList();
+            }
+
             foreach (var chest in chests)
             {
                 ReleaseImp(chest);
@@ -375,7 +520,19 @@ namespace Sandswept.Interactables.Regular
             }
 
             var loot = StealOne(target, thief);
-            return loot.pickupIndex.isValid ? new() { loot } : new();
+            var stolen = new List<GenericPickupController.CreatePickupInfo>();
+            if (loot.pickupIndex.isValid)
+            {
+                stolen.Add(loot);
+            }
+
+            if (target is WakeController)
+            {
+                // the Sepulcher hands out a page alongside N'tormat
+                stolen.Add(new GenericPickupController.CreatePickupInfo { pickup = DLC4ProgressionController.pageDropTable.GeneratePickup(Run.instance.treasureRng) });
+            }
+
+            return stolen;
         }
 
         private GenericPickupController.CreatePickupInfo StealOne(MonoBehaviour target, CharacterBody thief)
