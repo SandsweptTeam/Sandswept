@@ -25,6 +25,10 @@ namespace Sandswept.Enemies.TinyImp
         public Transform pot;
         public ImpPotController potController;
         public MonoBehaviour target;
+        // troll mode: a shrine (or the teleporter) to set off before carrying on to target
+        public MonoBehaviour detour;
+        // troll mode: where a stolen 57 Leaf Clover gets scrapped on the way home
+        public ScrapperController scrapper;
         // an Aetherium brazier flame the imp is carrying instead of an item, -1 if none
         public int brazierBuffIndex = -1;
 
@@ -61,7 +65,11 @@ namespace Sandswept.Enemies.TinyImp
                 return;
             }
 
-            if (returning)
+            if (scrapper)
+            {
+                GoToScrapper();
+            }
+            else if (returning)
             {
                 ReturnToPot();
             }
@@ -73,6 +81,11 @@ namespace Sandswept.Enemies.TinyImp
 
         private void GoToTarget()
         {
+            if (ImpPot.trollMode && GoToDetour())
+            {
+                return;
+            }
+
             // the target was bought, stolen or destroyed before we got there
             if (!target || !ImpPotController.CanSteal(target, true))
             {
@@ -87,20 +100,99 @@ namespace Sandswept.Enemies.TinyImp
                 }
             }
 
-            var targetPosition = target.transform.position;
-            waypoint.transform.position = targetPosition;
-
-            if ((targetPosition - body.footPosition).sqrMagnitude <= StealDistance * StealDistance)
+            if (MoveTo(target.transform.position))
             {
                 Steal();
-                return;
+            }
+        }
+
+        // true while the imp is busy with a detour, so it doesn't head for its real target yet
+        private bool GoToDetour()
+        {
+            if (!potController.IsTrollValid(detour))
+            {
+                potController.claimedTargets.Remove(detour);
+                detour = potController.ClaimTrollTarget(body.footPosition);
+                if (!detour)
+                {
+                    return false;
+                }
+                ResetStuck();
             }
 
-            if (IsStuck(Mathf.Sqrt((targetPosition - body.footPosition).sqrMagnitude)))
+            if (MoveTo(detour.transform.position))
+            {
+                potController.Troll(detour);
+                detour = null;
+                ResetStuck();
+            }
+
+            return true;
+        }
+
+        private void GoToScrapper()
+        {
+            if (MoveTo(scrapper.transform.position))
+            {
+                ScrapClover();
+            }
+        }
+
+        // heads for position, blinking there if it can't path; true once it has arrived
+        private bool MoveTo(Vector3 position)
+        {
+            waypoint.transform.position = position;
+            var distance = Vector3.Distance(position, body.footPosition);
+            if (distance <= StealDistance)
+            {
+                return true;
+            }
+
+            if (IsStuck(distance))
             {
                 ResetStuck();
-                Blink(SnapToGround(targetPosition), targetPosition - body.footPosition);
+                Blink(SnapToGround(position), position - body.footPosition);
             }
+
+            return false;
+        }
+
+        private static bool IsClover(GenericPickupController.CreatePickupInfo info)
+        {
+            return info.pickupIndex == PickupCatalog.FindPickupIndex(RoR2Content.Items.Clover.itemIndex);
+        }
+
+        private ScrapperController FindNearbyScrapper()
+        {
+            return FindObjectsOfType<ScrapperController>()
+                .Where(x => (x.transform.position - body.footPosition).sqrMagnitude <= ImpPot.searchRadius * ImpPot.searchRadius)
+                .OrderBy(x => (x.transform.position - body.footPosition).sqrMagnitude)
+                .FirstOrDefault();
+        }
+
+        private void ScrapClover()
+        {
+            var scrap = PickupCatalog.FindScrapIndexForItemTier(RoR2Content.Items.Clover.tier);
+            for (int i = 0; i < loot.Count; i++)
+            {
+                if (IsClover(loot[i]))
+                {
+                    var info = loot[i];
+                    info.pickup = new UniquePickup(scrap);
+                    loot[i] = info;
+                    ScrapperController.CreateItemTakenOrb(body.corePosition, scrapper.gameObject, RoR2Content.Items.Clover.itemIndex);
+                }
+            }
+
+            // nothing is queued for printing, so the scrapper only plays its animation
+            if (scrapper.esm)
+            {
+                scrapper.esm.SetNextState(EntityStateCatalog.InstantiateState(ref scrapper.entityStateOnScrap));
+            }
+
+            scrapper = null;
+            ResetStuck();
+            ShowCarriedLoot(false);
         }
 
         private void Steal()
@@ -118,6 +210,12 @@ namespace Sandswept.Enemies.TinyImp
             blinkTimer = Random.Range(1.5f, 3f);
             Util.PlaySound("Play_imp_attack_blink", gameObject);
 
+            scrapper = ImpPot.trollMode && loot.Any(IsClover) ? FindNearbyScrapper() : null;
+            ShowCarriedLoot(isHidden);
+        }
+
+        private void ShowCarriedLoot(bool isHidden)
+        {
             var pickups = loot.Select(x => x.pickupIndex).ToArray();
             var commandEssences = loot.Select(WillDropCommandEssence).ToArray();
             bool isVoidPotential = loot.Any(x => x.prefabOverride);
@@ -138,9 +236,10 @@ namespace Sandswept.Enemies.TinyImp
 
         private void ReleaseTarget()
         {
-            if (target && potController)
+            if (potController)
             {
                 potController.claimedTargets.Remove(target);
+                potController.claimedTargets.Remove(detour);
             }
         }
 
