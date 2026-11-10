@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 632965203
+CRC: 2479726903
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: f899496a48ff468ce3959240bb7f2bc8
+    Hash: c0b02d1c2fab5f59a20bd7aae4eb322e
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 3b1c2d4c28bd6d63ba48f9c0792f2dfd
+    Hash: 5ff512661b0e263dc6b47cfd7979d16b
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -27,7 +27,11 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 54
   Script: {instanceID: 0}
+- Class: 59
+  Script: {instanceID: 0}
 - Class: 61
+  Script: {instanceID: 0}
+- Class: 64
   Script: {instanceID: 0}
 - Class: 65
   Script: {instanceID: 0}
@@ -362,13 +366,15 @@ ClassTypes:
 - Class: 114
   Script: {fileID: -1575497975, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
-  Script: {fileID: -733821411, guid: ca6fb10b837101520834a90b90b15080, type: 3}
-- Class: 114
   Script: {fileID: -491769718, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
   Script: {fileID: -380604178, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
   Script: {fileID: -2119253084, guid: ca6fb10b837101520834a90b90b15080, type: 3}
+- Class: 114
+  Script: {fileID: -733821411, guid: ca6fb10b837101520834a90b90b15080, type: 3}
+- Class: 114
+  Script: {fileID: 166863308, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 120
@@ -637,6 +643,7 @@ Assets:
 - Assets/Sandswept/Base/Characters/Megalomaniac/mdl/texMegaloCore.png
 - Assets/Sandswept/Base/Stages/contactlight/meshes/DCGiantChainVariation1.asset
 - Assets/Sandswept/Base/Characters/Electrician/projectiles/galvanic bolt/GalvanicBallProjectile.prefab
+- Assets/Sandswept/Base/Characters/BrassChoir/mdl/matBrassChoir.mat
 - Assets/Sandswept/Base/Characters/Ivy/mdl/texIvyEmission.png
 - Assets/Sandswept/Base/Characters/GammaConstruct/mdl/mdlGammaConstruct.prefab
 - Assets/Sandswept/Base/Characters/Electrician/projectiles/tripwire/texElecMine.png

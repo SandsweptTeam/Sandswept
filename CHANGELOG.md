@@ -13,7 +13,7 @@
   - Added Ardent Wisp
   - Added Brass Bell
   - Added Stone Fragment
-  - Added Tiny Imp
+  - Added Brass Choir
   - Generally fixed enemy lasers being choppy
   - Generally fixed enemy lasers having weird hitboxes
   - Fixed Delta Construct creating fire trails where the laser dissipates in the air

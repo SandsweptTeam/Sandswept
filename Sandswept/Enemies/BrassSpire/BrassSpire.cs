@@ -24,8 +24,8 @@ namespace Sandswept.Enemies.BrassSpire
             
             """);
 
-            prefab.FindComponent<MeshRenderer>("Indicator").sharedMaterial = Paths.Material.matDreadFogZoneIndicator;
-            prefab.GetComponent<BuffWard>().buffDef = Buffs.BellBoost.instance.BuffDef;
+            // prefab.FindComponent<MeshRenderer>("Indicator").sharedMaterial = Paths.Material.matDreadFogZoneIndicator;
+            // prefab.GetComponent<BuffWard>().buffDef = Buffs.BellBoost.instance.BuffDef;
 
             BellShotProjectile = PrefabAPI.InstantiateClone(Paths.GameObject.BellBall, "SpireBellShotProjectile");
             GameObject ghost = PrefabAPI.InstantiateClone(Paths.GameObject.BellBallGhost, "SpireBellShotGhost");

@@ -10,6 +10,8 @@ namespace Sandswept.Enemies.BrassChoir
     [ConfigSection("Enemies :: Brass Choir")]
     public class BrassChoir : EnemyBase<BrassChoir>
     {
+        [ConfigField("Director Credit Cost", "", 600)]
+        public static int directorCreditCost;
         public override DirectorCardCategorySelection family => null;
         public override MonsterCategory cat => MonsterCategory.BasicMonsters;
         public static GameObject BellShotProjectile;
@@ -178,16 +180,61 @@ namespace Sandswept.Enemies.BrassChoir
         {
             base.PostCreation();
             RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
+
+            DirectorCardHolder holder = new();
+            holder.Card = card;
+            holder.MonsterCategory = MonsterCategory.BasicMonsters;
+            holder.MonsterCategorySelectionWeight = 1;
+
+            DirectorAPI.Helpers.AddNewMonsterToStagesWhere(holder, true, (x) => {
+                string[] modded = new string[] {
+                    "foggyswampdownpour",
+                    "broadcastperch_wormsworms", "itbroadcastperch_wormsworms",
+                    "coast_wormsworms", "itcoast_wormsworms"
+                };
+
+                if (modded.Contains(x.CustomStageName)) {
+                    return true;
+                }
+
+                Stage[] stages = new DirectorAPI.Stage[] {
+                    DirectorAPI.Stage.AbyssalDepths, DirectorAPI.Stage.AbyssalDepthsSimulacrum,
+                    DirectorAPI.Stage.WetlandAspect,
+                    DirectorAPI.Stage.TreebornColony, DirectorAPI.Stage.GoldenDieback,
+                    DirectorAPI.Stage.LuridBasilica,
+                    DirectorAPI.Stage.RepurposedCrater,
+                    DirectorAPI.Stage.SirensCall,
+                    DirectorAPI.Stage.SkyMeadow, DirectorAPI.Stage.SkyMeadowSimulacrum,
+                    DirectorAPI.Stage.TenebrousQuagmire,
+                    DirectorAPI.Stage.WinnowingOfPredation,
+                    DirectorAPI.Stage.AbandonedAqueduct, DirectorAPI.Stage.AbandonedAqueductSimulacrum,
+                    DirectorAPI.Stage.ArtifactReliquary_AbandonedAqueduct_Theme,
+                    DirectorAPI.Stage.ArtifactReliquary_AphelianSanctuary_Theme,
+                    DirectorAPI.Stage.PretendersPrecipice,
+                };
+
+                return stages.Contains(x.stage);
+            });
         }
 
         public override void AddDirectorCard()
         {
             base.AddDirectorCard();
+            card.selectionWeight = 1;
+            card.spawnCard = csc;
+            card.spawnDistance = DirectorCore.MonsterSpawnDistance.Standard;
         }
 
         public override void AddSpawnCard()
         {
             base.AddSpawnCard();
+            csc.directorCreditCost = directorCreditCost;
+            csc.forbiddenFlags = NodeFlags.NoCharacterSpawn;
+            csc.hullSize = HullClassification.BeetleQueen;
+            csc.nodeGraphType = MapNodeGroup.GraphType.Air;
+            csc.sendOverNetwork = true;
+            csc.prefab = prefabMaster;
+            csc.name = "cscBrassChoir";
         }
 
         public override void Modify()
@@ -204,6 +251,9 @@ namespace Sandswept.Enemies.BrassChoir
             ReplaceSkill(locator.secondary, DetonateSkill.instance);
             ReplaceSkill(locator.utility, SummonSkill.instance);
             ReplaceSkill(locator.special, BellAuraSkill.instance);
+
+            body.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(DeathState));
+            body.GetComponent<CharacterDeathBehavior>().deathStateMachine.initialStateType = new(typeof(SpawnState));
         }
 
         public override void SetUpIDRS()
