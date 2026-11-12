@@ -25,6 +25,8 @@ namespace Sandswept.Enemies.BrassSpire.States {
             }
 
             AkSoundEngine.PostEvent(Events.Play_bellBody_attackCreate, base.gameObject);
+
+            PlayAnimation("Body", "Chime");
         }
 
         public override void FixedUpdate()

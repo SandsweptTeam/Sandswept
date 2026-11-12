@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 2479726903
+CRC: 2480849896
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c0b02d1c2fab5f59a20bd7aae4eb322e
+    Hash: 6b5f33d6bb20cd341e0c62d4047e0c87
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5ff512661b0e263dc6b47cfd7979d16b
+    Hash: 2d8175103b35a39d170000f7b32eab41
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -121,6 +121,8 @@ ClassTypes:
   Script: {fileID: -1568778350, guid: 050936fea8909af15a3fd3b64da1ff83, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 166863308, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
   Script: {fileID: -2028682152, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
@@ -373,8 +375,6 @@ ClassTypes:
   Script: {fileID: -2119253084, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 114
   Script: {fileID: -733821411, guid: ca6fb10b837101520834a90b90b15080, type: 3}
-- Class: 114
-  Script: {fileID: 166863308, guid: ca6fb10b837101520834a90b90b15080, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 120
@@ -759,6 +759,7 @@ Assets:
 - Assets/Sandswept/Base/Characters/Providence/Providence/Clone/ProviCloneMaster.prefab
 - Assets/Sandswept/Base/Stages/contactlight/muCoalescence.asset
 - Assets/Sandswept/Base/Characters/Providence/Providence/Wyrms/mdl/matWyrmBlue.mat
+- Assets/Sandswept/Base/Characters/BrassChoir/vfx/tether/matChoirTether.mat
 - Assets/Sandswept/Base/Characters/ArdentWisp/ArdentWispBody.prefab
 - Assets/Sandswept/Base/Characters/SSTinyImp/SSTinyImpBody.prefab
 - Assets/Sandswept/Base/Characters/Electrician/effects/matMuzzleFlash.mat
@@ -770,6 +771,7 @@ Assets:
 - Assets/Sandswept/Base/Characters/Electrician/projectiles/galvanic bolt/matBoltFlare.mat
 - Assets/Sandswept/Base/Characters/ThetaConstruct/ThetaShieldEffect.prefab
 - Assets/Sandswept/Base/Characters/Providence/Providence/muPrecipitation.asset
+- Assets/Sandswept/Base/Characters/BrassChoir/vfx/tether/ChoirTetherEffect.prefab
 - Assets/Sandswept/Base/Characters/Ivy/IvyLog.asset
 - Assets/Sandswept/Base/Characters/BrassSpire/BrassSpireBody.prefab
 - Assets/Sandswept/Base/Characters/GammaConstruct/GammaConstructBody.prefab

@@ -3,7 +3,7 @@ using System;
 namespace Sandswept.Enemies.StoneFragment.States {
     public class DeathState : GenericCharacterDeath
     {
-        public static LazyAddressable<GameObject> initialEffect => new(() => Paths.GameObject.ExplosionGolemDeath);
+        public static LazyAddressable<GameObject> initialEffect => new(() => Paths.GameObject.ExplosionMinorConstruct);
 
         public static float initialEffectScale;
 
@@ -24,12 +24,7 @@ namespace Sandswept.Enemies.StoneFragment.States {
                     }, transmit: false);
                 }
 
-                RagdollController component = modelTransform.GetComponent<RagdollController>();
-                Rigidbody component2 = GetComponent<Rigidbody>();
-                if (component && component2)
-                {
-                    component.BeginRagdoll(component2.velocity * 1f);
-                }
+                modelTransform.gameObject.SetActive(false);
     
             }
             if (base.modelLocator)

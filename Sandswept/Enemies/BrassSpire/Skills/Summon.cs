@@ -18,6 +18,8 @@ namespace Sandswept.Enemies.BrassSpire.States {
         {
             base.OnEnter();
 
+            PlayAnimation("Body", "Chime");
+
             if (NetworkServer.active) {
                 if (BrassContraptionIndex == MasterIndex.none) {
                     BrassContraptionIndex = MasterCatalog.FindMasterIndex("BellMaster");

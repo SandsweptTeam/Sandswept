@@ -564,11 +564,10 @@
 
 ### Support us on KOFI! https://linktr.ee/SandsweptTeam
 
-- Code: HIFU, Pseudopulse
-  - With small contributions from: Prod, Sandman, dgosling, Phreel
+- Code: HIFU, Pseudopulse, Phreel
+  - With small contributions from: Prod, Sandman, dgosling
 - Models: Smxrez, Synodii, Pseudopulse, HIFU, Sandman
-  - Formerly: GEMO
-  - With small contributions from: Prod
+  - With contributions from: Prod, GEMO
 - Animations: Snonepe, Pseudopulse, Synodii
   - Formerly: IcieTea, Bog, Unmatchedpowerofthesun
 - VFX: HIFU, Pseudopulse

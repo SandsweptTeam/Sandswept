@@ -85,6 +85,9 @@ namespace Sandswept.Enemies.BrassSpire
             ReplaceSkill(locator.secondary, Paths.SkillDef.CommandoBodyBarrage);
             ReplaceSkill(locator.utility, ShockwaveSkill.instance);
             ReplaceSkill(locator.special, SummonSkill.instance);
+
+            body.GetComponent<CharacterDeathBehavior>().deathState = new(typeof(DeathState));
+            body.GetComponent<CharacterDeathBehavior>().deathStateMachine.initialStateType = new(typeof(SpawnState));
         }
 
         public override void SetUpIDRS()

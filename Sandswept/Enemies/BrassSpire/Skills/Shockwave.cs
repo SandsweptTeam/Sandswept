@@ -17,6 +17,8 @@ namespace Sandswept.Enemies.BrassSpire.States {
         {
             base.OnEnter();
 
+            PlayAnimation("Body", "Chime");
+
             outer.SetNextStateToMain();
         }
 

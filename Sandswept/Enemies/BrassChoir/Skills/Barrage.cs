@@ -29,6 +29,9 @@ namespace Sandswept.Enemies.BrassChoir.States {
             if (base.isAuthority) {
                 BrassChoir.ReplicateToSpires(base.characterBody, SkillSlot.Primary);
             }
+
+            PlayAnimation("Body", "Prep Shoot");
+            GetModelAnimator().SetBool("isShooting", true);
         }
 
         public override void FixedUpdate()
@@ -45,6 +48,8 @@ namespace Sandswept.Enemies.BrassChoir.States {
 
                 GameObject.Destroy(prepShots[totalShots]);
                 AkSoundEngine.PostEvent(Events.Play_bellBody_attackShoot, base.gameObject);
+
+                PlayAnimation("Gesture, Additive", "Shoot");
 
                 if (base.isAuthority) {
                     Vector3 point = base.GetAimRay().GetPoint(50f);
@@ -72,6 +77,8 @@ namespace Sandswept.Enemies.BrassChoir.States {
         public override void OnExit()
         {
             base.OnExit();
+
+            GetModelAnimator().SetBool("isShooting", false);
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

@@ -114,6 +114,7 @@ namespace Sandswept
         public static MPInput input;
 
         public static event Action onInputAvailable;
+        public static event Action allContentAvailable;
 
         internal static List<DroneDef> droneDefs = new();
 
@@ -318,6 +319,8 @@ namespace Sandswept
             SwepSwepTheSandy.Init();
             NetworkingAPI.RegisterMessageType<CallNetworkedMethod>();
             NetworkingAPI.RegisterMessageType<DamageTrailManager.DamageTrailSync>();
+
+            allContentAvailable?.Invoke();
         }
 
         public void SetUpHooks()

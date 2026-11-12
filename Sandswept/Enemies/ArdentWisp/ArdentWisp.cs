@@ -77,11 +77,11 @@ namespace Sandswept.Enemies.ArdentWisp
         public override void PostCreation()
         {
             base.PostCreation();
-            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
+            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.Minibosses, false);
 
             DirectorCardHolder holder = new();
             holder.Card = card;
-            holder.MonsterCategory = MonsterCategory.BasicMonsters;
+            holder.MonsterCategory = MonsterCategory.Minibosses;
             holder.MonsterCategorySelectionWeight = 1;
 
             DirectorAPI.Helpers.AddNewMonsterToStagesWhere(holder, true, (x) => {
@@ -132,7 +132,7 @@ namespace Sandswept.Enemies.ArdentWisp
         public override void AddDirectorCard()
         {
             base.AddDirectorCard();
-            card.selectionWeight = 1;
+            card.selectionWeight = 2;
             card.spawnCard = csc;
             card.spawnDistance = DirectorCore.MonsterSpawnDistance.Standard;
         }

@@ -17,19 +17,19 @@ namespace Sandswept.Enemies.BrassChoir
         public static GameObject BellShotProjectile;
         public static GameObject BellShotPrep;
         private static MasterIndex BrassSpireIndex = MasterIndex.none;
+        public static GameObject BellTether;
 
         public override void LoadPrefabs()
         {
             prefab = Main.assets.LoadAsset<GameObject>("BrassChoirBody.prefab");
             prefabMaster = Main.assets.LoadAsset<GameObject>("BrassChoirMaster.prefab");
 
+            prefab.GetComponent<CameraTargetParams>().cameraParams = Paths.CharacterCameraParams.ccpStandardHuge;
+
             LanguageAPI.Add(prefab.GetComponent<CharacterBody>().baseNameToken.Replace("_NAME", "_LORE"),
             """
             
             """);
-
-            prefab.FindComponent<MeshRenderer>("Indicator").sharedMaterial = Paths.Material.matRailgunnerMineAreaIndicator;
-            prefab.GetComponent<BuffWard>().buffDef = Buffs.BellBoost.instance.BuffDef;
 
             BellShotProjectile = PrefabAPI.InstantiateClone(Paths.GameObject.BellBall, "ChoirBellShotProjectile");
             GameObject ghost = PrefabAPI.InstantiateClone(Paths.GameObject.BellBallGhost, "ChoirBellShotGhost");
@@ -42,13 +42,15 @@ namespace Sandswept.Enemies.BrassChoir
 
             BellShotPrep = PrefabAPI.InstantiateClone(Paths.GameObject.PreppedBellBall, "ChoirBellShotPrep");
 
-            BellShotProjectile.transform.localScale *= 2f;
-            ghost.transform.localScale *= 2f;
-            BellShotPrep.transform.localScale *= 2f;
+            BellShotProjectile.transform.localScale *= 2.5f;
+            ghost.transform.localScale *= 2.5f;
+            BellShotPrep.transform.localScale *= 2.5f;
 
             ContentAddition.AddProjectile(BellShotProjectile);
 
             On.RoR2.ProjectileCatalog.Init += PrepAllBrassShots;
+
+            BellTether = Main.assets.LoadAsset<GameObject>("ChoirTetherEffect.prefab");
         }
 
         private static string[] AllBrassShots = {
@@ -154,7 +156,9 @@ namespace Sandswept.Enemies.BrassChoir
                 if (master.masterIndex == BrassSpireIndex) {
                     CharacterBody spire = master.GetBody();
 
-                    master.GetComponent<BaseAI>().currentEnemy.gameObject = ai.currentEnemy.gameObject;
+                    if (ai) {
+                        master.GetComponent<BaseAI>().currentEnemy.gameObject = ai.currentEnemy.gameObject;
+                    }
 
                     if (spire) {
                         switch (slot) {
@@ -179,12 +183,12 @@ namespace Sandswept.Enemies.BrassChoir
         public override void PostCreation()
         {
             base.PostCreation();
-            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.BasicMonsters, false);
+            RegisterEnemy(prefab, prefabMaster, null, MonsterCategory.Champions, false);
 
             DirectorCardHolder holder = new();
             holder.Card = card;
-            holder.MonsterCategory = MonsterCategory.BasicMonsters;
-            holder.MonsterCategorySelectionWeight = 1;
+            holder.MonsterCategory = MonsterCategory.Champions;
+            holder.MonsterCategorySelectionWeight = 10;
 
             DirectorAPI.Helpers.AddNewMonsterToStagesWhere(holder, true, (x) => {
                 string[] modded = new string[] {
@@ -231,7 +235,7 @@ namespace Sandswept.Enemies.BrassChoir
             csc.directorCreditCost = directorCreditCost;
             csc.forbiddenFlags = NodeFlags.NoCharacterSpawn;
             csc.hullSize = HullClassification.BeetleQueen;
-            csc.nodeGraphType = MapNodeGroup.GraphType.Air;
+            csc.nodeGraphType = MapNodeGroup.GraphType.Ground;
             csc.sendOverNetwork = true;
             csc.prefab = prefabMaster;
             csc.name = "cscBrassChoir";
@@ -244,6 +248,7 @@ namespace Sandswept.Enemies.BrassChoir
             master.bodyPrefab = prefab;
 
             body.baseNameToken.Add("Brass Choir");
+            body.subtitleNameToken.Add("Harbinger of Symphony");
 
             var locator = body.GetComponent<SkillLocator>();
 

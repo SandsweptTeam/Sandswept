@@ -7,12 +7,14 @@ namespace Sandswept.Enemies.BrassChoir
     public class SpawnState : GenericCharacterSpawnState {
         public override void OnEnter()
         {
-            base.duration = 2f;
+            base.duration = 3f;
             base.OnEnter();
             AkSoundEngine.PostEvent(Events.Play_boss_spawn_rumble, base.gameObject);
             AkSoundEngine.PostEvent(Events.Play_majorConstruct_spawn_rumble, base.gameObject);
             AkSoundEngine.PostEvent(Events.Play_bellBody_spawn, base.gameObject);
             AkSoundEngine.PostEvent(Events.Play_bellBody_spawn, base.gameObject);
+
+            PlayAnimation("Body", "Spawn");
         }
 
         public override void FixedUpdate()
@@ -52,7 +54,8 @@ namespace Sandswept.Enemies.BrassChoir
                 {
                     component.BeginRagdoll(component2.velocity * 1f);
                 }
-    
+
+                modelTransform.gameObject.SetActive(false);
             }
 
             if (base.modelLocator)
