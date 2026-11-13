@@ -24,7 +24,7 @@ namespace Sandswept.Interactables.Regular
 
         public override bool SlightlyRandomizeOrientation => false;
 
-        public override string inspectInfoDescription => $"When activated by a survivor, the pot releases a Tiny Imp for each nearby chest, lunar pod, void cradle, void potential, multishop terminal, Fuel Array, Sepulcher, page, N'tormat and modded shrine (up to {impCount}, multishops last). Each imp runs to its target, opens it for free and runs off with the item. Kill them before they get back to the pot to keep the loot.";
+        public override string inspectInfoDescription => $"When activated by a survivor, the pot releases a Tiny Imp for each nearby chest, lunar pod, void cradle, void potential, multishop terminal, Fuel Array, page and modded shrine (up to {impCount}, multishops last). Each imp runs to its target, opens it for free and runs off with the item. Kill them before they get back to the pot to keep the loot.";
 
         public GameObject prefab;
 
@@ -37,7 +37,7 @@ namespace Sandswept.Interactables.Regular
         [ConfigField("Chest Search Radius", "", 80f)]
         public static float searchRadius;
 
-        [ConfigField("Troll Mode", "On their way to a target, imps set off nearby combat and mountain shrines, newt altars, Ethereal Saplings, Halcyon Shrines, the shrines of Sandswept, MoreMountains and Extra Challenge Shrines, and the teleporter. A stolen 57 Leaf Clover gets taken to a nearby scrapper first.", false)]
+        [ConfigField("Troll Mode", "On their way to a target, imps set off nearby combat and mountain shrines, newt altars, Ethereal Saplings, Halcyon Shrines, the shrines of Sandswept, MoreMountains and Extra Challenge Shrines, and the teleporter. A stolen 57 Leaf Clover gets taken to a nearby scrapper first. Imps can also wake the Ancient Sepulcher and run off with N'tormat and a page.", false)]
         public static bool trollMode;
 
         public override void Init()
@@ -187,7 +187,7 @@ namespace Sandswept.Interactables.Regular
             return InstanceTracker.GetInstancesList<PurchaseInteraction>().Cast<MonoBehaviour>()
                 // the pod's Fuel Array stays disabled until its panel is opened, so it isn't in any tracker
                 .Concat(Object.FindObjectsOfType<GenericPickupController>())
-                .Append(WakeController.instance)
+                .Append(ImpPot.trollMode ? WakeController.instance : null)
                 .Where(x => x
                     && (x.transform.position - origin).sqrMagnitude <= maxSqrDistance
                     && CanSteal(x, requireLoot))
