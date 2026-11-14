@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sandswept")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f1e6c95d3c58ae38a834939250e30e02e56418b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+53efb7ba2c00069755323161209f9e36867078d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sandswept")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sandswept")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
