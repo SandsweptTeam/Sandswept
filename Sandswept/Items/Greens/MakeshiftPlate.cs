@@ -18,7 +18,7 @@ using static Sandswept.Items.Greens.MakeshiftPlate;
 
 namespace Sandswept.Items.Greens
 {
-    [ConfigSection("ItemItems :: Makeshift Plate")]
+    [ConfigSection("Items :: Makeshift Plate")]
     public class MakeshiftPlate : ItemBase<MakeshiftPlate>
     {
         public static BuffDef MakeshiftPlateCount;
