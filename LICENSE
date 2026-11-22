@@ -1,13 +1,15 @@
-In addition to GPL 3.0, the following restrictions apply:
+This project follows the standard GPL-3 licensing with a "No AI" clause as defined below.
 
-1. The Software and any modifications made to it may not be used for the purpose of training or improving machine learning algorithms,
+1. Artificial Intelligence (LLM models) such as ChatGPT, Claude AI, Google Gemini, or other such Large Language Models cannot be used to create assets, code, or metadata in derivatives of this work.
+
+2. The Software and any modifications made to it may not be used for the purpose of training or improving machine learning algorithms,
 including but not limited to artificial intelligence, natural language processing, or data mining. This condition applies to any derivatives,
 modifications, or updates based on the Software code. Any usage of the Software in an AI-training dataset is considered a breach of this License.
 
-2. The Software may not be included in any dataset used for training or improving machine learning algorithms,
+3. The Software may not be included in any dataset used for training or improving machine learning algorithms,
 including but not limited to artificial intelligence, natural language processing, or data mining.
 
-3. Any person or organization found to be in violation of these restrictions will be subject to legal action and may be held liable
+4. Any person or organization found to be in violation of these restrictions will be subject to legal action and may be held liable
 for any damages resulting from such use.
 
                       GNU GENERAL PUBLIC LICENSE
